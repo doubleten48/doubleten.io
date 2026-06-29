@@ -215,17 +215,29 @@
         <div class="success-icon">📬</div>
         <div class="success-title">เช็ค email ของคุณ!</div>
         <div class="success-text">
-          ส่ง link ยืนยันไปที่<br>
+          ส่งรหัสยืนยัน 8 หลักไปที่<br>
           <span class="success-email" id="confirm-email"></span><br><br>
-          กด link ในอีเมลเพื่อเปิดใช้งานบัญชี
+          กรอกรหัสจาก email ด้านล่างนี้
+        </div>
+        <div style="margin-top:1.25rem;">
+          <input type="text" id="otp-input" placeholder="รหัส 8 หลัก"
+            maxlength="8" autocomplete="one-time-code"
+            style="background:#1e1e1e;border:1px solid #c0392b;border-radius:8px;
+            padding:12px;font-size:22px;color:#fff;width:100%;text-align:center;
+            letter-spacing:6px;font-family:inherit;outline:none;box-sizing:border-box;"/>
+          <div class="alert alert-error" id="otp-alert-error" style="margin-top:8px;"></div>
+          <button class="btn-submit" id="btn-otp" onclick="handleOTP()" style="margin-top:10px;">
+            ยืนยันบัญชี
+          </button>
         </div>
       </div>
 
       <div class="form" id="register-form-inner">
         <div class="form-group">
           <label>Email *</label>
-          <input type="email" id="reg-email" placeholder="your@email.com" oninput="validateEmail()"/>
+          <input type="email" id="reg-email" placeholder="your@email.com" oninput="validateEmail()" onblur="checkEmailExists()"/>
           <span class="field-error" id="err-email">รูปแบบ email ไม่ถูกต้อง</span>
+          <span class="field-error" id="err-email-dup"></span>
         </div>
 
 
@@ -257,13 +269,14 @@
 
         <div class="form-group">
           <label>Username (ชื่อที่แสดงในบอร์ด) *</label>
-          <input type="text" id="reg-username" placeholder="เช่น น้อนแดง" oninput="validateUsername()"/>
+          <input type="text" id="reg-username" placeholder="เช่น น้อนแดง" oninput="validateUsername()" onblur="checkUsernameExists()"/>
           <div class="input-hint" style="line-height:1.7;">
             · ห้ามตั้งชื่อหยาบคาย, คำผวน หรือชื่อบุคคลที่สามที่สื่อไปในทางไม่เหมาะสม<br>
             · หากตรวจสอบภายหลังแล้วพบเป็นชื่อไม่เหมาะสม จะถูกบังคับเปลี่ยนชื่อใหม่<br>
             · หากตั้งชื่อไม่เหมาะสมถึง 3 ครั้ง จะทำการลบบัญชีทันที
           </div>
           <span class="field-error" id="err-username">กรุณากรอก username อย่างน้อย 2 ตัวอักษร</span>
+          <span class="field-error" id="err-username-dup"></span>
         </div>
 
         <div class="check-wrap">
@@ -367,6 +380,40 @@
   }
 
   // ── VALIDATORS ──
+  async function checkEmailExists() {
+    const email = document.getElementById('reg-email').value.trim()
+    const errEl = document.getElementById('err-email-dup')
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = ''; errEl.classList.remove('show'); return }
+
+    const { data } = await sb.from('profiles').select('id').eq('email', email).maybeSingle()
+    if (data) {
+      errEl.textContent = '❌ Email นี้มีบัญชีอยู่แล้ว'
+      errEl.classList.add('show')
+      document.getElementById('reg-email').style.borderColor = '#e74c3c'
+    } else {
+      errEl.textContent = ''
+      errEl.classList.remove('show')
+      document.getElementById('reg-email').style.borderColor = ''
+    }
+  }
+
+  async function checkUsernameExists() {
+    const username = document.getElementById('reg-username').value.trim()
+    const errEl = document.getElementById('err-username-dup')
+    if (!username || username.length < 2) { errEl.textContent = ''; errEl.classList.remove('show'); return }
+
+    const { data } = await sb.from('profiles').select('id').ilike('username', username).maybeSingle()
+    if (data) {
+      errEl.textContent = '❌ Username นี้ถูกใช้ไปแล้ว'
+      errEl.classList.add('show')
+      document.getElementById('reg-username').style.borderColor = '#e74c3c'
+    } else {
+      errEl.textContent = ''
+      errEl.classList.remove('show')
+      document.getElementById('reg-username').style.borderColor = ''
+    }
+  }
+
   function validateEmail() {
     const val = document.getElementById('reg-email').value
     const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
@@ -469,7 +516,8 @@
         throw new Error('EMAIL_EXISTS')
       }
 
-      // success → แสดงหน้าแจ้งให้ไป verify email
+      // success → แสดงหน้ากรอก OTP
+      pendingEmail = email
       document.getElementById('confirm-email').textContent = email
       document.getElementById('register-form-inner').style.display = 'none'
       document.getElementById('register-success').classList.add('show')
@@ -481,6 +529,36 @@
       showError('reg-alert-error', msg)
       btn.disabled = false
       btn.innerHTML = 'สมัครสมาชิก'
+    }
+  }
+
+  // ── VERIFY OTP ──
+  let pendingEmail = ''
+
+  async function handleOTP() {
+    const token = document.getElementById('otp-input').value.trim()
+    if (token.length !== 8) {
+      showError('otp-alert-error', 'กรุณากรอกรหัส 8 หลักให้ครบ')
+      return
+    }
+    const btn = document.getElementById('btn-otp')
+    btn.disabled = true
+    btn.innerHTML = '<span class="spinner"></span>กำลังยืนยัน...'
+
+    try {
+      const { data, error } = await sb.auth.verifyOtp({
+        email: pendingEmail,
+        token: token,
+        type: 'signup'
+      })
+      if (error) throw error
+      // verify สำเร็จ → ไป welcome.html
+      window.location.href = '/welcome.html'
+    } catch (err) {
+      let msg = 'รหัสไม่ถูกต้องหรือหมดอายุ กรุณาลองใหม่'
+      showError('otp-alert-error', msg)
+      btn.disabled = false
+      btn.innerHTML = 'ยืนยันบัญชี'
     }
   }
 
