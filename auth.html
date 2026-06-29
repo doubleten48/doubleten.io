@@ -383,8 +383,9 @@
   async function checkEmailExists() {
     const email = document.getElementById('reg-email').value.trim()
     const errEl = document.getElementById('err-email-dup')
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = ''; errEl.classList.remove('show'); return }
-
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.textContent = ''; errEl.classList.remove('show'); return
+    }
     const { data } = await sb.from('profiles').select('id').eq('email', email).maybeSingle()
     if (data) {
       errEl.textContent = '❌ Email นี้มีบัญชีอยู่แล้ว'
