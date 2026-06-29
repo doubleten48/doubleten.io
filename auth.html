@@ -512,8 +512,9 @@
         throw new Error('EMAIL_EXISTS')
       }
 
-      // success → แสดงหน้ากรอก OTP
+      // success → แสดงหน้ารอ verify
       pendingEmail = email
+      sessionStorage.setItem('pendingEmail', email)
       document.getElementById('confirm-email').textContent = email
       document.getElementById('register-form-inner').style.display = 'none'
       document.getElementById('register-success').classList.add('show')
@@ -535,7 +536,12 @@
     if (resendCooldown) return
     const btn = document.getElementById('btn-resend')
     const msg = document.getElementById('resend-msg')
-    if (!pendingEmail) return
+    if (!pendingEmail) pendingEmail = sessionStorage.getItem('pendingEmail') || ''
+    if (!pendingEmail) {
+      msg.style.color = '#e74c3c'
+      msg.textContent = 'ไม่พบ email กรุณาสมัครใหม่อีกครั้ง'
+      return
+    }
 
     btn.style.pointerEvents = 'none'
     btn.style.color = '#444'
