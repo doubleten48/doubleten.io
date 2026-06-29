@@ -154,7 +154,31 @@
 
     const memberNo = String(count || 1).padStart(3, '0')
 
+    // ส่ง welcome email (fire & forget — ไม่ block UI)
+    sendWelcomeEmail(email, username)
+
     showWelcome(username, email, memberNo)
+  }
+
+  async function sendWelcomeEmail(email, username) {
+    try {
+      // เช็คว่าเคยส่งแล้วยัง (ป้องกันส่งซ้ำถ้า refresh หน้า)
+      const sentKey = 'welcome_sent_' + email
+      if (sessionStorage.getItem(sentKey)) return
+      sessionStorage.setItem(sentKey, '1')
+
+      await fetch(`${SUPABASE_URL}/functions/v1/send-welcome`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+        },
+        body: JSON.stringify({ email, username }),
+      })
+    } catch (e) {
+      // silent fail — ไม่ให้กระทบ UX
+      console.warn('Welcome email error:', e)
+    }
   }
 
   function showWelcome(username, email, memberNo) {
