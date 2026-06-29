@@ -230,6 +230,15 @@
             ยืนยันบัญชี
           </button>
         </div>
+        <div style="margin-top:1.25rem;text-align:center;border-top:1px solid #2e2e2e;padding-top:1rem;">
+          <p style="font-size:13px;color:#666;margin-bottom:8px;">ไม่ได้รับ email?</p>
+          <button id="btn-resend" onclick="resendVerification()"
+            style="background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;
+            font-family:inherit;text-decoration:underline;padding:0;">
+            ส่ง email ยืนยันอีกครั้ง
+          </button>
+          <div id="resend-msg" style="font-size:12px;margin-top:6px;"></div>
+        </div>
       </div>
 
       <div class="form" id="register-form-inner">
@@ -530,6 +539,54 @@
       showError('reg-alert-error', msg)
       btn.disabled = false
       btn.innerHTML = 'สมัครสมาชิก'
+    }
+  }
+
+  // ── RESEND VERIFICATION ──
+  let resendCooldown = false
+
+  async function resendVerification() {
+    if (resendCooldown) return
+    const btn = document.getElementById('btn-resend')
+    const msg = document.getElementById('resend-msg')
+    if (!pendingEmail) return
+
+    btn.style.pointerEvents = 'none'
+    btn.style.color = '#444'
+    msg.style.color = '#aaa'
+    msg.textContent = 'กำลังส่ง...'
+
+    const { error } = await sb.auth.resend({
+      type: 'signup',
+      email: pendingEmail,
+      options: { emailRedirectTo: 'https://doubleten.io/welcome.html' }
+    })
+
+    if (error) {
+      msg.style.color = '#e74c3c'
+      msg.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง'
+      btn.style.pointerEvents = ''
+      btn.style.color = '#aaa'
+    } else {
+      msg.style.color = '#27ae60'
+      msg.textContent = '✅ ส่ง email ใหม่แล้ว กรุณาตรวจสอบ inbox'
+      resendCooldown = true
+
+      // cooldown 60 วินาที
+      let secs = 60
+      btn.textContent = `ส่งอีกครั้งได้ใน ${secs} วินาที`
+      const timer = setInterval(() => {
+        secs--
+        btn.textContent = `ส่งอีกครั้งได้ใน ${secs} วินาที`
+        if (secs <= 0) {
+          clearInterval(timer)
+          btn.textContent = 'ส่ง email ยืนยันอีกครั้ง'
+          btn.style.pointerEvents = ''
+          btn.style.color = '#aaa'
+          resendCooldown = false
+          msg.textContent = ''
+        }
+      }, 1000)
     }
   }
 
