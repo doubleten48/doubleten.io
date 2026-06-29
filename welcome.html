@@ -94,17 +94,33 @@
   async function init() {
     let session = null
 
-    // รอให้ supabase parse token จาก URL hash
-    await new Promise(resolve => {
-      const { data: { subscription } } = sb.auth.onAuthStateChange((event, s) => {
-        if (s) { session = s; subscription.unsubscribe(); resolve() }
-      })
-      setTimeout(resolve, 3000)
-    })
+    // เช็ค token_hash จาก URL query param (กัน Gmail prefetch)
+    const params = new URLSearchParams(window.location.search)
+    const tokenHash = params.get('token_hash')
+    const type = params.get('type') || 'signup'
 
-    if (!session) {
-      const { data } = await sb.auth.getSession()
+    if (tokenHash) {
+      const { data, error } = await sb.auth.verifyOtp({
+        token_hash: tokenHash,
+        type: type
+      })
+      if (error) {
+        showError('ลิงค์ยืนยันไม่ถูกต้องหรือหมดอายุ กรุณาสมัครใหม่อีกครั้ง')
+        return
+      }
       session = data.session
+    } else {
+      // fallback: รับ session จาก URL hash
+      await new Promise(resolve => {
+        const { data: { subscription } } = sb.auth.onAuthStateChange((event, s) => {
+          if (s) { session = s; subscription.unsubscribe(); resolve() }
+        })
+        setTimeout(resolve, 3000)
+      })
+      if (!session) {
+        const { data } = await sb.auth.getSession()
+        session = data.session
+      }
     }
 
     if (!session) {
