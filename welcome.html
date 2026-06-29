@@ -186,7 +186,8 @@
     }, 1000)
   }
 
-  function goLogin() {
+  async function goLogin() {
+    await sb.auth.signOut()
     window.location.href = '/auth.html?tab=login'
   }
 
