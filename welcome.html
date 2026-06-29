@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>DoubleTen — ยินดีต้อนรับ</title>
+<title>DoubleTen — ยืนยันอีเมลสำเร็จ</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -22,76 +22,41 @@
   .logo-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 2rem; text-decoration: none; }
   .logo-wordmark { font-size: 20px; font-weight: 700; color: #fff; }
   .logo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
   .card {
     background: var(--card); border: 1px solid var(--line);
-    border-radius: 14px; padding: 2rem; width: 100%; max-width: 440px;
+    border-radius: 14px; padding: 2.5rem 2rem; width: 100%; max-width: 420px;
     text-align: center;
   }
-
-  .welcome-icon { font-size: 52px; margin-bottom: 1rem; }
-
-  .welcome-title {
-    font-size: 22px; font-weight: 700; color: #fff;
-    margin-bottom: 6px;
+  .icon { font-size: 56px; margin-bottom: 1.25rem; }
+  .title { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .sub { font-size: 14px; color: var(--sub); line-height: 1.7; margin-bottom: 1.5rem; }
+  .countdown {
+    font-size: 13px; color: var(--muted); margin-top: 1.25rem;
   }
-
-  .welcome-sub { font-size: 14px; color: var(--sub); margin-bottom: 1.75rem; line-height: 1.6; }
-
-  .member-card {
-    background: var(--bg); border: 1px solid var(--line);
-    border-radius: 10px; padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem; text-align: left;
-  }
-
-  .member-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 0; border-bottom: 1px solid var(--line);
-    font-size: 14px;
-  }
-  .member-row:last-child { border-bottom: none; }
-  .member-label { color: var(--muted); font-size: 12px; }
-  .member-value { color: #eee; font-weight: 500; }
-  .member-no { color: var(--red); font-weight: 700; font-size: 16px; }
-
-  .pw-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 0; font-size: 14px;
-  }
-  .pw-dots { color: #eee; letter-spacing: 2px; font-size: 16px; }
-  .pw-toggle-btn {
-    background: none; border: none; cursor: pointer;
-    color: var(--muted); padding: 2px 6px; font-size: 12px;
-    border-radius: 4px; transition: color 0.15s;
-    font-family: inherit;
-  }
-  .pw-toggle-btn:hover { color: var(--sub); }
-
+  .countdown span { color: var(--red); font-weight: 700; }
   .btn {
     display: inline-flex; align-items: center; justify-content: center;
-    gap: 7px; padding: 12px 24px; border-radius: 8px;
-    font-size: 15px; font-weight: 600; cursor: pointer;
-    border: none; font-family: inherit; width: 100%;
-    transition: background 0.15s;
+    padding: 12px 24px; border-radius: 8px; font-size: 15px;
+    font-weight: 600; cursor: pointer; border: none;
+    font-family: inherit; width: 100%; transition: background 0.15s;
+    background: var(--red); color: #fff;
   }
-  .btn-red { background: var(--red); color: #fff; margin-bottom: 10px; }
-  .btn-red:hover { background: var(--red-dark); }
-  .btn-outline { background: transparent; color: var(--sub); border: 1px solid var(--line); }
-  .btn-outline:hover { border-color: #444; color: #fff; }
-
-  .loading {
-    text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 14px;
-  }
+  .btn:hover { background: var(--red-dark); }
   .spinner {
     width: 32px; height: 32px; border: 3px solid #2e2e2e;
     border-top-color: var(--red); border-radius: 50%;
     animation: spin 0.7s linear infinite; margin: 0 auto 1rem;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .error-state { text-align: center; padding: 2rem 1rem; }
-  .error-icon { font-size: 40px; margin-bottom: 1rem; }
-  .error-text { font-size: 14px; color: var(--sub); margin-bottom: 1.5rem; }
+  .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 14px; }
+  .progress-bar {
+    width: 100%; height: 3px; background: var(--line);
+    border-radius: 2px; margin-top: 1.5rem; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--red); border-radius: 2px;
+    width: 100%; transition: width 1s linear;
+  }
 </style>
 </head>
 <body>
@@ -112,7 +77,7 @@
 </a>
 
 <div class="card" id="main-card">
-  <div class="loading" id="loading-state">
+  <div class="loading">
     <div class="spinner"></div>
     กำลังยืนยันบัญชี...
   </div>
@@ -124,11 +89,23 @@
   const { createClient } = supabase
   const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-  let showingPassword = false
+  const REDIRECT_DELAY = 5 // วินาที
 
   async function init() {
-    // รอ session หลัง verify
-    const { data: { session } } = await sb.auth.getSession()
+    let session = null
+
+    // รอให้ supabase parse token จาก URL hash
+    await new Promise(resolve => {
+      const { data: { subscription } } = sb.auth.onAuthStateChange((event, s) => {
+        if (s) { session = s; subscription.unsubscribe(); resolve() }
+      })
+      setTimeout(resolve, 3000)
+    })
+
+    if (!session) {
+      const { data } = await sb.auth.getSession()
+      session = data.session
+    }
 
     if (!session) {
       showError('ไม่พบข้อมูลการยืนยัน กรุณาลองใหม่หรือสมัครใหม่อีกครั้ง')
@@ -138,31 +115,17 @@
     const user = session.user
     const email = user.email
     const username = user.user_metadata?.username || 'สมาชิกใหม่'
+    const pwHint = user.user_metadata?.pw_hint || null
 
-    // ดึงลำดับสมาชิก
-    const { data: profile } = await sb
-      .from('profiles')
-      .select('id')
-      .eq('id', user.id)
-      .single()
+    // ส่ง welcome email (fire & forget)
+    sendWelcomeEmail(email, username, pwHint)
 
-    // นับลำดับ
-    const { count } = await sb
-      .from('profiles')
-      .select('*', { count: 'exact', head: true })
-      .lte('created_at', profile ? new Date().toISOString() : new Date().toISOString())
-
-    const memberNo = String(count || 1).padStart(3, '0')
-
-    // ส่ง welcome email (fire & forget — ไม่ block UI)
-    sendWelcomeEmail(email, username)
-
-    showWelcome(username, email, memberNo)
+    // แสดงหน้า verify สำเร็จ แล้ว countdown redirect
+    showVerified(username, email)
   }
 
-  async function sendWelcomeEmail(email, username) {
+  async function sendWelcomeEmail(email, username, password) {
     try {
-      // เช็คว่าเคยส่งแล้วยัง (ป้องกันส่งซ้ำถ้า refresh หน้า)
       const sentKey = 'welcome_sent_' + email
       if (sessionStorage.getItem(sentKey)) return
       sessionStorage.setItem(sentKey, '1')
@@ -173,78 +136,50 @@
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${SUPABASE_KEY}`,
         },
-        body: JSON.stringify({ email, username }),
+        body: JSON.stringify({ email, username, password }),
       })
     } catch (e) {
-      // silent fail — ไม่ให้กระทบ UX
       console.warn('Welcome email error:', e)
     }
   }
 
-  function showWelcome(username, email, memberNo) {
+  function showVerified(username, email) {
+    let seconds = REDIRECT_DELAY
+
     document.getElementById('main-card').innerHTML = `
-      <div class="welcome-icon">🎉</div>
-      <div class="welcome-title">ยินดีต้อนรับ, ${username}!</div>
-      <div class="welcome-sub">
-        ยืนยัน email สำเร็จแล้ว<br>
-        คุณได้เป็นสมาชิกคอมมูนิตี้ DoubleTen เรียบร้อย
+      <div class="icon">✅</div>
+      <div class="title">ยืนยัน Email สำเร็จ!</div>
+      <div class="sub">
+        ยินดีต้อนรับ <strong style="color:#fff;">${username}</strong><br>
+        บัญชีของคุณพร้อมใช้งานแล้ว<br>
+        เราได้ส่ง email แจ้งรายละเอียดไปที่ <span style="color:var(--red);">${email}</span> แล้ว
       </div>
-
-      <div class="member-card">
-        <div class="member-row">
-          <span class="member-label">ลำดับสมาชิก</span>
-          <span class="member-no">No.${memberNo}</span>
-        </div>
-        <div class="member-row">
-          <span class="member-label">Username</span>
-          <span class="member-value">${username}</span>
-        </div>
-        <div class="member-row">
-          <span class="member-label">Email</span>
-          <span class="member-value" style="font-size:13px;">${email}</span>
-        </div>
-        <div class="pw-row">
-          <span class="member-label">Password</span>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span class="pw-dots" id="pw-display">••••••••••••</span>
-            <button class="pw-toggle-btn" onclick="togglePw()">แสดง</button>
-          </div>
-        </div>
-      </div>
-
-      <div style="font-size:12px;color:var(--muted);margin-bottom:1.5rem;text-align:left;line-height:1.6;">
-        🔒 รักษา password ไว้เป็นความลับ อย่าแชร์ให้ผู้อื่น<br>
-        📧 ส่ง email ต้อนรับไปที่ ${email} แล้ว
-      </div>
-
-      <button class="btn btn-red" onclick="window.location.href='/profile.html'">
-        🏆 ไปหน้า Profile
-      </button>
-      <button class="btn btn-outline" onclick="window.location.href='/'">
-        กลับหน้าหลัก
-      </button>
+      <button class="btn" onclick="goLogin()">เข้าสู่ระบบเลย</button>
+      <div class="countdown">กำลังพาไปหน้าเข้าสู่ระบบใน <span id="cd">${seconds}</span> วินาที</div>
+      <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
     `
+
+    // countdown
+    const timer = setInterval(() => {
+      seconds--
+      const cdEl = document.getElementById('cd')
+      const progEl = document.getElementById('prog')
+      if (cdEl) cdEl.textContent = seconds
+      if (progEl) progEl.style.width = (seconds / REDIRECT_DELAY * 100) + '%'
+      if (seconds <= 0) { clearInterval(timer); goLogin() }
+    }, 1000)
   }
 
-  function togglePw() {
-    const el = document.getElementById('pw-display')
-    const btn = document.querySelector('.pw-toggle-btn')
-    if (!el) return
-    showingPassword = !showingPassword
-    el.textContent = showingPassword ? '(คลิกซ่อน — ไม่แสดง password จริง)' : '••••••••••••'
-    btn.textContent = showingPassword ? 'ซ่อน' : 'แสดง'
+  function goLogin() {
+    window.location.href = '/auth.html?tab=login'
   }
 
   function showError(msg) {
     document.getElementById('main-card').innerHTML = `
-      <div class="error-state">
-        <div class="error-icon">⚠️</div>
-        <div class="welcome-title" style="margin-bottom:8px;">เกิดข้อผิดพลาด</div>
-        <div class="error-text">${msg}</div>
-        <button class="btn btn-red" onclick="window.location.href='/auth.html'">
-          กลับหน้าสมัคร/เข้าสู่ระบบ
-        </button>
-      </div>
+      <div class="icon">⚠️</div>
+      <div class="title">เกิดข้อผิดพลาด</div>
+      <div class="sub">${msg}</div>
+      <button class="btn" onclick="window.location.href='/auth.html'">กลับหน้าสมัคร/เข้าสู่ระบบ</button>
     `
   }
 
