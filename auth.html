@@ -482,12 +482,19 @@
       return
     }
 
+    // บล็อกถ้ามี duplicate error แสดงอยู่
+    const emailDupErr = document.getElementById('err-email-dup')
+    const usernameDupErr = document.getElementById('err-username-dup')
+    if (emailDupErr?.classList.contains('show') || usernameDupErr?.classList.contains('show')) {
+      showError('reg-alert-error', 'กรุณาแก้ไขข้อมูลที่ซ้ำก่อนสมัคร')
+      return
+    }
+
     const btn = document.getElementById('btn-register')
     btn.disabled = true
-    btn.innerHTML = '<span class="spinner"></span>กำลังตรวจสอบ...'
+    btn.innerHTML = '<span class="spinner"></span>กำลังสมัคร...'
 
     try {
-      btn.innerHTML = '<span class="spinner"></span>กำลังสมัคร...'
 
       const { data, error } = await sb.auth.signUp({
         email,
