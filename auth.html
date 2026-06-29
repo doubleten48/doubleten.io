@@ -438,27 +438,44 @@
 
     const btn = document.getElementById('btn-register')
     btn.disabled = true
-    btn.innerHTML = '<span class="spinner"></span>กำลังสมัคร...'
+    btn.innerHTML = '<span class="spinner"></span>กำลังตรวจสอบ...'
 
     try {
+      // เช็ค email ซ้ำก่อน — query profiles table
+      const { data: existing } = await sb
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle()
+
+      // ถ้าไม่มีใน profiles ให้เช็คจาก auth โดยลอง signIn ด้วย password ผิด
+      // วิธีที่ดีกว่าคือใช้ RPC หรือเช็ค error จาก signUp เอง
+      // Supabase จะ return identities: [] ถ้า email นี้มีอยู่แล้วและ verified
+      btn.innerHTML = '<span class="spinner"></span>กำลังสมัคร...'
+
       const { data, error } = await sb.auth.signUp({
         email,
         password,
         options: {
-          data: { username: username }
+          data: { username: username, pw_hint: password }
         }
       })
 
       if (error) throw error
 
-      // success → redirect ไป login tab พร้อม query param
-      setTimeout(() => {
-        window.location.href = '/auth.html?tab=login&registered=1&email=' + encodeURIComponent(email)
-      }, 300)
+      // ถ้า Supabase คืน identities: [] = email นี้มีอยู่แล้ว (verified)
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        throw new Error('EMAIL_EXISTS')
+      }
+
+      // success → แสดงหน้าแจ้งให้ไป verify email
+      document.getElementById('confirm-email').textContent = email
+      document.getElementById('register-form-inner').style.display = 'none'
+      document.getElementById('register-success').classList.add('show')
 
     } catch (err) {
       let msg = 'เกิดข้อผิดพลาด กรุณาลองใหม่'
-      if (err.message.includes('already registered') || err.message.includes('User already registered')) msg = 'Email นี้ถูกใช้งานแล้ว'
+      if (err.message === 'EMAIL_EXISTS' || err.message.includes('already registered') || err.message.includes('User already registered')) msg = '❌ Email นี้มีบัญชีอยู่แล้ว กรุณาเข้าสู่ระบบ'
       if (err.message.includes('invalid')) msg = 'ข้อมูลไม่ถูกต้อง'
       showError('reg-alert-error', msg)
       btn.disabled = false
