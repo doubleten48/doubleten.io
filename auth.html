@@ -498,16 +498,6 @@
     btn.innerHTML = '<span class="spinner"></span>กำลังตรวจสอบ...'
 
     try {
-      // เช็ค email ซ้ำก่อน — query profiles table
-      const { data: existing } = await sb
-        .from('profiles')
-        .select('id')
-        .eq('email', email)
-        .maybeSingle()
-
-      // ถ้าไม่มีใน profiles ให้เช็คจาก auth โดยลอง signIn ด้วย password ผิด
-      // วิธีที่ดีกว่าคือใช้ RPC หรือเช็ค error จาก signUp เอง
-      // Supabase จะ return identities: [] ถ้า email นี้มีอยู่แล้วและ verified
       btn.innerHTML = '<span class="spinner"></span>กำลังสมัคร...'
 
       const { data, error } = await sb.auth.signUp({
