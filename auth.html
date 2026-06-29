@@ -215,22 +215,11 @@
         <div class="success-icon">📬</div>
         <div class="success-title">เช็ค email ของคุณ!</div>
         <div class="success-text">
-          ส่งรหัสยืนยัน 8 หลักไปที่<br>
+          ส่งลิงค์ยืนยันไปที่<br>
           <span class="success-email" id="confirm-email"></span><br><br>
-          กรอกรหัสจาก email ด้านล่างนี้
+          กดลิงค์ใน email เพื่อยืนยันบัญชี
         </div>
-        <div style="margin-top:1.25rem;">
-          <input type="text" id="otp-input" placeholder="รหัส 8 หลัก"
-            maxlength="8" autocomplete="one-time-code"
-            style="background:#1e1e1e;border:1px solid #c0392b;border-radius:8px;
-            padding:12px;font-size:22px;color:#fff;width:100%;text-align:center;
-            letter-spacing:6px;font-family:inherit;outline:none;box-sizing:border-box;"/>
-          <div class="alert alert-error" id="otp-alert-error" style="margin-top:8px;"></div>
-          <button class="btn-submit" id="btn-otp" onclick="handleOTP()" style="margin-top:10px;">
-            ยืนยันบัญชี
-          </button>
-        </div>
-        <div style="margin-top:1.25rem;text-align:center;border-top:1px solid #2e2e2e;padding-top:1rem;">
+        <div style="margin-top:1.5rem;text-align:center;border-top:1px solid #2e2e2e;padding-top:1rem;">
           <p style="font-size:13px;color:#666;margin-bottom:8px;">ไม่ได้รับ email?</p>
           <button id="btn-resend" onclick="resendVerification()"
             style="background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;
