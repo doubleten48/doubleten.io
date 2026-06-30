@@ -44,7 +44,7 @@
     margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--line);
   }
   .post-content {
-    font-size: 15px; line-height: 1.8; color: var(--text); white-space: pre-wrap;
+    font-size: 15px; line-height: 1.8; color: var(--text);
     margin-bottom: 1.5rem; word-break: break-word;
   }
   .post-actions { display: flex; align-items: center; gap: 12px; }
@@ -180,7 +180,7 @@
           <span>·</span>
           <span>👁 ${post.views_count || 0} ครั้ง</span>
         </div>
-        <div class="post-content">${escapeHtml(post.content)}</div>
+        <div class="post-content">${renderContent(post.content)}</div>
         <div class="post-actions">
           <button class="btn-like ${hasLiked ? 'liked' : ''}" id="btn-like" onclick="toggleLike()">
             ${hasLiked ? '❤️' : '🤍'} <span id="like-count">${post.likes_count || 0}</span>
@@ -310,6 +310,22 @@
     await sb.from('posts').update({ comments_count: post.comments_count }).eq('id', postId)
     document.querySelector('.comments-title').textContent = `ความคิดเห็น (${post.comments_count})`
     document.getElementById(`comment-${commentId}`).remove()
+  }
+
+  function renderContent(raw) {
+    let html = escapeHtml(raw)
+    html = html.replace(/\[img\](.*?)\[\/img\]/g, '<img src="$1" loading="lazy" style="max-width:100%;border-radius:8px;margin:8px 0;"/>')
+    html = html.replace(/\[color=(#[0-9a-fA-F]{3,6})\](.*?)\[\/color\]/g, '<span style="color:$1">$2</span>')
+    html = html.replace(/\[size=(\d+px)\](.*?)\[\/size\]/g, '<span style="font-size:$1">$2</span>')
+    html = html.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+    html = html.replace(/\*(.+?)\*/g, '<i>$1</i>')
+    html = html.replace(/__(.+?)__/g, '<u>$1</u>')
+    html = html.replace(/^&gt; (.+)$/gm, '<blockquote style="border-left:3px solid #c0392b;padding-left:10px;color:#aaa;margin:8px 0;">$1</blockquote>')
+    html = html.replace(
+      /(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})\S*)/g,
+      '<div style="position:relative;padding-bottom:56.25%;height:0;margin:8px 0;"><iframe src="https://www.youtube.com/embed/$2" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:8px;" allowfullscreen></iframe></div>'
+    )
+    return html.replace(/\n/g, '<br>')
   }
 
   function escapeHtml(str) {
