@@ -68,6 +68,31 @@
     font-family: inherit; outline: none; min-height: 80px; resize: vertical;
   }
   .comment-form textarea:focus { border-color: var(--red); }
+  .comment-toolbar {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px;
+  }
+  .ctb-btn {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    padding: 5px 9px; font-size: 11px; color: var(--sub); cursor: pointer;
+    font-family: inherit; white-space: nowrap;
+  }
+  .ctb-btn:hover { border-color: var(--red); color: #fff; }
+  .ctb-select {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    padding: 5px 6px; font-size: 11px; color: var(--sub); font-family: inherit;
+  }
+  .comment-url-row { display: none; gap: 6px; margin-bottom: 8px; }
+  .comment-url-row.show { display: flex; }
+  .comment-url-row input {
+    flex: 1; background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+    padding: 8px; color: var(--text); font-size: 12px; font-family: inherit; outline: none;
+  }
+  .comment-url-row button {
+    background: var(--red); color: #fff; border: none; border-radius: 6px;
+    padding: 0 12px; font-size: 12px; cursor: pointer; font-family: inherit;
+  }
+  .comment-upload-progress { font-size: 11px; color: var(--muted); margin-bottom: 6px; min-height: 14px; }
   .comment-submit-row { display: flex; justify-content: flex-end; margin-top: 8px; }
   .btn-comment {
     background: var(--red); color: #fff; padding: 8px 20px; border-radius: 8px;
@@ -210,12 +235,102 @@
     }
     wrap.innerHTML = `
       <div class="comment-form">
+        <div class="comment-toolbar">
+          <button type="button" class="ctb-btn" onclick="wrapCommentSelection('**','**')"><b>B</b></button>
+          <button type="button" class="ctb-btn" onclick="wrapCommentSelection('*','*')"><i>I</i></button>
+          <button type="button" class="ctb-btn" onclick="wrapCommentSelection('__','__')"><u>U</u></button>
+          <select class="ctb-select" onchange="applyCommentColor(this.value)">
+            <option value="">สี</option>
+            <option value="#e74c3c">แดง</option>
+            <option value="#3498db">น้ำเงิน</option>
+            <option value="#2ecc71">เขียว</option>
+            <option value="#f1c40f">เหลือง</option>
+            <option value="#9b59b6">ม่วง</option>
+          </select>
+          <button type="button" class="ctb-btn" onclick="document.getElementById('comment-file-input').click()">ฝากรูป</button>
+          <input type="file" id="comment-file-input" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none" onchange="handleCommentFileSelect(event)"/>
+          <button type="button" class="ctb-btn" onclick="toggleCommentUrlInput()">URL รูป</button>
+        </div>
+        <div class="comment-url-row" id="comment-url-row">
+          <input type="url" id="comment-external-url" placeholder="วาง URL รูป..."/>
+          <button type="button" onclick="insertCommentExternalUrl()">แทรก</button>
+        </div>
+        <div class="comment-upload-progress" id="comment-upload-progress"></div>
         <textarea id="comment-input" placeholder="แสดงความคิดเห็น..." maxlength="1000"></textarea>
         <div class="comment-submit-row">
           <button class="btn-comment" id="btn-comment-submit" onclick="submitComment()">ส่งความคิดเห็น</button>
         </div>
       </div>
     `
+  }
+
+  function getCommentTextarea() { return document.getElementById('comment-input') }
+
+  function wrapCommentSelection(before, after) {
+    const ta = getCommentTextarea()
+    const start = ta.selectionStart, end = ta.selectionEnd
+    const selected = ta.value.substring(start, end) || 'ขอความ'
+    ta.value = ta.value.substring(0, start) + before + selected + after + ta.value.substring(end)
+    ta.focus()
+    ta.selectionStart = start + before.length
+    ta.selectionEnd = start + before.length + selected.length
+  }
+
+  function applyCommentColor(color) {
+    if (!color) return
+    const ta = getCommentTextarea()
+    const start = ta.selectionStart, end = ta.selectionEnd
+    const selected = ta.value.substring(start, end) || 'ขอความ'
+    const tag = `[color=${color}]${selected}[/color]`
+    ta.value = ta.value.substring(0, start) + tag + ta.value.substring(end)
+    ta.focus()
+  }
+
+  async function handleCommentFileSelect(event) {
+    const file = event.target.files[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) {
+      alert('ไฟลใหญเกิน 5MB')
+      return
+    }
+    const progressEl = document.getElementById('comment-upload-progress')
+    progressEl.textContent = 'กำลังอัปโหลด...'
+
+    const ext = file.name.split('.').pop()
+    const fileName = `${currentUser.id}/${Date.now()}_c.${ext}`
+    const { error } = await sb.storage.from('post-images').upload(fileName, file)
+
+    if (error) {
+      progressEl.textContent = 'อัปโหลดไมสำเร็จ'
+      setTimeout(() => progressEl.textContent = '', 3000)
+      return
+    }
+    const { data: urlData } = sb.storage.from('post-images').getPublicUrl(fileName)
+    insertCommentImageTag(urlData.publicUrl)
+    progressEl.textContent = 'อัปโหลดสำเร็จ'
+    setTimeout(() => progressEl.textContent = '', 2000)
+    event.target.value = ''
+  }
+
+  function toggleCommentUrlInput() {
+    document.getElementById('comment-url-row').classList.toggle('show')
+  }
+
+  function insertCommentExternalUrl() {
+    const input = document.getElementById('comment-external-url')
+    const url = input.value.trim()
+    if (!url) return
+    insertCommentImageTag(url)
+    input.value = ''
+    document.getElementById('comment-url-row').classList.remove('show')
+  }
+
+  function insertCommentImageTag(url) {
+    const ta = getCommentTextarea()
+    const tag = `\n[img]${url}[/img]\n`
+    const pos = ta.selectionStart
+    ta.value = ta.value.substring(0, pos) + tag + ta.value.substring(pos)
+    ta.focus()
   }
 
   async function toggleLike() {
@@ -270,7 +385,7 @@
               ${isOwn ? `<span class="comment-delete" onclick="deleteComment('${c.id}')">ลบ</span>` : ''}
             </span>
           </div>
-          <div class="comment-content">${escapeHtml(c.content)}</div>
+          <div class="comment-content">${renderContent(c.content)}</div>
         </div>
       `
     }).join('')
