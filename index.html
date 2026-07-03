@@ -16,6 +16,7 @@
       --red:       #c0392b;
       --red-dark:  #922b21;
       --red-glow:  rgba(192,57,43,0.15);
+      --gold:      #e8b23a;
       --bg:        #1e1e1e;
       --bg-card:   #252525;
       --bg-line:   #2e2e2e;
@@ -26,6 +27,7 @@
       --logo-block2: #2a2a2a;
       --score-bg:  #1a1a1a;
       --score-border: #333;
+      --thumb-bg:  #333;
     }
 
     /* ── LIGHT MODE ── */
@@ -33,6 +35,7 @@
       --red:       #c0392b;
       --red-dark:  #922b21;
       --red-glow:  rgba(192,57,43,0.08);
+      --gold:      #b8860b;
       --bg:        #f5f5f5;
       --bg-card:   #ffffff;
       --bg-line:   #e0e0e0;
@@ -43,6 +46,7 @@
       --logo-block2: #f0f0f0;
       --score-bg:  #f8f8f8;
       --score-border: #ddd;
+      --thumb-bg:  #e5e5e5;
     }
 
     html { scroll-behavior: smooth; }
@@ -58,8 +62,9 @@
     }
 
     a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
 
-    /* ── NAV ── */
+    /* ── NAV (ของเดิม ไม่แตะ) ── */
     nav {
       position: sticky; top: 0; z-index: 100;
       background: var(--nav-bg);
@@ -99,7 +104,6 @@
     }
     .btn-icon:hover { color: var(--text); border-color: var(--muted); }
 
-    /* THEME TOGGLE */
     .theme-toggle {
       background: transparent; border: 1px solid var(--bg-line);
       border-radius: 7px; padding: 6px 10px; cursor: pointer;
@@ -108,156 +112,180 @@
     }
     .theme-toggle:hover { border-color: var(--muted); color: var(--text); }
 
-    /* ── HERO ── */
-    .hero {
-      text-align: center;
-      padding: 4rem 1.5rem 3.5rem;
-      border-bottom: 1px solid var(--bg-line);
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, var(--red-glow), transparent);
-      pointer-events: none;
-    }
-
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(192,57,43,0.12); border: 1px solid rgba(192,57,43,0.3);
-      color: #e74c3c; font-size: 12px; font-weight: 500;
-      padding: 5px 12px; border-radius: 999px; margin-bottom: 1.5rem;
-    }
-    .live-dot {
-      width: 6px; height: 6px; background: #e74c3c; border-radius: 50%;
-      animation: blink 1.2s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-
-    .hero-logo {
-      display: flex; align-items: center; justify-content: center;
-      gap: 16px; margin-bottom: 1.25rem;
-    }
-    .hero-brand h1 {
-      font-family: 'DM Sans', sans-serif;
-      font-size: clamp(30px,6vw,48px); font-weight: 700;
-      color: var(--text); letter-spacing: -1px; line-height: 1.1; text-align: left;
-    }
-    .hero-brand p { font-size: 13px; color: var(--muted); text-align: left; margin-top: 3px; }
-
-    .hero-tagline {
-      font-size: clamp(15px,2.5vw,18px); color: var(--sub);
-      max-width: 460px; margin: 0 auto 2.25rem; line-height: 1.7;
-    }
-    .hero-tagline strong { color: #e74c3c; font-weight: 500; }
-
-    .hero-cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-
-    /* ── STATS ── */
-    .stats-bar {
-      display: grid; grid-template-columns: repeat(3,1fr);
+    /* ── AD STRIP ── */
+    .ad-strip {
+      background: linear-gradient(135deg, #2e6b3e, #1e4a2b);
+      color: #d9f2df; text-align: center; font-size: 12px;
+      letter-spacing: 2px; padding: 10px; font-family: 'IBM Plex Mono', monospace;
       border-bottom: 1px solid var(--bg-line);
     }
-    .stat {
-      padding: 1.75rem 1rem; text-align: center;
-      border-right: 1px solid var(--bg-line); background: var(--bg);
-    }
-    .stat:last-child { border-right: none; }
-    .stat-num {
-      display: block; font-family: 'DM Sans', sans-serif;
-      font-size: clamp(24px,5vw,34px); font-weight: 700;
-      color: var(--red); line-height: 1;
-    }
-    .stat-label { font-size: 12px; color: var(--muted); margin-top: 6px; }
 
-    /* ── SECTIONS ── */
-    .section { max-width: 680px; margin: 0 auto; padding: 2.5rem 1.5rem; }
-    .section-eyebrow {
-      font-size: 11px; font-weight: 500; color: var(--red);
-      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 1rem;
-      font-family: 'IBM Plex Mono', monospace;
+    /* ── DASHBOARD LAYOUT ── */
+    .dashboard {
+      max-width: 1360px; margin: 0 auto; padding: 16px;
+      display: grid; grid-template-columns: 280px 1fr 280px; gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 1080px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .sidebar-left, .sidebar-right { order: 2; }
+      .main-col { order: 1; }
     }
 
-    /* ── FEATURES ── */
-    .feature-grid { display: flex; flex-direction: column; gap: 10px; }
-    .feature-card {
-      background: var(--bg-card); border: 1px solid var(--bg-line);
-      border-radius: 12px; padding: 16px 18px;
-      display: flex; align-items: flex-start; gap: 14px;
-      transition: border-color 0.2s;
-    }
-    .feature-card:hover { border-color: var(--muted); }
-    .feature-icon {
-      width: 40px; height: 40px; background: var(--red-glow);
-      border: 1px solid rgba(192,57,43,0.15); border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; flex-shrink: 0;
-    }
-    .feature-card h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-    .feature-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
-
-    /* ── LIVE SCORE ── */
-    .score-card {
+    .card {
       background: var(--bg-card); border: 1px solid var(--bg-line);
       border-radius: 12px; overflow: hidden;
     }
-    .score-header {
-      background: var(--red); padding: 10px 16px;
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; font-weight: 500; color: #fff;
+    .card-pad { padding: 16px; }
+    .card-title {
+      font-size: 15px; font-weight: 700; padding: 14px 16px;
+      border-bottom: 1px solid var(--bg-line); display: flex;
+      align-items: center; justify-content: space-between;
     }
-    .match-row {
-      padding: 14px 16px; display: flex; align-items: center;
-      justify-content: space-between; border-bottom: 1px solid var(--bg-line); gap: 12px;
+    .card-title .more { font-size: 12px; color: var(--muted); font-weight: 400; }
+
+    /* ── PROFILE CARD ── */
+    .profile-card { text-align: center; padding: 20px 16px; }
+    .profile-avatar {
+      width: 84px; height: 84px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px; margin: 0 auto 10px; position: relative;
+      border: 3px solid var(--gold);
     }
-    .match-row:last-of-type { border-bottom: none; }
-    .team { font-size: 14px; color: var(--text); flex: 1; display: flex; align-items: center; gap: 6px; }
-    .team.right { justify-content: flex-end; text-align: right; }
-    .score {
-      background: var(--score-bg); border: 1px solid var(--score-border);
-      border-radius: 6px; padding: 5px 14px;
-      font-size: 18px; font-weight: 700; color: var(--text);
-      letter-spacing: 3px; flex-shrink: 0;
-      font-family: 'DM Sans', sans-serif;
+    .profile-avatar::after {
+      content: ''; position: absolute; bottom: 2px; right: 2px;
+      width: 12px; height: 12px; background: #2ecc71; border-radius: 50%;
+      border: 2px solid var(--bg-card);
     }
-    .score-cta {
-      padding: 12px 16px; border-top: 1px solid var(--bg-line);
-      background: var(--bg-card); display: flex; justify-content: center;
+    .profile-no { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+    .profile-name { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700; margin: 4px 0 2px; }
+    .profile-role { font-size: 12px; color: var(--gold); margin-bottom: 4px; }
+    .profile-join { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+    .profile-stats {
+      display: flex; justify-content: center; gap: 14px;
+      font-size: 12px; color: var(--sub); margin-bottom: 12px;
+    }
+    .profile-stats b { display: block; color: var(--text); font-size: 14px; }
+    .profile-badge {
+      display: inline-block; background: var(--red-glow); color: var(--red);
+      border: 1px solid rgba(192,57,43,0.3); font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; padding: 4px 12px; border-radius: 999px;
     }
 
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--bg-line); padding: 2.5rem 1.5rem 2rem;
-      max-width: 680px; margin: 0 auto; text-align: center;
+    /* ── SIDE NAV ── */
+    .side-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px; font-size: 14px; color: var(--sub);
+      border-bottom: 1px solid var(--bg-line); transition: background 0.15s, color 0.15s;
     }
-    .social-grid { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 1.75rem; }
-    .social-link {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: var(--bg-card); border: 1px solid var(--bg-line);
-      border-radius: 7px; padding: 9px 16px; font-size: 13px; color: var(--sub);
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .social-link:hover { border-color: var(--muted); color: var(--text); }
-    .footer-note { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+    .side-nav a:last-child { border-bottom: none; }
+    .side-nav a:hover { background: var(--red-glow); color: var(--text); }
+    .side-nav a.active { background: var(--red); color: #fff; }
+    .side-nav .ic { width: 18px; text-align: center; }
 
-    /* ── LIGHT MODE OVERRIDES ── */
-    [data-theme="light"] nav { box-shadow: 0 1px 8px rgba(0,0,0,0.08); }
-    [data-theme="light"] .hero::before {
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(192,57,43,0.06), transparent);
+    /* ── FEATURED NEWS ── */
+    .featured-news { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; padding: 14px; }
+    .featured-main { position: relative; border-radius: 10px; overflow: hidden; background: var(--thumb-bg); min-height: 220px;
+      display:flex; align-items:flex-end; }
+    .featured-main .glow { position:absolute; inset:0; background: radial-gradient(circle at 30% 20%, rgba(192,57,43,.35), transparent 60%); }
+    .featured-main .txt { position: relative; padding: 14px; color: #fff; background: linear-gradient(to top, rgba(0,0,0,.75), transparent); width: 100%; }
+    .featured-main .txt .tag { font-size: 10px; background: var(--red); padding: 2px 8px; border-radius: 4px; display:inline-block; margin-bottom:6px; }
+    .featured-main .txt h3 { font-size: 15px; line-height: 1.4; }
+    .featured-side { display: flex; flex-direction: column; gap: 10px; }
+    .mini-news { display: flex; gap: 8px; align-items: center; }
+    .mini-thumb { width: 46px; height: 46px; border-radius: 6px; background: var(--thumb-bg); flex-shrink: 0; }
+    .mini-news p { font-size: 12px; line-height: 1.4; }
+
+    /* ── LIST ITEMS (topics/articles) ── */
+    .topic-list { padding: 4px 0; }
+    .topic-item {
+      display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+      border-bottom: 1px solid var(--bg-line);
     }
-    [data-theme="light"] .hero-badge { background: rgba(192,57,43,0.08); }
+    .topic-item:last-child { border-bottom: none; }
+    .topic-rank {
+      width: 22px; height: 22px; border-radius: 6px; background: var(--red-glow);
+      color: var(--red); font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .topic-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--thumb-bg); flex-shrink: 0; }
+    .topic-body { flex: 1; min-width: 0; }
+    .topic-body h4 { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .topic-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .topic-count { font-size: 11px; color: var(--muted); text-align: right; flex-shrink: 0; }
+    .topic-count b { color: var(--sub); display:block; font-size: 12px; }
+
+    /* ── STANDINGS ── */
+    .standings-select {
+      margin: 12px 16px 4px; background: var(--score-bg); border: 1px solid var(--score-border);
+      color: var(--text); font-size: 12px; padding: 6px 10px; border-radius: 6px;
+    }
+    table.standings { width: 100%; border-collapse: collapse; font-size: 12px; }
+    table.standings th { text-align: left; color: var(--muted); font-weight: 500; padding: 8px 12px; border-bottom: 1px solid var(--bg-line); }
+    table.standings td { padding: 8px 12px; border-bottom: 1px solid var(--bg-line); }
+    table.standings tr:last-child td { border-bottom: none; }
+
+    /* ── RIGHT SIDEBAR ── */
+    .donate-card { padding: 16px; text-align: center; }
+    .donate-btn {
+      display: block; width: 100%; background: var(--red); color: #fff;
+      padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-bottom: 12px;
+    }
+    .follow-row { display: flex; justify-content: center; gap: 8px; }
+    .follow-row a {
+      width: 34px; height: 34px; border-radius: 50%; background: var(--bg-line);
+      display: flex; align-items: center; justify-content: center; font-size: 15px; color: var(--sub);
+    }
+    .follow-row a:hover { background: var(--red); color: #fff; }
+
+    .ad-slot {
+      background: var(--thumb-bg); border: 1px dashed var(--bg-line); border-radius: 10px;
+      min-height: 200px; display: flex; align-items: center; justify-content: center;
+      text-align: center; line-height: 1.6;
+      font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+    }
+    .ad-slot-tall { min-height: 640px; }
+
+    @media (min-width: 1081px) {
+      .sidebar-left, .sidebar-right { position: sticky; top: 72px; max-height: calc(100vh - 88px); overflow-y: auto; }
+    }
+
+    .legend-card { padding: 18px; text-align: center; }
+    .legend-avatar {
+      width: 72px; height: 72px; border-radius: 12px; margin: 0 auto 8px;
+      background: linear-gradient(160deg, var(--gold), #a97b12);
+      display: flex; align-items: center; justify-content: center; font-size: 30px;
+    }
+    .legend-tag { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--gold); margin-bottom: 2px; }
+    .legend-name { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .legend-stats { display: flex; justify-content: center; gap: 16px; font-size: 11px; color: var(--sub); margin-bottom: 10px; }
+    .legend-stats b { color: var(--text); display: block; font-size: 13px; }
+    .legend-coins { display: flex; justify-content: center; gap: 10px; font-size: 12px; font-weight: 700; color: var(--sub); }
+
+    .minigame-card {
+      padding: 20px 16px; text-align: center; background: linear-gradient(160deg, var(--red-glow), transparent);
+    }
+    .minigame-card .tag { font-size: 11px; letter-spacing: 2px; color: var(--red); font-weight: 700; }
+    .minigame-card h3 { font-size: 18px; margin: 4px 0 10px; }
+
+    .user-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--bg-line); }
+    .user-stats div { background: var(--bg-card); padding: 12px; text-align: center; }
+    .user-stats b { display: block; font-size: 16px; font-family: 'DM Sans', sans-serif; }
+    .user-stats span { font-size: 11px; color: var(--muted); }
+
+    .contact-card { padding: 16px; font-size: 12px; color: var(--muted); text-align: center; }
+    .contact-card a { color: var(--red); }
 
     @media (max-width: 480px) {
-      .hero { padding: 3rem 1rem 2.5rem; }
-      .hero-logo { flex-direction: column; align-items: center; }
-      .hero-brand h1, .hero-brand p { text-align: center; }
+      .featured-news { grid-template-columns: 1fr; }
       .nav-links .btn-outline { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
+  <!-- NAV (ของเดิม ทำงานอยู่แล้ว ไม่แก้) -->
   <nav>
     <a href="/" class="nav-logo">
       <svg width="36" height="26" viewBox="0 0 140 100">
@@ -278,124 +306,256 @@
       <a href="/news.html" class="btn btn-outline">ข่าว</a>
       <a href="https://doubleten48.github.io/worldcup2026" class="btn btn-outline">⚽ Live</a>
       <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="เปลี่ยนธีม">🌙</button>
-      <a href="/auth.html" class="btn btn-outline">ล็อกอิน</a>
+      <a href="/auth.html" class="btn btn-outline">เข้าสู่ระบบ</a>
       <a href="/auth.html?tab=register" class="btn btn-red">สมัครสมาชิก</a>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-badge">
-      <div class="live-dot"></div>
-      FIFA World Cup 2026 · LIVE NOW
-    </div>
-    <div class="hero-logo">
-      <svg width="80" height="58" viewBox="0 0 140 100">
-        <rect x="2" y="10" width="58" height="80" rx="10" fill="#c0392b"/>
-        <text x="31" y="63" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="'DM Sans',sans-serif" font-size="36" font-weight="700" letter-spacing="-1">10</text>
-        <rect x="80" y="10" width="58" height="80" rx="10" fill="var(--logo-block2)" stroke="#c0392b" stroke-width="2"/>
-        <text x="109" y="63" text-anchor="middle" dominant-baseline="middle" fill="#c0392b" font-family="'DM Sans',sans-serif" font-size="36" font-weight="700" letter-spacing="-1">10</text>
-      </svg>
-      <div class="hero-brand">
-        <h1>DoubleTen</h1>
-        <p>By น้อนแดง</p>
+  <div class="ad-strip">ADVERTISING SPACE · 728×90</div>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar-left">
+      <div class="card profile-card">
+        <div class="profile-no">No.001</div>
+        <div class="profile-avatar">🔴</div>
+        <div class="profile-name">แอดน้อนแดง</div>
+        <div class="profile-role">webmaster</div>
+        <div class="profile-join">เข้าร่วม : 28.06.2026 · 1 day</div>
+        <div class="profile-stats">
+          <div><b>999</b>หล่อสะสม</div>
+          <div><b>111</b>ถุยสะสม</div>
+          <div><b>12,345</b>ตอบ</div>
+        </div>
+        <span class="profile-badge">WORLD CLASS</span>
       </div>
-    </div>
-    <p class="hero-tagline">
-      คอมมูนิตี้ฟุตบอลสัญชาติไทย<br>
-      คุยบอล ดูสกอร์ <strong>แบบจริงจัง</strong>
-    </p>
-    <div class="hero-cta">
-      <a href="/auth.html?tab=register" class="btn btn-red" style="padding:11px 22px;font-size:14px;">
-        🏆 สมัครสมาชิก
-      </a>
-      <a href="https://t.me/YOUR_GROUP" class="btn btn-outline" style="padding:11px 22px;font-size:14px;">
-        ✈️ Join Telegram
-      </a>
-      <a href="https://doubleten48.github.io/worldcup2026" class="btn btn-outline" style="padding:11px 22px;font-size:14px;">
-        🔴 Live Score WC2026
-      </a>
-    </div>
-  </section>
 
-  <!-- STATS -->
-  <div class="stats-bar">
-    <div class="stat"><span class="stat-num">2K+</span><div class="stat-label">สมาชิก</div></div>
-    <div class="stat"><span class="stat-num">WC26</span><div class="stat-label">Live Score</div></div>
-    <div class="stat"><span class="stat-num">24/7</span><div class="stat-label">แอคทีฟ</div></div>
-  </div>
+      <div style="height:10px;"></div>
 
-  <!-- ABOUT -->
-  <div class="section">
-    <div class="section-eyebrow">เกี่ยวกับเรา</div>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">💬</div>
-        <div>
-          <h3>คุยบอลทุกลีก</h3>
-          <p>วิเคราะห์บอล ถกดราฟ วันแมตช์ ตลาดนักเตะ โดยแฟนบอลตัวจริงที่รักในกีฬาเดียวกัน</p>
+      <div class="card legend-card">
+        <div class="legend-avatar">⚽</div>
+        <div class="legend-tag">LEGEND</div>
+        <div class="legend-name">Ronaldo r9</div>
+        <div class="legend-stats">
+          <div><b>Lv.1</b>Level</div>
+          <div><b>198</b>Exp</div>
+        </div>
+        <div class="legend-coins">
+          <span>🟡 100</span>
+          <span>🔵 2200</span>
         </div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">📡</div>
-        <div>
-          <h3>Live Score อัปเดตทันที</h3>
-          <p>ติดตามสกอร์ ผู้ทำประตู และสถิติแมตช์แบบเรียลไทม์ผ่านเว็บที่ทีมงานสร้างเอง</p>
+
+      <div style="height:14px;"></div>
+
+      <nav class="card side-nav">
+        <a href="/" class="active"><span class="ic">🏠</span> หน้าแรก</a>
+        <a href="/news.html"><span class="ic">📰</span> อัพเดทข่าว</a>
+        <a href="/articles.html"><span class="ic">📝</span> บทความ</a>
+        <a href="/board.html?c=society"><span class="ic">💬</span> บอร์ดโซไซตี้</a>
+        <a href="/board.html?c=foreign"><span class="ic">🌍</span> บอร์ดบอลนอก</a>
+        <a href="/board.html?c=thai"><span class="ic">🇹🇭</span> บอร์ดบอลไทย</a>
+        <a href="/board.html?c=sports"><span class="ic">🏆</span> ออลสปอร์ต</a>
+        <a href="/board.html?c=games"><span class="ic">🎮</span> บอร์ดเกมส์</a>
+        <a href="/board.html?c=18plus"><span class="ic">🔞</span> เดลล่างมอ</a>
+        <a href="/board.html?c=jail"><span class="ic">🔒</span> เรือนจำคนง่าว</a>
+      </nav>
+
+      <div style="height:14px;"></div>
+
+      <div class="card minigame-card">
+        <div class="tag">BY 10.10</div>
+        <h3>🎮 Minigame</h3>
+        <a href="/games.html" class="btn btn-red" style="width:100%;justify-content:center;">เล่นเลย</a>
+      </div>
+
+      <div style="height:14px;"></div>
+
+      <div class="card">
+        <div class="card-title" style="border-bottom:none;">สถิติ user</div>
+        <div class="user-stats">
+          <div><b>198</b><span>user</span></div>
+          <div><b>13</b><span>new user</span></div>
+          <div><b>68</b><span>online</span></div>
+          <div><b>20</b><span>new topic</span></div>
         </div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🤖</div>
-        <div>
-          <h3>บอทแจ้งเตือนอัตโนมัติ</h3>
-          <p>รับแจ้งเตือนประตู สรุปผล และไฮไลท์ทันทีใน Telegram โดยไม่ต้องคอยดูหน้าจอตลอดเวลา</p>
+
+      <div style="height:14px;"></div>
+
+      <div class="card contact-card">
+        contact us<br>
+        <a href="mailto:sale@doubleten.io">sale@doubleten.io</a>
+      </div>
+    </aside>
+
+    <!-- CENTER COLUMN -->
+    <main class="main-col">
+      <div class="card">
+        <div class="card-title">Least News <span class="more">ดูทั้งหมด →</span></div>
+        <div class="featured-news">
+          <a href="/news.html" class="featured-main">
+            <div class="glow"></div>
+            <div class="txt">
+              <span class="tag">HOT</span>
+              <h3>เดมบาเย่ จากอดีตเด็กติดเกมสู่บาลงดอร์ 2 ปีซ้อน หลังพาฝรั่งเศสคว้าแชมป์บอลโลก 2026 ได้สำเร็จ</h3>
+            </div>
+          </a>
+          <div class="featured-side">
+            <div class="mini-news">
+              <div class="mini-thumb"></div>
+              <p>แฟนบอลสวีเดนบุกจองตั๋วรอบชิงฯ หมดภายใน 3 นาที</p>
+            </div>
+            <div class="mini-news">
+              <div class="mini-thumb"></div>
+              <p>เมสซี่เผยฟอร์มสุดท้ายก่อนแขวนสตั๊ด</p>
+            </div>
+            <div class="mini-news">
+              <div class="mini-thumb"></div>
+              <p>อังกฤษ VS ฝรั่งเศส ศึกดวลใจนัดชิง</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- LIVE SCORE PREVIEW -->
-  <div class="section" style="padding-top:0;">
-    <div class="section-eyebrow">ตัวอย่าง Live Score</div>
-    <div class="score-card">
-      <div class="score-header">
-        <div class="live-dot"></div>
-        FIFA World Cup 2026 · Group Stage
-      </div>
-      <div class="match-row">
-        <span class="team">🇧🇷 Brazil</span>
-        <span class="score">2 - 1</span>
-        <span class="team right">Argentina 🇦🇷</span>
-      </div>
-      <div class="match-row">
-        <span class="team">🇫🇷 France</span>
-        <span class="score">0 - 0</span>
-        <span class="team right">England 🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
-      </div>
-      <div class="match-row">
-        <span class="team">🇹🇭 Thailand</span>
-        <span class="score">1 - 0</span>
-        <span class="team right">Japan 🇯🇵</span>
-      </div>
-      <div class="score-cta">
-        <a href="https://doubleten48.github.io/worldcup2026" class="btn btn-outline">ดูทุกแมตช์ →</a>
-      </div>
-    </div>
-  </div>
+      <div style="height:14px;"></div>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="section-eyebrow" style="margin-bottom:1.25rem;">ติดตามเราได้ที่</div>
-    <div class="social-grid">
-      <a href="https://t.me/YOUR_GROUP" class="social-link">✈️ Telegram</a>
-      <a href="https://facebook.com/YOUR_PAGE" class="social-link">📘 Facebook</a>
-      <a href="https://x.com/YOUR_HANDLE" class="social-link">𝕏 Twitter / X</a>
-      <a href="https://tiktok.com/@YOUR_HANDLE" class="social-link">🎵 TikTok</a>
-    </div>
-    <p class="footer-note">© 2026 DoubleTen · By น้อนแดง · doubleten.io</p>
-  </footer>
+      <div class="card">
+        <div class="card-title">5 อันดับกระทู้เดือด 🔥</div>
+        <div class="topic-list">
+          <div class="topic-item">
+            <div class="topic-rank">1</div>
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>HEAR WE GO! หงส์ปิดดีลปิยะพงษ์ นักเตะไทยคนแรกลุยพรีเมียร์ 🔥🔥🔥</h4>
+              <div class="topic-meta">By: เฮียลาบ · 45 min</div>
+            </div>
+            <div class="topic-count"><b>12,456</b>อ่าน · 234 ตอบ</div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-rank">2</div>
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>ใครเดินเข้ามาปะทะวันนี้ ห้ามพลาด 🔥🔥</h4>
+              <div class="topic-meta">By: น้องบู้ · 5 min</div>
+            </div>
+            <div class="topic-count"><b>12,000</b>อ่าน · 124 ตอบ</div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-rank">3</div>
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>ระบาย เมียแอบมีชู้กับรุ่นพี่หมู่บ้าน 🔥🔥</h4>
+              <div class="topic-meta">By: เหล้ารัสเซีย · 45 min</div>
+            </div>
+            <div class="topic-count"><b>10,456</b>อ่าน · 98 ตอบ</div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-rank">4</div>
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>สารภาพแล้ว วันนั้นเมาไปปิดดีลผิดคน 🔥</h4>
+              <div class="topic-meta">By: CNR · 1 hour</div>
+            </div>
+            <div class="topic-count"><b>8,078</b>อ่าน · 68 ตอบ</div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-rank">5</div>
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>MATCH DAY: อังกฤษ 1-0 ฝรั่งเศส คว้าแชมป์บอลโลก 2026</h4>
+              <div class="topic-meta">By: น้อนบู้ · 45 min</div>
+            </div>
+            <div class="topic-count"><b>6,598</b>อ่าน · 45 ตอบ</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:14px;"></div>
+
+      <div class="card">
+        <div class="card-title">กระทู้ปักหมุดของคุณ <span class="more">98</span></div>
+        <div class="topic-list">
+          <div class="topic-item">
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>HEAR WE GO! หงส์ปิดดีลปิยะพงษ์...</h4>
+              <div class="topic-meta">By: เฮียลาบ · 45 min</div>
+            </div>
+            <div class="topic-count"><b>12,456</b>อ่าน</div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>วิเคราะห์แท็คติก Iraola 4-3-3 Pressing แบบดุดันกำลังกลับมา?</h4>
+              <div class="topic-meta">By: ดดด · 45 min</div>
+            </div>
+            <div class="topic-count"><b>12,456</b>อ่าน</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:14px;"></div>
+
+      <div class="card">
+        <div class="card-title">บทความ <span class="more">98</span></div>
+        <div class="topic-list">
+          <div class="topic-item">
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>วิเคราะห์แท็คติก Iraola 4-3-3 Pressing แบบดุดันกำลังกลับมา?</h4>
+              <div class="topic-meta">By: ดดด · 45 min</div>
+            </div>
+            <div class="topic-count"><b>12,456</b>อ่าน</div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-avatar"></div>
+            <div class="topic-body">
+              <h4>นิยาย: เมื่อผมแอบหลงรักเพื่อนร่วมทีม</h4>
+              <div class="topic-meta">By: แอดมินใจดี · 45 min</div>
+            </div>
+            <div class="topic-count"><b>10,876</b>อ่าน</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:14px;"></div>
+
+      <div class="card">
+        <div class="card-title">ตารางคะแนน
+          <select class="standings-select"><option>ฤดูกาล 2025-26</option></select>
+        </div>
+        <table class="standings">
+          <tr><th>#</th><th>ทีม</th><th>P</th><th>W</th><th>Pts</th></tr>
+          <tr><td>1</td><td>Liverpool</td><td>20</td><td>15</td><td>48</td></tr>
+          <tr><td>2</td><td>Arsenal</td><td>20</td><td>14</td><td>46</td></tr>
+          <tr><td>3</td><td>Man City</td><td>20</td><td>13</td><td>44</td></tr>
+        </table>
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar-right">
+      <div class="card donate-card">
+        <a href="/donate.html" class="donate-btn">👍 DONATE</a>
+        <div class="follow-row">
+          <a href="https://facebook.com/YOUR_PAGE" title="Facebook">📘</a>
+          <a href="https://tiktok.com/@YOUR_HANDLE" title="TikTok">🎵</a>
+          <a href="https://t.me/YOUR_GROUP" title="Telegram">✈️</a>
+          <a href="https://youtube.com/YOUR_CHANNEL" title="YouTube">▶️</a>
+        </div>
+      </div>
+
+      <div style="height:14px;"></div>
+
+      <div class="ad-slot ad-slot-tall">ADVERTISING SPACE<br>300×1000<br><span style="font-size:10px;opacity:.7;">ใส่รูปโปรโมทของพี่ TEN ตรงนี้</span></div>
+    </aside>
+  </div>
 
 <script>
-  // ── THEME TOGGLE ──
+  // ── THEME TOGGLE (ของเดิม ไม่แก้) ──
   const html = document.documentElement
   const btn = document.getElementById('theme-btn')
 
@@ -410,11 +570,10 @@
     setTheme(current === 'dark' ? 'light' : 'dark')
   }
 
-  // โหลด theme ที่บันทึกไว้
   const saved = localStorage.getItem('dt-theme') || 'dark'
   setTheme(saved)
 
-  // ── TAB REGISTER จาก URL ──
+  // ── TAB REGISTER จาก URL (ของเดิม ไม่แก้) ──
   const params = new URLSearchParams(window.location.search)
   if (params.get('tab') === 'register') {
     window.location.href = '/auth.html'
