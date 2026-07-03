@@ -98,7 +98,7 @@
       .col-main { order: 1; }
     }
     @media (min-width: 1101px) {
-      .col-left, .col-right { position: sticky; top: 76px; max-height: calc(100vh - 90px); overflow-y: auto; }
+      .col-left, .col-right { position: sticky; top: 76px; align-self: start; }
     }
     .col-left, .col-main, .col-right { display: flex; flex-direction: column; gap: 10px; }
 
@@ -140,7 +140,7 @@
     .side-nav { display: flex; flex-direction: column; gap: 6px; }
     .side-nav a { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--bg-card); border: 1px solid var(--bg-line); border-radius: 10px; font-size: 13px; font-weight: 500; color: var(--sub); }
     .side-nav a:hover { border-color: var(--muted); color: var(--text); }
-    .side-nav a .ic { width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card-2); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+    .side-nav a .ic { width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card-2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
     .side-nav a.danger { background: linear-gradient(120deg, var(--red), var(--red-dark)); color: #fff; border-color: transparent; }
     .side-nav a.danger .ic { background: rgba(255,255,255,0.15); }
 
@@ -170,7 +170,8 @@
     .wc-strip { display: grid; grid-template-columns: repeat(3,1fr) 0.9fr; gap: 8px; }
     .wc-card { background: var(--bg-card); border: 1px solid var(--bg-line); border-radius: 10px; padding: 10px; text-align: center; }
     .wc-label { font-size: 10px; color: var(--gold); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 6px; }
-    .wc-teams { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 20px; }
+    .wc-teams { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .flag-chip { width: 26px; height: 20px; border-radius: 4px; background: linear-gradient(160deg,#444,#222); border: 1px solid var(--bg-line); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--sub); flex-shrink: 0; }
     .wc-score { font-family: 'DM Sans', sans-serif; font-weight: 900; font-size: 16px; background: #111; border: 1px solid var(--bg-line); border-radius: 6px; padding: 3px 8px; }
     .wc-status { font-size: 10px; color: var(--red-bright); margin-top: 6px; font-weight: 700; }
     .wc-status.ft { color: var(--muted); }
@@ -282,8 +283,8 @@
         <a href="/news.html"><span class="ic">📰</span> อัพเดทข่าว</a>
         <a href="/articles.html"><span class="ic">📝</span> บทความ</a>
         <a href="/board.html?c=society"><span class="ic">💬</span> บอร์ดโซไซตี้</a>
-        <a href="/board.html?c=foreign"><span class="ic">⚽</span> บอร์ดบอลนอก</a>
-        <a href="/board.html?c=thai"><span class="ic">🇹🇭</span> บอร์ดบอลไทย</a>
+        <a href="/board.html?c=foreign"><span class="ic">OUT</span> บอร์ดบอลนอก</a>
+        <a href="/board.html?c=thai"><span class="ic">TH</span> บอร์ดบอลไทย</a>
         <a href="/board.html?c=sports"><span class="ic">🏆</span> ออลสปอร์ต</a>
         <a href="/board.html?c=games"><span class="ic">🎮</span> บอร์ดเกมส์</a>
         <a href="/board.html?c=deal"><span class="ic">🛒</span> เดลล่างมอ</a>
@@ -331,19 +332,19 @@
       <div class="wc-strip">
         <div class="wc-card">
           <div class="wc-label">🏆 WORLD CUP</div>
-          <div class="wc-teams">🇧🇪 <span class="wc-score">03:00</span> 🇸🇳</div>
+          <div class="wc-teams"><span class="flag-chip">BEL</span> <span class="wc-score">03:00</span> <span class="flag-chip">SEN</span></div>
           <div class="wc-status">● LIVE</div>
           <div class="wc-names"><span>เบลเยียม</span><span>เซเนกัล</span></div>
         </div>
         <div class="wc-card">
           <div class="wc-label">🏆 WORLD CUP</div>
-          <div class="wc-teams">🏴 <span class="wc-score">2 - 1</span> 🇨🇩</div>
+          <div class="wc-teams"><span class="flag-chip">ENG</span> <span class="wc-score">2 - 1</span> <span class="flag-chip">COD</span></div>
           <div class="wc-status ft">FT</div>
           <div class="wc-names"><span>อังกฤษ</span><span>คองโก DR</span></div>
         </div>
         <div class="wc-card">
           <div class="wc-label">🏆 WORLD CUP</div>
-          <div class="wc-teams">🇲🇽 <span class="wc-score">2 - 0</span> 🇪🇨</div>
+          <div class="wc-teams"><span class="flag-chip">MEX</span> <span class="wc-score">2 - 0</span> <span class="flag-chip">ECU</span></div>
           <div class="wc-status ft">FT</div>
           <div class="wc-names"><span>เม็กซิโก</span><span>เอกวาดอร์</span></div>
         </div>
