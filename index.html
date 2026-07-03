@@ -7,521 +7,452 @@
   <meta name="description" content="DoubleTen คอมมูนิตี้ฟุตบอลสัญชาติไทย คุยบอล ดูสกอร์ แบบจริงจัง" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Sans+Thai:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=IBM+Plex+Sans+Thai:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── DARK MODE (default) ── */
-    :root, [data-theme="dark"] {
-      --red:       #c0392b;
-      --red-dark:  #922b21;
-      --red-glow:  rgba(192,57,43,0.15);
-      --gold:      #e8b23a;
-      --bg:        #1e1e1e;
-      --bg-card:   #252525;
-      --bg-line:   #2e2e2e;
-      --nav-bg:    rgba(30,30,30,0.92);
-      --text:      #e8e8e8;
-      --muted:     #666;
-      --sub:       #aaa;
-      --logo-block2: #2a2a2a;
-      --score-bg:  #1a1a1a;
-      --score-border: #333;
-      --thumb-bg:  #333;
-    }
-
-    /* ── LIGHT MODE ── */
-    [data-theme="light"] {
-      --red:       #c0392b;
-      --red-dark:  #922b21;
-      --red-glow:  rgba(192,57,43,0.08);
-      --gold:      #b8860b;
-      --bg:        #f5f5f5;
-      --bg-card:   #ffffff;
-      --bg-line:   #e0e0e0;
-      --nav-bg:    rgba(255,255,255,0.95);
-      --text:      #1a1a1a;
-      --muted:     #888;
-      --sub:       #555;
-      --logo-block2: #f0f0f0;
-      --score-bg:  #f8f8f8;
-      --score-border: #ddd;
-      --thumb-bg:  #e5e5e5;
+    :root {
+      --red:        #c0392b;
+      --red-dark:   #922b21;
+      --red-bright: #e74c3c;
+      --red-glow:   rgba(192,57,43,0.18);
+      --gold:       #e8b23a;
+      --bg:         #141414;
+      --bg-card:    #232323;
+      --bg-card-2:  #2a2a2a;
+      --bg-line:    #333;
+      --nav-bg:     rgba(20,20,20,0.95);
+      --text:       #f0f0f0;
+      --muted:      #7a7a7a;
+      --sub:        #b0b0b0;
+      --thumb-bg:   #3a3a3a;
+      --purple-1:   #4a1a6c;
+      --purple-2:   #8e2de2;
+      --purple-3:   #c2185b;
     }
 
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'IBM Plex Sans Thai', sans-serif;
-      font-size: 16px;
-      line-height: 1.7;
+      font-size: 15px;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
-      transition: background 0.3s, color 0.3s;
     }
-
     a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
+    button { font-family: inherit; }
 
-    /* ── NAV (ของเดิม ไม่แตะ) ── */
-    nav {
+    header.topbar {
       position: sticky; top: 0; z-index: 100;
-      background: var(--nav-bg);
-      backdrop-filter: blur(12px);
+      background: var(--nav-bg); backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--bg-line);
-      padding: 0 1rem;
-      display: flex; align-items: center;
-      justify-content: space-between; height: 56px;
-      gap: 8px;
+      padding: 0 20px; height: 66px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
     }
-
-    .nav-logo { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-    .nav-wordmark { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
-    .nav-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
-
-    .nav-links { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-
-    .btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 7px 12px; border-radius: 7px; font-size: 13px; font-weight: 500;
-      cursor: pointer; border: none;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-      font-family: inherit; white-space: nowrap;
-    }
-
-    .btn-red { background: var(--red); color: #fff; }
-    .btn-red:hover { background: var(--red-dark); }
-    .btn-outline {
-      background: transparent; color: var(--sub);
-      border: 1px solid var(--bg-line);
-    }
-    .btn-outline:hover { border-color: var(--muted); color: var(--text); }
-    .btn-icon {
-      background: transparent; color: var(--sub);
-      border: 1px solid var(--bg-line);
-      padding: 7px 10px; font-size: 16px;
-    }
-    .btn-icon:hover { color: var(--text); border-color: var(--muted); }
-
-    .theme-toggle {
-      background: transparent; border: 1px solid var(--bg-line);
-      border-radius: 7px; padding: 6px 10px; cursor: pointer;
-      font-size: 16px; color: var(--sub);
-      transition: all 0.15s;
-    }
-    .theme-toggle:hover { border-color: var(--muted); color: var(--text); }
-
-    /* ── AD STRIP ── */
-    .ad-strip {
-      background: linear-gradient(135deg, #2e6b3e, #1e4a2b);
-      color: #d9f2df; text-align: center; font-size: 12px;
-      letter-spacing: 2px; padding: 10px; font-family: 'IBM Plex Mono', monospace;
-      border-bottom: 1px solid var(--bg-line);
-    }
-
-    /* ── DASHBOARD LAYOUT ── */
-    .dashboard {
-      max-width: 1360px; margin: 0 auto; padding: 16px;
-      display: grid; grid-template-columns: 280px 1fr 280px; gap: 16px;
-      align-items: start;
-    }
-    @media (max-width: 1080px) {
-      .dashboard { grid-template-columns: 1fr; }
-      .sidebar-left, .sidebar-right { order: 2; }
-      .main-col { order: 1; }
-    }
-
-    .card {
-      background: var(--bg-card); border: 1px solid var(--bg-line);
-      border-radius: 12px; overflow: hidden;
-    }
-    .card-pad { padding: 16px; }
-    .card-title {
-      font-size: 15px; font-weight: 700; padding: 14px 16px;
-      border-bottom: 1px solid var(--bg-line); display: flex;
-      align-items: center; justify-content: space-between;
-    }
-    .card-title .more { font-size: 12px; color: var(--muted); font-weight: 400; }
-
-    /* ── PROFILE CARD ── */
-    .profile-card { text-align: center; padding: 20px 16px; }
-    .profile-avatar {
-      width: 84px; height: 84px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--red), var(--red-dark));
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark { display: grid; grid-template-rows: 1fr 1fr; gap: 2px; width: 38px; height: 38px; }
+    .brand-mark span {
+      background: var(--red); border-radius: 4px; color: #fff;
+      font-family: 'DM Sans', sans-serif; font-weight: 900; font-size: 13px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 34px; margin: 0 auto 10px; position: relative;
-      border: 3px solid var(--gold);
     }
-    .profile-avatar::after {
-      content: ''; position: absolute; bottom: 2px; right: 2px;
-      width: 12px; height: 12px; background: #2ecc71; border-radius: 50%;
-      border: 2px solid var(--bg-card);
+    .brand-word { font-family: 'DM Sans', sans-serif; font-weight: 900; font-size: 22px; letter-spacing: -0.5px; }
+    .brand-word b { color: var(--red-bright); }
+    .brand-tag { font-size: 10px; color: var(--red-bright); font-weight: 500; margin-top: 1px; }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .icon-btn {
+      position: relative; width: 34px; height: 34px; border-radius: 50%;
+      background: transparent; border: none; color: var(--sub); font-size: 17px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .profile-no { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
-    .profile-name { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700; margin: 4px 0 2px; }
-    .profile-role { font-size: 12px; color: var(--gold); margin-bottom: 4px; }
-    .profile-join { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
-    .profile-stats {
-      display: flex; justify-content: center; gap: 14px;
-      font-size: 12px; color: var(--sub); margin-bottom: 12px;
+    .icon-btn:hover { color: var(--text); }
+    .icon-btn .dot { position: absolute; top: 3px; right: 3px; width: 8px; height: 8px; background: var(--red-bright); border-radius: 50%; border: 2px solid var(--bg); }
+    .theme-toggle {
+      background: transparent; border: 1px solid var(--bg-line); border-radius: 50%;
+      width: 34px; height: 34px; cursor: pointer; font-size: 15px; color: var(--sub);
     }
-    .profile-stats b { display: block; color: var(--text); font-size: 14px; }
-    .profile-badge {
-      display: inline-block; background: var(--red-glow); color: var(--red);
-      border: 1px solid rgba(192,57,43,0.3); font-size: 11px; font-weight: 700;
-      letter-spacing: 1px; padding: 4px 12px; border-radius: 999px;
+    .pill-btn { padding: 9px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: var(--red); color: #fff; }
+    .pill-btn.ghost { background: var(--red-dark); }
+    .pill-btn:hover { filter: brightness(1.1); }
+
+    .ad-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; max-width: 1360px; margin: 0 auto; }
+    .ad-banner {
+      border-radius: 8px; min-height: 90px;
+      background: repeating-linear-gradient(120deg, #1e5128, #2e6b3e 12px, #1e5128 24px);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.55); font-family: 'DM Sans', sans-serif; font-weight: 900;
+      font-size: 13px; letter-spacing: 3px; text-transform: uppercase; text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    /* ── SIDE NAV ── */
-    .side-nav a {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 16px; font-size: 14px; color: var(--sub);
-      border-bottom: 1px solid var(--bg-line); transition: background 0.15s, color 0.15s;
+    .dashboard {
+      max-width: 1360px; margin: 0 auto; padding: 0 10px 40px;
+      display: grid; grid-template-columns: 300px 1fr 220px; gap: 10px; align-items: start;
     }
-    .side-nav a:last-child { border-bottom: none; }
-    .side-nav a:hover { background: var(--red-glow); color: var(--text); }
-    .side-nav a.active { background: var(--red); color: #fff; }
-    .side-nav .ic { width: 18px; text-align: center; }
-
-    /* ── FEATURED NEWS ── */
-    .featured-news { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; padding: 14px; }
-    .featured-main { position: relative; border-radius: 10px; overflow: hidden; background: var(--thumb-bg); min-height: 220px;
-      display:flex; align-items:flex-end; }
-    .featured-main .glow { position:absolute; inset:0; background: radial-gradient(circle at 30% 20%, rgba(192,57,43,.35), transparent 60%); }
-    .featured-main .txt { position: relative; padding: 14px; color: #fff; background: linear-gradient(to top, rgba(0,0,0,.75), transparent); width: 100%; }
-    .featured-main .txt .tag { font-size: 10px; background: var(--red); padding: 2px 8px; border-radius: 4px; display:inline-block; margin-bottom:6px; }
-    .featured-main .txt h3 { font-size: 15px; line-height: 1.4; }
-    .featured-side { display: flex; flex-direction: column; gap: 10px; }
-    .mini-news { display: flex; gap: 8px; align-items: center; }
-    .mini-thumb { width: 46px; height: 46px; border-radius: 6px; background: var(--thumb-bg); flex-shrink: 0; }
-    .mini-news p { font-size: 12px; line-height: 1.4; }
-
-    /* ── LIST ITEMS (topics/articles) ── */
-    .topic-list { padding: 4px 0; }
-    .topic-item {
-      display: flex; align-items: center; gap: 12px; padding: 10px 16px;
-      border-bottom: 1px solid var(--bg-line);
+    @media (max-width: 1100px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .col-left, .col-right { order: 2; }
+      .col-main { order: 1; }
     }
+    @media (min-width: 1101px) {
+      .col-left, .col-right { position: sticky; top: 76px; max-height: calc(100vh - 90px); overflow-y: auto; }
+    }
+    .col-left, .col-main, .col-right { display: flex; flex-direction: column; gap: 10px; }
+
+    .card { background: var(--bg-card); border: 1px solid var(--bg-line); border-radius: 12px; overflow: hidden; }
+    .card-title { font-size: 14px; font-weight: 700; padding: 12px 14px; border-bottom: 1px solid var(--bg-line); display: flex; align-items: center; justify-content: space-between; }
+    .card-title .side-label { font-size: 11px; color: var(--muted); font-weight: 400; }
+
+    .profile-card {
+      background: linear-gradient(150deg, var(--purple-1), var(--purple-2) 55%, var(--purple-3));
+      border-radius: 12px; padding: 16px; text-align: center; position: relative;
+    }
+    .profile-no { position: absolute; top: 10px; left: 12px; font-size: 10px; color: rgba(255,255,255,0.6); font-family: 'IBM Plex Mono', monospace; }
+    .profile-avatar-wrap { width: 84px; height: 84px; margin: 6px auto 10px; position: relative; }
+    .profile-avatar {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #555, #1a1a1a);
+      border: 3px solid rgba(255,255,255,0.85);
+      display: flex; align-items: center; justify-content: center; font-size: 34px;
+    }
+    .profile-avatar-wrap .dot { position: absolute; bottom: 3px; right: 3px; width: 14px; height: 14px; background: #2ecc71; border-radius: 50%; border: 2px solid #fff; }
+    .profile-name { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 17px; color: #fff; }
+    .profile-role { font-size: 11px; color: rgba(255,255,255,0.75); margin-bottom: 8px; }
+    .profile-line { font-size: 12px; color: rgba(255,255,255,0.85); }
+    .profile-badges { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+    .medal { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(160deg, #d98d4e, #a05a25); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+    .worldclass-badge { height: 30px; padding: 0 10px; border-radius: 15px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--gold); border: 1px solid var(--gold); text-align: center; line-height: 1.1; }
+
+    .legend-card { background: #2a1a1a; padding: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .legend-sprite { width: 56px; height: 56px; border-radius: 8px; flex-shrink: 0; background: linear-gradient(160deg, #2e8b3e, #1c5c28); display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .legend-info { flex: 1; min-width: 0; }
+    .legend-tag { font-family: 'DM Sans', sans-serif; font-weight: 900; font-size: 15px; background: linear-gradient(90deg, #ff5fa2, #ff9ecb); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 1px; }
+    .legend-name { font-size: 12px; font-weight: 700; color: #fff; }
+    .legend-lvl { font-size: 11px; color: var(--muted); }
+    .legend-plus { display: flex; gap: 5px; margin-top: 4px; }
+    .legend-plus span { width: 18px; height: 18px; border-radius: 50%; background: #2ecc71; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .legend-coins { display: flex; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 10px; padding-top: 8px; gap: 14px; flex-basis: 100%; }
+    .legend-coins span { font-size: 12px; font-weight: 700; color: var(--sub); }
+
+    .side-nav { display: flex; flex-direction: column; gap: 6px; }
+    .side-nav a { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--bg-card); border: 1px solid var(--bg-line); border-radius: 10px; font-size: 13px; font-weight: 500; color: var(--sub); }
+    .side-nav a:hover { border-color: var(--muted); color: var(--text); }
+    .side-nav a .ic { width: 26px; height: 26px; border-radius: 7px; background: var(--bg-card-2); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+    .side-nav a.danger { background: linear-gradient(120deg, var(--red), var(--red-dark)); color: #fff; border-color: transparent; }
+    .side-nav a.danger .ic { background: rgba(255,255,255,0.15); }
+
+    .minigame-card { padding: 18px 14px; text-align: center; background: radial-gradient(circle at 30% 20%, rgba(142,45,226,0.25), transparent 60%), var(--bg-card); }
+    .minigame-title { font-family: 'DM Sans', sans-serif; font-weight: 900; font-size: 22px; letter-spacing: 1px; background: linear-gradient(90deg,#00eaff,#ff00d4 50%,#fff200); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .minigame-sub { font-family: 'DM Sans', sans-serif; font-weight: 900; font-size: 13px; color: var(--sub); letter-spacing: 2px; margin: 2px 0 10px; }
+    .minigame-cursor { font-size: 26px; }
+
+    .stat-rows { padding: 4px 0; }
+    .stat-rows .row { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; font-size: 13px; color: var(--sub); border-bottom: 1px solid var(--bg-line); }
+    .stat-rows .row:last-child { border-bottom: none; }
+    .stat-rows .row b { color: var(--text); font-family: 'DM Sans', sans-serif; }
+
+    .contact-plain { padding: 16px 6px 4px; font-size: 13px; color: var(--sub); }
+    .contact-plain b { display: block; color: #fff; font-size: 14px; margin-bottom: 4px; }
+    .contact-plain a { color: var(--red-bright); }
+
+    .news-hero { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; padding: 14px; }
+    .news-main-img { position: relative; border-radius: 10px; overflow: hidden; min-height: 260px; background: linear-gradient(160deg, #333, #111); display: flex; align-items: flex-end; }
+    .news-main-img .tag { position: absolute; top: 10px; left: 10px; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 4px; letter-spacing: 1px; }
+    .news-side { display: flex; flex-direction: column; gap: 8px; }
+    .news-side-thumb { border-radius: 8px; min-height: 82px; background: var(--thumb-bg); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 11px; text-align:center; padding:6px; }
+    .news-body { padding: 0 14px 16px; }
+    .news-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; line-height: 1.5; }
+    .news-body p { font-size: 13px; color: var(--muted); line-height: 1.8; }
+
+    .wc-strip { display: grid; grid-template-columns: repeat(3,1fr) 0.9fr; gap: 8px; }
+    .wc-card { background: var(--bg-card); border: 1px solid var(--bg-line); border-radius: 10px; padding: 10px; text-align: center; }
+    .wc-label { font-size: 10px; color: var(--gold); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 6px; }
+    .wc-teams { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 20px; }
+    .wc-score { font-family: 'DM Sans', sans-serif; font-weight: 900; font-size: 16px; background: #111; border: 1px solid var(--bg-line); border-radius: 6px; padding: 3px 8px; }
+    .wc-status { font-size: 10px; color: var(--red-bright); margin-top: 6px; font-weight: 700; }
+    .wc-status.ft { color: var(--muted); }
+    .wc-names { font-size: 10px; color: var(--muted); display: flex; justify-content: space-between; margin-top: 4px; }
+    .wc-nav { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--bg-line); border-radius: 10px; padding: 10px; font-size: 11px; color: var(--sub); }
+    .wc-nav .circ { width: 34px; height: 34px; border-radius: 50%; background: rgba(46,204,113,0.15); color: #2ecc71; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+
+    .topic-list { padding: 2px 0; }
+    .topic-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--bg-line); }
     .topic-item:last-child { border-bottom: none; }
-    .topic-rank {
-      width: 22px; height: 22px; border-radius: 6px; background: var(--red-glow);
-      color: var(--red); font-size: 11px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .topic-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--thumb-bg); flex-shrink: 0; }
+    .topic-rank { width: 34px; height: 34px; border-radius: 50%; background: var(--thumb-bg); flex-shrink: 0; }
     .topic-body { flex: 1; min-width: 0; }
-    .topic-body h4 { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .topic-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .topic-count { font-size: 11px; color: var(--muted); text-align: right; flex-shrink: 0; }
-    .topic-count b { color: var(--sub); display:block; font-size: 12px; }
+    .topic-body h4 { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .topic-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .topic-cat { width: 34px; height: 34px; border-radius: 8px; background: var(--red); color: #fff; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 13px; }
+    .topic-cat span { font-size: 7px; margin-top: 1px; }
+    .topic-count { font-size: 11px; color: var(--muted); text-align: right; flex-shrink: 0; line-height: 1.6; }
+    .topic-count b { color: var(--sub); }
+    .list-more { text-align: center; padding: 10px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--bg-line); }
 
-    /* ── STANDINGS ── */
-    .standings-select {
-      margin: 12px 16px 4px; background: var(--score-bg); border: 1px solid var(--score-border);
-      color: var(--text); font-size: 12px; padding: 6px 10px; border-radius: 6px;
-    }
+    .standings-select { margin: 12px 14px 6px; background: #111; border: 1px solid var(--bg-line); color: var(--text); font-size: 12px; padding: 6px 10px; border-radius: 6px; }
     table.standings { width: 100%; border-collapse: collapse; font-size: 12px; }
-    table.standings th { text-align: left; color: var(--muted); font-weight: 500; padding: 8px 12px; border-bottom: 1px solid var(--bg-line); }
-    table.standings td { padding: 8px 12px; border-bottom: 1px solid var(--bg-line); }
+    table.standings th { text-align: left; color: var(--muted); font-weight: 500; padding: 8px 14px; border-bottom: 1px solid var(--bg-line); }
+    table.standings td { padding: 8px 14px; border-bottom: 1px solid var(--bg-line); }
     table.standings tr:last-child td { border-bottom: none; }
 
-    /* ── RIGHT SIDEBAR ── */
-    .donate-card { padding: 16px; text-align: center; }
-    .donate-btn {
-      display: block; width: 100%; background: var(--red); color: #fff;
-      padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-bottom: 12px;
-    }
+    .donate-btn { display: block; text-align: center; background: var(--red); color: #fff; font-weight: 700; padding: 14px; border-radius: 10px; font-size: 15px; letter-spacing: 1px; }
+    .follow-card { padding: 14px; text-align: center; }
+    .follow-thumb { width: 40px; height: 40px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 18px; margin: 0 auto 6px; color: #fff; }
+    .follow-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
     .follow-row { display: flex; justify-content: center; gap: 8px; }
-    .follow-row a {
-      width: 34px; height: 34px; border-radius: 50%; background: var(--bg-line);
-      display: flex; align-items: center; justify-content: center; font-size: 15px; color: var(--sub);
-    }
-    .follow-row a:hover { background: var(--red); color: #fff; }
+    .follow-row a { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; }
+    .follow-row a.fb { background: #1877f2; }
+    .follow-row a.tt { background: #000; }
+    .follow-row a.tg { background: #29a9eb; }
+    .follow-row a.yt { background: #ff0000; }
 
-    .ad-slot {
-      background: var(--thumb-bg); border: 1px dashed var(--bg-line); border-radius: 10px;
-      min-height: 200px; display: flex; align-items: center; justify-content: center;
-      text-align: center; line-height: 1.6;
-      font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace;
-    }
-    .ad-slot-tall { min-height: 640px; }
-
-    @media (min-width: 1081px) {
-      .sidebar-left, .sidebar-right { position: sticky; top: 72px; max-height: calc(100vh - 88px); overflow-y: auto; }
-    }
-
-    .legend-card { padding: 18px; text-align: center; }
-    .legend-avatar {
-      width: 72px; height: 72px; border-radius: 12px; margin: 0 auto 8px;
-      background: linear-gradient(160deg, var(--gold), #a97b12);
-      display: flex; align-items: center; justify-content: center; font-size: 30px;
-    }
-    .legend-tag { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--gold); margin-bottom: 2px; }
-    .legend-name { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-    .legend-stats { display: flex; justify-content: center; gap: 16px; font-size: 11px; color: var(--sub); margin-bottom: 10px; }
-    .legend-stats b { color: var(--text); display: block; font-size: 13px; }
-    .legend-coins { display: flex; justify-content: center; gap: 10px; font-size: 12px; font-weight: 700; color: var(--sub); }
-
-    .minigame-card {
-      padding: 20px 16px; text-align: center; background: linear-gradient(160deg, var(--red-glow), transparent);
-    }
-    .minigame-card .tag { font-size: 11px; letter-spacing: 2px; color: var(--red); font-weight: 700; }
-    .minigame-card h3 { font-size: 18px; margin: 4px 0 10px; }
-
-    .user-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--bg-line); }
-    .user-stats div { background: var(--bg-card); padding: 12px; text-align: center; }
-    .user-stats b { display: block; font-size: 16px; font-family: 'DM Sans', sans-serif; }
-    .user-stats span { font-size: 11px; color: var(--muted); }
-
-    .contact-card { padding: 16px; font-size: 12px; color: var(--muted); text-align: center; }
-    .contact-card a { color: var(--red); }
+    .ad-tall { flex: 1; min-height: 500px; border-radius: 10px; background: linear-gradient(180deg, #222, #0c0c0c); border: 1px dashed var(--bg-line); display: flex; align-items: center; justify-content: center; text-align: center; color: var(--muted); font-size: 12px; font-family: 'IBM Plex Mono', monospace; padding: 20px; line-height: 1.7; }
 
     @media (max-width: 480px) {
-      .featured-news { grid-template-columns: 1fr; }
-      .nav-links .btn-outline { display: none; }
+      .news-hero { grid-template-columns: 1fr; }
+      .wc-strip { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV (ของเดิม ทำงานอยู่แล้ว ไม่แก้) -->
-  <nav>
-    <a href="/" class="nav-logo">
-      <svg width="36" height="26" viewBox="0 0 140 100">
-        <rect x="2" y="10" width="58" height="80" rx="10" fill="#c0392b"/>
-        <text x="31" y="63" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="'DM Sans',sans-serif" font-size="36" font-weight="700" letter-spacing="-1">10</text>
-        <rect x="80" y="10" width="58" height="80" rx="10" fill="var(--logo-block2)" stroke="#c0392b" stroke-width="2"/>
-        <text x="109" y="63" text-anchor="middle" dominant-baseline="middle" fill="#c0392b" font-family="'DM Sans',sans-serif" font-size="36" font-weight="700" letter-spacing="-1">10</text>
-      </svg>
+  <header class="topbar">
+    <a href="/" class="brand">
+      <div class="brand-mark"><span>10</span><span>10</span></div>
       <div>
-        <div class="nav-wordmark">DoubleTen</div>
-        <div class="nav-sub">By น้อนแดง</div>
+        <div class="brand-word">DOUBLE<b>TEN</b></div>
+        <div class="brand-tag">ทุกแมตช์ ทุกความมันส์ ของคนรักฟุตบอล</div>
       </div>
     </a>
-
-    <div class="nav-links">
-      <a href="/" class="btn btn-icon" title="หน้าหลัก">🏠</a>
-      <a href="/board.html" class="btn btn-outline">กระทู้</a>
-      <a href="/news.html" class="btn btn-outline">ข่าว</a>
-      <a href="https://doubleten48.github.io/worldcup2026" class="btn btn-outline">⚽ Live</a>
-      <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="เปลี่ยนธีม">🌙</button>
-      <a href="/auth.html" class="btn btn-outline">เข้าสู่ระบบ</a>
-      <a href="/auth.html?tab=register" class="btn btn-red">สมัครสมาชิก</a>
+    <div class="topbar-right">
+      <button class="icon-btn" title="แจ้งเตือน">🔔<span class="dot"></span></button>
+      <button class="icon-btn" title="ข้อความ">✉️</button>
+      <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="เปลี่ยนธีม">☀️</button>
+      <a href="/auth.html" class="pill-btn ghost">เข้าสู่ระบบ</a>
+      <a href="/auth.html?tab=register" class="pill-btn">สมัครสมาชิก</a>
     </div>
-  </nav>
+  </header>
 
-  <div class="ad-strip">ADVERTISING SPACE · 728×90</div>
+  <div class="ad-row">
+    <div class="ad-banner">ADVERTISING</div>
+    <div class="ad-banner">ADVERTISING</div>
+  </div>
 
-  <!-- DASHBOARD -->
   <div class="dashboard">
 
-    <!-- LEFT SIDEBAR -->
-    <aside class="sidebar-left">
-      <div class="card profile-card">
-        <div class="profile-no">No.001</div>
-        <div class="profile-avatar">🔴</div>
+    <aside class="col-left">
+      <div class="profile-card">
+        <div class="profile-no">NO.001</div>
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar">⚔️</div>
+          <div class="dot"></div>
+        </div>
         <div class="profile-name">แอดน้อนแดง</div>
         <div class="profile-role">webmaster</div>
-        <div class="profile-join">เข้าร่วม : 28.06.2026 · 1 day</div>
-        <div class="profile-stats">
-          <div><b>999</b>หล่อสะสม</div>
-          <div><b>111</b>ถุยสะสม</div>
-          <div><b>12,345</b>ตอบ</div>
+        <div class="profile-line">เข้าร่วม : 28.06.2026 | 1 DAY</div>
+        <div class="profile-line">หล่อสะสม : 999</div>
+        <div class="profile-line">ถุยสะสม : 111</div>
+        <div class="profile-line">ตอบ : 12345</div>
+        <div class="profile-badges">
+          <div class="medal">2</div>
+          <div class="medal">2</div>
+          <div class="medal">1</div>
+          <div class="worldclass-badge">WORLD<br>CLASS</div>
         </div>
-        <span class="profile-badge">WORLD CLASS</span>
       </div>
-
-      <div style="height:10px;"></div>
 
       <div class="card legend-card">
-        <div class="legend-avatar">⚽</div>
-        <div class="legend-tag">LEGEND</div>
-        <div class="legend-name">Ronaldo r9</div>
-        <div class="legend-stats">
-          <div><b>Lv.1</b>Level</div>
-          <div><b>198</b>Exp</div>
+        <div class="legend-sprite">⚽</div>
+        <div class="legend-info">
+          <div class="legend-tag">LEGEND</div>
+          <div class="legend-name">RONALDO R9</div>
+          <div class="legend-lvl">Lv.1&nbsp;&nbsp;Exp: 198</div>
+          <div class="legend-plus"><span>+</span><span>+</span><span>+</span></div>
         </div>
         <div class="legend-coins">
-          <span>🟡 100</span>
-          <span>🔵 2200</span>
+          <span>🟡 G&nbsp; 100</span>
+          <span>⚪ S&nbsp; 2200</span>
         </div>
       </div>
 
-      <div style="height:14px;"></div>
-
-      <nav class="card side-nav">
-        <a href="/" class="active"><span class="ic">🏠</span> หน้าแรก</a>
+      <nav class="side-nav">
+        <a href="/"><span class="ic">🏠</span> หน้าแรก</a>
         <a href="/news.html"><span class="ic">📰</span> อัพเดทข่าว</a>
         <a href="/articles.html"><span class="ic">📝</span> บทความ</a>
         <a href="/board.html?c=society"><span class="ic">💬</span> บอร์ดโซไซตี้</a>
-        <a href="/board.html?c=foreign"><span class="ic">🌍</span> บอร์ดบอลนอก</a>
+        <a href="/board.html?c=foreign"><span class="ic">⚽</span> บอร์ดบอลนอก</a>
         <a href="/board.html?c=thai"><span class="ic">🇹🇭</span> บอร์ดบอลไทย</a>
         <a href="/board.html?c=sports"><span class="ic">🏆</span> ออลสปอร์ต</a>
         <a href="/board.html?c=games"><span class="ic">🎮</span> บอร์ดเกมส์</a>
-        <a href="/board.html?c=18plus"><span class="ic">🔞</span> เดลล่างมอ</a>
-        <a href="/board.html?c=jail"><span class="ic">🔒</span> เรือนจำคนง่าว</a>
+        <a href="/board.html?c=deal"><span class="ic">🛒</span> เดลล่างมอ</a>
+        <a href="/board.html?c=jail" class="danger"><span class="ic">😾</span> เรือนจำคนง่าว</a>
       </nav>
 
-      <div style="height:14px;"></div>
-
       <div class="card minigame-card">
-        <div class="tag">BY 10.10</div>
-        <h3>🎮 Minigame</h3>
-        <a href="/games.html" class="btn btn-red" style="width:100%;justify-content:center;">เล่นเลย</a>
+        <div class="minigame-title">MINIGAME</div>
+        <div class="minigame-sub">BY 10.10</div>
+        <div class="minigame-cursor">🖱️</div>
       </div>
 
-      <div style="height:14px;"></div>
-
-      <div class="card">
-        <div class="card-title" style="border-bottom:none;">สถิติ user</div>
-        <div class="user-stats">
-          <div><b>198</b><span>user</span></div>
-          <div><b>13</b><span>new user</span></div>
-          <div><b>68</b><span>online</span></div>
-          <div><b>20</b><span>new topic</span></div>
-        </div>
+      <div class="card stat-rows">
+        <div class="row"><span>user</span><b>198 👤</b></div>
+        <div class="row"><span>new user</span><b>13 👤</b></div>
+        <div class="row"><span>online</span><b>68 👤</b></div>
+        <div class="row"><span>new topic</span><b>20 📝</b></div>
       </div>
 
-      <div style="height:14px;"></div>
-
-      <div class="card contact-card">
-        contact us<br>
+      <div class="contact-plain">
+        <b>contact us</b>
         <a href="mailto:sale@doubleten.io">sale@doubleten.io</a>
       </div>
     </aside>
 
-    <!-- CENTER COLUMN -->
-    <main class="main-col">
+    <main class="col-main">
       <div class="card">
-        <div class="card-title">Least News <span class="more">ดูทั้งหมด →</span></div>
-        <div class="featured-news">
-          <a href="/news.html" class="featured-main">
-            <div class="glow"></div>
-            <div class="txt">
-              <span class="tag">HOT</span>
-              <h3>เดมบาเย่ จากอดีตเด็กติดเกมสู่บาลงดอร์ 2 ปีซ้อน หลังพาฝรั่งเศสคว้าแชมป์บอลโลก 2026 ได้สำเร็จ</h3>
-            </div>
+        <div class="card-title">Least News</div>
+        <div class="news-hero">
+          <a href="/news.html" class="news-main-img">
+            <span class="tag">SPORT</span>
           </a>
-          <div class="featured-side">
-            <div class="mini-news">
-              <div class="mini-thumb"></div>
-              <p>แฟนบอลสวีเดนบุกจองตั๋วรอบชิงฯ หมดภายใน 3 นาที</p>
-            </div>
-            <div class="mini-news">
-              <div class="mini-thumb"></div>
-              <p>เมสซี่เผยฟอร์มสุดท้ายก่อนแขวนสตั๊ด</p>
-            </div>
-            <div class="mini-news">
-              <div class="mini-thumb"></div>
-              <p>อังกฤษ VS ฝรั่งเศส ศึกดวลใจนัดชิง</p>
-            </div>
+          <div class="news-side">
+            <div class="news-side-thumb">แฟนบอลร้องไห้! สรุปข่าวแมนยูฯ</div>
+            <div class="news-side-thumb">เมสซี่ พบ โวชิญาญ่า</div>
+            <div class="news-side-thumb">อังกฤษ VS ดีอาร์คองโก</div>
           </div>
+        </div>
+        <div class="news-body">
+          <h3>เดมบาเย่ จากอดีตเด็กติดเกมสู่บาลงดอร์ 2 ปีซ้อน หลังพาฝรั่งเศสคว้าแชมป์บอลโลก 2026 ได้สำเร็จ</h3>
+          <p>ย้อนเส้นทางจากเด็กหนุ่มที่ใช้เวลาส่วนใหญ่ไปกับเกมฟุตบอลในจอ สู่การคว้าบาลงดอร์สมัยที่ 2 ติดต่อกัน หลังพาทีมชาติฝรั่งเศสคว้าแชมป์ฟุตบอลโลก 2026 ที่สหรัฐอเมริกา — เรื่องราวความมุ่งมั่นที่พลิกชีวิตเด็กติดเกมให้กลายเป็นตำนานลูกหนัง</p>
         </div>
       </div>
 
-      <div style="height:14px;"></div>
+      <div class="wc-strip">
+        <div class="wc-card">
+          <div class="wc-label">🏆 WORLD CUP</div>
+          <div class="wc-teams">🇧🇪 <span class="wc-score">03:00</span> 🇸🇳</div>
+          <div class="wc-status">● LIVE</div>
+          <div class="wc-names"><span>เบลเยียม</span><span>เซเนกัล</span></div>
+        </div>
+        <div class="wc-card">
+          <div class="wc-label">🏆 WORLD CUP</div>
+          <div class="wc-teams">🏴 <span class="wc-score">2 - 1</span> 🇨🇩</div>
+          <div class="wc-status ft">FT</div>
+          <div class="wc-names"><span>อังกฤษ</span><span>คองโก DR</span></div>
+        </div>
+        <div class="wc-card">
+          <div class="wc-label">🏆 WORLD CUP</div>
+          <div class="wc-teams">🇲🇽 <span class="wc-score">2 - 0</span> 🇪🇨</div>
+          <div class="wc-status ft">FT</div>
+          <div class="wc-names"><span>เม็กซิโก</span><span>เอกวาดอร์</span></div>
+        </div>
+        <a href="/worldcup.html" class="wc-nav">
+          <div class="circ">▦</div>
+          ดูตาราง/<br>ดาวซัลโว
+        </a>
+      </div>
 
       <div class="card">
-        <div class="card-title">5 อันดับกระทู้เดือด 🔥</div>
+        <div class="card-title">5 อันดับกระทู้เดือด 🔥HOT</div>
         <div class="topic-list">
           <div class="topic-item">
-            <div class="topic-rank">1</div>
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>HEAR WE GO! หงส์ปิดดีลปิยะพงษ์ นักเตะไทยคนแรกลุยพรีเมียร์ 🔥🔥🔥</h4>
-              <div class="topic-meta">By: เฮียลาบ · 45 min</div>
+              <h4>HEAR WE GO!! หงส์ปิดดีลปิยะพงษ์ นักเตะไทยคนแรกลุยพรีเมียร์ 🔥🔥</h4>
+              <div class="topic-meta">By: เฮียลาบ · 45 min · 10 PAGE</div>
             </div>
-            <div class="topic-count"><b>12,456</b>อ่าน · 234 ตอบ</div>
+            <div class="topic-cat">⚽<span>INTER</span></div>
+            <div class="topic-count">อ่าน : <b>12,456</b><br>ตอบ : 234</div>
           </div>
           <div class="topic-item">
-            <div class="topic-rank">2</div>
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>ใครเดินเข้ามาปะทะวันนี้ ห้ามพลาด 🔥🔥</h4>
-              <div class="topic-meta">By: น้องบู้ · 5 min</div>
+              <h4>กลิ่นอะไรเหม็นที่สุดในชีวิต 🔥🔥🔥</h4>
+              <div class="topic-meta">By: ลีโนบรา · 5 min</div>
             </div>
-            <div class="topic-count"><b>12,000</b>อ่าน · 124 ตอบ</div>
+            <div class="topic-cat">💬</div>
+            <div class="topic-count">อ่าน : <b>12,000</b><br>ตอบ : 124</div>
           </div>
           <div class="topic-item">
-            <div class="topic-rank">3</div>
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>ระบาย เมียแอบมีชู้กับรุ่นพี่หมู่บ้าน 🔥🔥</h4>
+              <h4>ระบาย...เมียแอบเยดกับลิงหน้าหมู่บ้าน 🔥🔥</h4>
               <div class="topic-meta">By: เหล้ารัสเซีย · 45 min</div>
             </div>
-            <div class="topic-count"><b>10,456</b>อ่าน · 98 ตอบ</div>
+            <div class="topic-cat">💬</div>
+            <div class="topic-count">อ่าน : <b>10,456</b><br>ตอบ : 98</div>
           </div>
           <div class="topic-item">
-            <div class="topic-rank">4</div>
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>สารภาพแล้ว วันนั้นเมาไปปิดดีลผิดคน 🔥</h4>
+              <h4>แม้วสารภาพแล้ว วันนั้นเมา แอบย่องปิดดีลมอลลี่คาโฮสเทล 🔥🔥</h4>
               <div class="topic-meta">By: CNR · 1 hour</div>
             </div>
-            <div class="topic-count"><b>8,078</b>อ่าน · 68 ตอบ</div>
+            <div class="topic-cat">📰</div>
+            <div class="topic-count">อ่าน : <b>8,078</b><br>ตอบ : 68</div>
           </div>
           <div class="topic-item">
-            <div class="topic-rank">5</div>
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>MATCH DAY: อังกฤษ 1-0 ฝรั่งเศส คว้าแชมป์บอลโลก 2026</h4>
-              <div class="topic-meta">By: น้อนบู้ · 45 min</div>
+              <h4>MATCH DAY : อังกฤษ 1-0 ฝรั่งเศส พิคฟอร์ดโหม่งบาป ส่งอังกฤษแชมป์ฟุตบอลโลก 2026</h4>
+              <div class="topic-meta">By: น้อนบู้《ทีมข่าว》· 45 min</div>
             </div>
-            <div class="topic-count"><b>6,598</b>อ่าน · 45 ตอบ</div>
+            <div class="topic-cat">📰</div>
+            <div class="topic-count">อ่าน : <b>6,598</b><br>ตอบ : 45</div>
           </div>
         </div>
       </div>
 
-      <div style="height:14px;"></div>
-
       <div class="card">
-        <div class="card-title">กระทู้ปักหมุดของคุณ <span class="more">98</span></div>
+        <div class="card-title">กระทู้ปักหมุดของคุณ <span class="side-label">กระทู้ใหม่ : 98</span></div>
         <div class="topic-list">
           <div class="topic-item">
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>HEAR WE GO! หงส์ปิดดีลปิยะพงษ์...</h4>
-              <div class="topic-meta">By: เฮียลาบ · 45 min</div>
+              <h4>HEAR WE GO!! หงส์ปิดดีลปิยะพงษ์ นักเตะไทยคนแรกลุยพรีเมียร์ 🔥🔥</h4>
+              <div class="topic-meta">By: เฮียลาบ · 45 min · 10 PAGE</div>
             </div>
-            <div class="topic-count"><b>12,456</b>อ่าน</div>
+            <div class="topic-cat">⚽</div>
+            <div class="topic-count">อ่าน : <b>12,456</b><br>ตอบ : 234</div>
           </div>
           <div class="topic-item">
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>วิเคราะห์แท็คติก Iraola 4-3-3 Pressing แบบดุดันกำลังกลับมา?</h4>
+              <h4>วิเคราะห์แท็คติก Iraola 4-3-3 Pressing แบบดุดันกำลังกลับมา? 🔥</h4>
               <div class="topic-meta">By: ดดด · 45 min</div>
             </div>
-            <div class="topic-count"><b>12,456</b>อ่าน</div>
+            <div class="topic-cat">📝</div>
+            <div class="topic-count">อ่าน : <b>12,456</b><br>ตอบ : 234</div>
           </div>
         </div>
+        <div class="list-more">more ⌄</div>
       </div>
 
-      <div style="height:14px;"></div>
-
       <div class="card">
-        <div class="card-title">บทความ <span class="more">98</span></div>
+        <div class="card-title">บทความ <span class="side-label">กระทู้ใหม่ : 98</span></div>
         <div class="topic-list">
           <div class="topic-item">
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>วิเคราะห์แท็คติก Iraola 4-3-3 Pressing แบบดุดันกำลังกลับมา?</h4>
+              <h4>วิเคราะห์แท็คติก Iraola 4-3-3 Pressing แบบดุดันกำลังกลับมา? 🔥</h4>
               <div class="topic-meta">By: ดดด · 45 min</div>
             </div>
-            <div class="topic-count"><b>12,456</b>อ่าน</div>
+            <div class="topic-cat">📝</div>
+            <div class="topic-count">อ่าน : <b>12,456</b><br>ตอบ : 234</div>
           </div>
           <div class="topic-item">
-            <div class="topic-avatar"></div>
+            <div class="topic-rank"></div>
             <div class="topic-body">
-              <h4>นิยาย: เมื่อผมแอบหลงรักเพื่อนร่วมทีม</h4>
+              <h4>นิยาย : เมื่อผมแอบหลงรักเพื่อนร่วมงาน 🔥</h4>
               <div class="topic-meta">By: แอดมินใจดี · 45 min</div>
             </div>
-            <div class="topic-count"><b>10,876</b>อ่าน</div>
+            <div class="topic-cat">📝</div>
+            <div class="topic-count">อ่าน : <b>10,876</b><br>ตอบ : 89</div>
           </div>
         </div>
+        <div class="list-more">more ⌄</div>
       </div>
-
-      <div style="height:14px;"></div>
 
       <div class="card">
         <div class="card-title">ตารางคะแนน
@@ -536,48 +467,33 @@
       </div>
     </main>
 
-    <!-- RIGHT SIDEBAR -->
-    <aside class="sidebar-right">
-      <div class="card donate-card">
-        <a href="/donate.html" class="donate-btn">👍 DONATE</a>
+    <aside class="col-right">
+      <a href="/donate.html" class="donate-btn">DONATE</a>
+
+      <div class="card follow-card">
+        <div class="follow-thumb">👍</div>
+        <div class="follow-title">FOLLOW US</div>
         <div class="follow-row">
-          <a href="https://facebook.com/YOUR_PAGE" title="Facebook">📘</a>
-          <a href="https://tiktok.com/@YOUR_HANDLE" title="TikTok">🎵</a>
-          <a href="https://t.me/YOUR_GROUP" title="Telegram">✈️</a>
-          <a href="https://youtube.com/YOUR_CHANNEL" title="YouTube">▶️</a>
+          <a class="fb" href="https://facebook.com/YOUR_PAGE" title="Facebook">f</a>
+          <a class="tt" href="https://tiktok.com/@YOUR_HANDLE" title="TikTok">♪</a>
+          <a class="tg" href="https://t.me/YOUR_GROUP" title="Telegram">✈</a>
+          <a class="yt" href="https://youtube.com/YOUR_CHANNEL" title="YouTube">▶</a>
         </div>
       </div>
 
-      <div style="height:14px;"></div>
-
-      <div class="ad-slot ad-slot-tall">ADVERTISING SPACE<br>300×1000<br><span style="font-size:10px;opacity:.7;">ใส่รูปโปรโมทของพี่ TEN ตรงนี้</span></div>
+      <div class="ad-tall">ADVERTISING SPACE<br>ใส่รูปโปรโมทของพี่ TEN ตรงนี้</div>
     </aside>
   </div>
 
 <script>
-  // ── THEME TOGGLE (ของเดิม ไม่แก้) ──
   const html = document.documentElement
   const btn = document.getElementById('theme-btn')
+  function setTheme(theme){ html.setAttribute('data-theme', theme); localStorage.setItem('dt-theme', theme); btn.textContent = theme === 'dark' ? '☀️' : '🌙' }
+  function toggleTheme(){ setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark') }
+  setTheme(localStorage.getItem('dt-theme') || 'dark')
 
-  function setTheme(theme) {
-    html.setAttribute('data-theme', theme)
-    localStorage.setItem('dt-theme', theme)
-    btn.textContent = theme === 'dark' ? '🌙' : '☀️'
-  }
-
-  function toggleTheme() {
-    const current = html.getAttribute('data-theme')
-    setTheme(current === 'dark' ? 'light' : 'dark')
-  }
-
-  const saved = localStorage.getItem('dt-theme') || 'dark'
-  setTheme(saved)
-
-  // ── TAB REGISTER จาก URL (ของเดิม ไม่แก้) ──
   const params = new URLSearchParams(window.location.search)
-  if (params.get('tab') === 'register') {
-    window.location.href = '/auth.html'
-  }
+  if (params.get('tab') === 'register') window.location.href = '/auth.html'
 </script>
 </body>
 </html>
