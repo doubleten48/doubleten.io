@@ -11,8 +11,9 @@
     --font-heading: 'Montserrat', 'Noto Sans Thai', sans-serif; /* fallback for Konkhmer Sleokchher (not on Google Fonts) */
     --font-body: 'Montserrat', 'Noto Sans Thai', sans-serif;
   }
-  *{ box-sizing: border-box; margin:0; padding:0; }
-  body{ background:#0d0d0d; }
+  html{ -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%; }
+  *{ box-sizing: border-box; margin:0; padding:0; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body{ background:#0d0d0d; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   .frame{
     position: relative;
     width: 1440px;
@@ -21,16 +22,18 @@
     overflow: hidden;
     margin: 0 auto;
     font-family: var(--font-body);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   .abs{ position:absolute; }
   img{ display:block; max-width:none; }
 
   /* background layers */
-  .bg-main{ left:-1px; top:0; width:1441px; height:3039px; object-fit:cover; }
-  .bg-sidebar{ left:-1px; top:12px; width:306px; height:2148px; }
-  .bg-footer-fade{ left:-6px; top:2066px; width:1443px; height:940px; opacity:.5; object-fit:cover; }
-  .bg-footer-bar{ left:0; top:3006px; width:1440px; height:66px; }
-  .bg-topbar{ left:316px; top:18px; width:1114px; height:93px; }
+  .bg-main{ left:-1px; top:0; width:1441px; height:3039px; background:#efefef; }
+  .bg-sidebar{ left:-1px; top:12px; width:306px; height:2148px; background:linear-gradient(180deg,#7b0909,#4a0505); }
+  .bg-footer-fade{ left:-6px; top:2066px; width:1443px; height:940px; opacity:.6; object-fit:cover; }
+  .bg-footer-bar{ left:0; top:3006px; width:1440px; height:66px; background:#111; }
+  .bg-topbar{ left:316px; top:18px; width:1114px; height:93px; object-fit:cover; border-radius:6px; }
 
   .tagline{ left:47px; top:152px; width:245px; color:#fff; font-size:16px; }
   .register-btn-bg{ left:1237px; top:58px; width:107px; height:23px; }
@@ -40,8 +43,8 @@
   .divider-line{ left:292px; top:33px; width:1px; height:74px; background:#ccc; }
 
   /* profile card */
-  .profile-card-bg{ left:29px; top:330px; width:256px; height:263.5px; }
-  .profile-avatar{ left:65px; top:207px; width:190px; height:190px; border-radius:50%; }
+  .profile-card-bg{ left:29px; top:330px; width:256px; height:263.5px; background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,.3); }
+  .profile-avatar{ left:65px; top:207px; width:190px; height:190px; border-radius:50%; background:#ccc; border:4px solid #fff; }
   .profile-username{ left:85px; top:410px; font-size:24px; color:#000; }
   .profile-role{ left:118px; top:442px; font-size:14px; color:#ac0b0b; }
   .profile-joined{ left:78px; top:461px; font-size:14px; color:#000; }
@@ -52,26 +55,27 @@
   .stat-loser{ left:123px; top:539px; }
   .stat-yellow{ left:78px; top:488px; }
   .stat-red{ left:193px; top:488px; }
-  .profile-actions-bg{ left:30px; top:596px; width:256px; height:61px; }
-  .rank-badge-bg{ left:38px; top:1436px; width:98px; height:168px; }
-  .rank-img{ left:56px; top:1462px; width:63px; height:108px; }
+  .profile-actions-bg{ left:30px; top:596px; width:256px; height:61px; background:#f5f5f5; border-radius:8px; }
+  .rank-badge-bg{ left:38px; top:1436px; width:98px; height:168px; background:linear-gradient(180deg,#2b2b2b,#000); border-radius:10px; }
+  .rank-img{ left:56px; top:1462px; width:63px; height:108px; border-radius:6px; object-fit:cover; }
   .rank-name{ left:26px; top:1573px; width:123px; font-size:13px; color:#fff; text-align:center; }
   .rank-sub{ left:66px; top:1592px; font-size:6px; color:#d5cab6; }
   .rank-tag{ left:40px; top:1436px; width:47px; font-family:'Press Start 2P',monospace; font-size:13px; color:#feba4b; text-shadow:1px 1px 1px #7b0909; }
-  .rank-stats-bg{ left:140px; top:1499px; width:135px; height:67px; }
+  .rank-stats-bg{ left:140px; top:1499px; width:135px; height:67px; background:rgba(0,0,0,.55); border-radius:8px; }
   .rank-gp{ left:160px; top:1514px; font-size:11px; color:#fff; }
   .rank-level{ left:144px; top:1532px; font-size:11px; color:#fff; }
   .rank-exp{ left:151px; top:1545px; font-size:11px; color:#fff; }
   .rank-rank{ left:149px; top:1501px; font-size:11px; color:#fff; }
   .rank-s{ left:149px; top:1470px; font-family:'Monoton',cursive; font-size:13px; color:#fff; }
   .rank-icons-bg{ left:140px; top:1436px; width:136px; height:56px; }
+  .topic-tag-badge{ position:absolute; left:678px; top:12px; width:39px; height:39px; }
 
   /* logo */
   .logo-block{ left:47px; top:43px; width:222px; height:104px; }
 
   /* sidebar nav */
-  .nav-item{ left:32px; width:256px; height:61px; }
-  .nav-item img.nav-bg{ position:absolute; left:0; top:0; width:100%; height:100%; }
+  .nav-item{ left:32px; width:256px; height:61px; background:rgba(0,0,0,.25); border-radius:8px; transition:background .15s; }
+  .nav-item:hover{ background:rgba(0,0,0,.4); }
   .nav-item span{ position:absolute; left:60px; top:9px; font-size:28px; color:#fff; }
   .nav-home{ top:687px; }
   .nav-news{ top:770px; }
@@ -128,29 +132,28 @@
 <body>
 <div class="frame">
 
-  <img class="abs bg-main" src="https://www.figma.com/api/mcp/asset/e2b66bc4-c872-4099-b611-5c68a5bdf4df" alt="">
-  <img class="abs bg-sidebar" src="https://www.figma.com/api/mcp/asset/fdb5e19a-dc6b-4ec0-9630-39485dfbf418" alt="">
-  <img class="abs bg-footer-fade" src="https://www.figma.com/api/mcp/asset/3f6f221d-7f19-483b-b538-fbede4f03397" alt="">
-  <img class="abs bg-footer-bar" src="https://www.figma.com/api/mcp/asset/17b7d7b1-8105-468f-b0cf-ef18cb43a713" alt="">
-  <img class="abs bg-topbar" src="https://www.figma.com/api/mcp/asset/ab8818ef-4d1f-49d1-93bd-03438201ef4c" alt="">
+  <div class="abs bg-main"></div>
+  <div class="abs bg-sidebar"></div>
+  <img class="abs bg-footer-fade" src="assets/stadium-field-wide.png" alt="">
+  <div class="abs bg-footer-bar"></div>
+  <img class="abs bg-topbar" src="assets/topbar-lights.png" alt="">
 
   <!-- Logo -->
   <div class="abs logo-block">
-    <img src="https://www.figma.com/api/mcp/asset/bb7a03ad-c682-42f5-8d45-c28ab9a7c034" alt="DOUBLE" style="position:absolute; left:2px; top:2px; width:218px;">
-    <img src="https://www.figma.com/api/mcp/asset/cbe50b15-d32b-49f0-b5ee-49002b09cc43" alt="" style="position:absolute; left:0; top:0; width:222px;">
-    <img src="https://www.figma.com/api/mcp/asset/9e9ff4a7-988d-40fc-8b54-816ca75293d4" alt="TEN" style="position:absolute; left:110px; top:57px; width:110px;">
+    <div style="position:absolute; left:0; top:0; font-family:'Montserrat',sans-serif; font-weight:800; font-size:34px; line-height:1; color:#fff; -webkit-text-stroke:1px #000;">DOUBLE</div>
+    <div style="position:absolute; left:60px; top:34px; font-family:'Montserrat',sans-serif; font-weight:800; font-size:44px; line-height:1; color:#feba4b; -webkit-text-stroke:1px #7b0909;">TEN</div>
   </div>
 
   <p class="abs tagline">ดับเบิลความมันส์ ของคนรักฟุตบอล</p>
 
-  <img class="abs" src="https://www.figma.com/api/mcp/asset/a32948f6-bc22-4767-bde8-deec20f7449e" alt="" style="left:1237px; top:58px; width:107px; height:23px;">
+  <div class="abs" style="left:1237px; top:58px; width:107px; height:23px; background:#ac0b0b; border-radius:4px;"></div>
   <div class="abs register-btn-text">REGISTER</div>
   <div class="abs login-text">LOGIN</div>
   <div class="abs divider-line"></div>
 
   <!-- Profile card -->
-  <img class="abs profile-card-bg" src="https://www.figma.com/api/mcp/asset/cfa20a1b-460f-4937-a492-47959afbe05d" alt="">
-  <img class="abs profile-avatar" src="https://www.figma.com/api/mcp/asset/a9ebec71-cae3-47ef-89d3-fb8039ba85e2" alt="avatar">
+  <div class="abs profile-card-bg"></div>
+  <div class="abs profile-avatar"></div>
   <div class="abs profile-username">USER NAME</div>
   <div class="abs profile-role">WEBMASTER</div>
   <div class="abs profile-joined">เข้าร่วม. 28.06.26 | 1 DAY</div>
@@ -160,64 +163,64 @@
   <div class="abs profile-stat stat-loser">ถุยสะสม. 1</div>
   <div class="abs profile-stat stat-yellow">ใบเหลือง. 1</div>
   <div class="abs profile-stat stat-red">ใบแดง. 1</div>
-  <img class="abs profile-actions-bg" src="https://www.figma.com/api/mcp/asset/c3c95e01-7d20-45ed-8ec6-e95ea71ccea3" alt="">
+  <div class="abs profile-actions-bg"></div>
 
   <!-- Rank badge -->
-  <img class="abs rank-badge-bg" src="https://www.figma.com/api/mcp/asset/a243ebc1-7b02-4393-918d-0db5c85a682e" alt="">
-  <img class="abs rank-img" src="https://www.figma.com/api/mcp/asset/968435bc-caac-4285-a1ed-03393a72cea4" alt="">
+  <div class="abs rank-badge-bg"></div>
+  <img class="abs rank-img" src="assets/rank-ronaldo.png" alt="">
   <div class="abs rank-name">RONALDO R9</div>
   <div class="abs rank-sub">WORLD CUP 02</div>
-  <div class="abs rank-tag">UUR</div>
-  <img class="abs rank-icons-bg" src="https://www.figma.com/api/mcp/asset/2074f5c7-ccc5-4700-9259-ee042853e66e" alt="">
-  <img class="abs rank-stats-bg" src="https://www.figma.com/api/mcp/asset/94294d68-7ab6-436a-b17f-76edc6e6add0" alt="">
+  <img class="abs" src="assets/rank-uur.png" alt="UUR" style="left:40px; top:1436px; width:47px;">
+  <div class="abs rank-stats-bg"></div>
   <div class="abs rank-gp">GP : 1890</div>
   <div class="abs rank-level">LEVEL : 99</div>
   <div class="abs rank-exp">Exp : 99</div>
   <div class="abs rank-rank">RANK : ROOKIE</div>
-  <div class="abs rank-s">S</div>
+  <img class="abs" src="assets/rank-s.png" alt="S" style="left:147px; top:1470px; width:19px; height:19px;">
 
   <!-- Sidebar nav -->
-  <div class="abs nav-item nav-home"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/95b8f947-8b6a-4405-84ab-f540f75ceb9e" alt=""><span>หน้าแรก</span></div>
-  <div class="abs nav-item nav-news"><span style="left:60px;top:9px;">อัพเดทข่าว</span></div>
-  <div class="abs nav-item nav-article"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/95b8f947-8b6a-4405-84ab-f540f75ceb9e" alt=""><span>บทความ</span></div>
-  <div class="abs nav-item nav-society"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/95b8f947-8b6a-4405-84ab-f540f75ceb9e" alt=""><span>บอร์ดโซไซตี้</span></div>
-  <div class="abs nav-item nav-abroad"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/95b8f947-8b6a-4405-84ab-f540f75ceb9e" alt=""><span>บอร์ดบอลนอก</span></div>
-  <div class="abs nav-item nav-thai"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/95b8f947-8b6a-4405-84ab-f540f75ceb9e" alt=""><span>บอร์ดบอลไทย</span></div>
-  <div class="abs nav-item nav-allsport"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/95b8f947-8b6a-4405-84ab-f540f75ceb9e" alt=""><span>ออลสปอร์ต</span></div>
-  <div class="abs nav-item nav-games"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/95b8f947-8b6a-4405-84ab-f540f75ceb9e" alt=""><span>บอร์ดเกมส์</span></div>
-  <div class="abs nav-item nav-dellangmor"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/fb01fa7d-aabb-45dc-8b40-d1f0f4b82702" alt=""><span>เดลล่างมอ</span></div>
-  <div class="abs nav-item nav-jail"><img class="nav-bg" src="https://www.figma.com/api/mcp/asset/2074f5c7-ccc5-4700-9259-ee042853e66e" alt=""><span>เรือนจำคนง่าว</span></div>
+  <div class="abs nav-item nav-home"><span>หน้าแรก</span></div>
+  <div class="abs nav-item nav-news"><span>อัพเดทข่าว</span></div>
+  <div class="abs nav-item nav-article"><span>บทความ</span></div>
+  <div class="abs nav-item nav-society"><span>บอร์ดโซไซตี้</span></div>
+  <div class="abs nav-item nav-abroad"><span>บอร์ดบอลนอก</span></div>
+  <div class="abs nav-item nav-thai"><span>บอร์ดบอลไทย</span></div>
+  <div class="abs nav-item nav-allsport"><span>ออลสปอร์ต</span></div>
+  <div class="abs nav-item nav-games"><span>บอร์ดเกมส์</span></div>
+  <div class="abs nav-item nav-dellangmor"><span>เดลล่างมอ</span></div>
+  <div class="abs nav-item nav-jail"><span>เรือนจำคนง่าว</span></div>
 
-  <div class="abs lang-icon-text">THAI</div>
+  <img class="abs" src="assets/icon-thai.png" alt="THAI" style="left:1352px; top:1075px; width:80px;">
 
   <!-- News header -->
-  <img class="abs news-header-bg" src="https://www.figma.com/api/mcp/asset/38747f8a-a851-4ec6-8edf-2bc6066beb9a" alt="">
+  <div class="abs news-header-bg" style="background:#7b0909; border-radius:6px;"></div>
   <div class="abs news-header-text">อัพเดทข่าว</div>
 
   <!-- Featured article -->
-  <img class="abs featured-bg" src="https://www.figma.com/api/mcp/asset/33b83cf4-6ff5-47a9-b950-aa2ca5418f15" alt="">
-  <img class="abs" src="https://www.figma.com/api/mcp/asset/c722b94d-d910-4562-b0cb-297b69530728" alt="" style="left:316px; top:923px; width:745px; height:162px;">
+  <img class="abs featured-bg" src="assets/featured-totti.png" alt="TOTTI">
+  <div class="abs" style="left:316px; top:923px; width:745px; height:162px; background:#fff;"></div>
   <div class="abs featured-title">HERE WE GO! TOTTI LEAVES ROMA 🚨</div>
   <div class="abs featured-body">F.TOTTI : ตำนานหมายเลข 10 ของโรมา ตกลงย้ายร่วมทีมใหม่หลังอยู่กับสโมสรมาเกือบทั้งชีวิต เอกสารทุกอย่างเสร็จสิ้น เหลือเพียงการเปิดตัวอย่างเป็นทางการ แฟนบอลทั่วโลกต่างช็อกกับดีลประวัติศาสตร์ที่ไม่มีใครคาดคิด By | Fabrico Romano</div>
   <div class="abs featured-author">แอดน้อนแดง 12.2.68</div>
 
   <!-- Side news cards -->
-  <img class="abs side-card side-card-1" src="https://www.figma.com/api/mcp/asset/110cab07-6815-4e5e-951b-3d5c7442f17b" alt="">
-  <img class="abs side-card side-card-2" src="https://www.figma.com/api/mcp/asset/77d7a45f-bf5f-4823-9e27-fc853d2e2e0f" alt="">
-  <img class="abs side-card side-card-3" src="https://www.figma.com/api/mcp/asset/110cab07-6815-4e5e-951b-3d5c7442f17b" alt="">
+  <img class="abs side-card side-card-1" src="assets/news-mbappe.png" alt="Mbappe">
+  <img class="abs side-card side-card-2" src="assets/news-son.png" alt="Son Heung-min">
+  <img class="abs side-card side-card-3" src="assets/news-casemiro.png" alt="Casemiro">
 
   <!-- Ad banners -->
   <div class="abs ad-banner ad-banner-1">ติดต่อโฆษณา</div>
-  <div class="abs ad-banner ad-side" style="height:519px;">ติดต่อโฆษณา</div>
+  <img class="abs ad-side" src="assets/ad-side-goal.png" alt="" style="height:519px; object-fit:cover;">
+  <div class="abs" style="left:1228px; top:1892px; font-size:28px; color:#fff; text-shadow:0 2px 6px #000;">ติดต่อโฆษณา</div>
 
   <!-- Pinned topics -->
-  <img class="abs pinned-bg" src="https://www.figma.com/api/mcp/asset/ad1e95b4-5bc6-47d4-b36b-16dbae1456b4" alt="">
+  <div class="abs pinned-bg" style="background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.15);"></div>
   <div class="abs section-title">กระทู้ปักหมุด</div>
   <div class="abs topic-row" style="top:1349px;">
     <div class="topic-avatar"></div>
     <div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div>
     <div class="topic-author">By : นายบวย</div>
-    <div class="topic-tag">INTER</div>
+    <img class="topic-tag-badge" src="assets/badge-inter-red.png" alt="INTER">
     <div class="topic-read">อ่าน :</div>
     <div class="topic-reply">ตอบ :</div>
   </div>
@@ -225,30 +228,29 @@
     <div class="topic-avatar"></div>
     <div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div>
     <div class="topic-author">By : นายบวย</div>
-    <div class="topic-tag">INTER</div>
+    <img class="topic-tag-badge" src="assets/badge-inter-red.png" alt="INTER">
     <div class="topic-read">อ่าน :</div>
     <div class="topic-reply">ตอบ :</div>
   </div>
 
   <!-- Top 5 -->
-  <img class="abs top5-bg" src="https://www.figma.com/api/mcp/asset/d797289d-fef3-46a7-94a9-fc46ce744e77" alt="">
+  <div class="abs top5-bg" style="background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.15);"></div>
   <div class="abs top5-title">Top 5 กระทู้เดือด</div>
   <div class="abs topic-row" style="top:1703px;">
-    <div class="topic-avatar"></div><div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div><div class="topic-author">By : นายบวย</div><div class="topic-tag">INTER</div><div class="topic-read">อ่าน :</div><div class="topic-reply">ตอบ :</div>
+    <div class="topic-avatar"></div><div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div><div class="topic-author">By : นายบวย</div><img class="topic-tag-badge" src="assets/badge-inter-red.png" alt="INTER"><div class="topic-read">อ่าน :</div><div class="topic-reply">ตอบ :</div>
   </div>
   <div class="abs topic-row" style="top:1892px;">
-    <div class="topic-avatar"></div><div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div><div class="topic-author">By : นายบวย</div><div class="topic-tag">INTER</div><div class="topic-read">อ่าน :</div><div class="topic-reply">ตอบ :</div>
+    <div class="topic-avatar"></div><div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div><div class="topic-author">By : นายบวย</div><img class="topic-tag-badge" src="assets/badge-inter-red.png" alt="INTER"><div class="topic-read">อ่าน :</div><div class="topic-reply">ตอบ :</div>
   </div>
   <div class="abs topic-row" style="top:1987px;">
-    <div class="topic-avatar"></div><div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div><div class="topic-author">By : นายบวย</div><div class="topic-tag">INTER</div><div class="topic-read">อ่าน :</div><div class="topic-reply">ตอบ :</div>
+    <div class="topic-avatar"></div><div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div><div class="topic-author">By : นายบวย</div><img class="topic-tag-badge" src="assets/badge-inter-red.png" alt="INTER"><div class="topic-read">อ่าน :</div><div class="topic-reply">ตอบ :</div>
   </div>
   <div class="abs topic-row" style="top:2082px;">
-    <div class="topic-avatar"></div><div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div><div class="topic-author">By : นายบวย</div><div class="topic-tag">INTER</div><div class="topic-read">อ่าน :</div><div class="topic-reply">ตอบ :</div>
+    <div class="topic-avatar"></div><div class="topic-title">หัวข้อกระทู้ตัวอย่าง...</div><div class="topic-author">By : นายบวย</div><img class="topic-tag-badge" src="assets/badge-inter-red.png" alt="INTER"><div class="topic-read">อ่าน :</div><div class="topic-reply">ตอบ :</div>
   </div>
 
   <!-- Footer ad -->
   <div class="abs" style="left:788px; top:1166px; font-size:28px; color:#fff;">ติดต่อโฆษณา</div>
-  <div class="abs" style="left:1228px; top:1892px; font-size:28px; color:#fff;">ติดต่อโฆษณา</div>
 
 </div>
 </body>
