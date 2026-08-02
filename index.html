@@ -1,1579 +1,1449 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DoubleTen — ชุมชนคนรักฟุตบอล</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Passion+One:wght@700&display=swap"
-    rel="stylesheet">
-  <style>
-    :root {
-      --sidebar-dark: #282424;
-      --sidebar-red: #7f0c0c;
-      --header-bg: #17171c;
-      --dark: #1c1c21;
-      --orange: #feba4b;
-      --red: #eb2e2e;
-      --red-btn: #7f0c0c;
-      --white: #fff;
-      --off: #f5f5f7;
-      --gray: #808087;
-      --gray-2: #a6a6ad;
-      --border: #e0e0e3;
-      --green: #268a4d;
-      --pl: #3d008c;
-      --sa: #0059a6;
-      --ll: #d9590d;
-      --sidebar-w: 250px;
-      --header-h: 66px;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Noto Sans Thai', 'Inter', sans-serif;
-      background: #0d0d10;
-    }
-
-    img {
-      display: block;
-      max-width: 100%;
-    }
-
-    /* ===== HEADER ===== */
-    .header {
-      position: fixed;
-      top: 0;
-      left: var(--sidebar-w);
-      right: 0;
-      height: var(--header-h);
-      background: var(--header-bg);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 0 20px;
-      transition: left .2s;
-    }
-
-    .header-icons {
-      display: flex;
-      gap: 12px;
-    }
-
-    .h-icon {
-      width: 22px;
-      height: 22px;
-      filter: brightness(0) invert(1);
-    }
-
-    .header-spacer {
-      flex: 1;
-    }
-
-    .auth-input {
-      background: var(--off);
-      border: none;
-      border-radius: 6px;
-      padding: 9px 12px;
-      font-size: 12px;
-      width: 110px;
-      font-family: inherit;
-    }
-
-    .btn-login {
-      background: none;
-      border: none;
-      color: var(--orange);
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      font-family: 'Inter';
-    }
-
-    .btn-register {
-      background: var(--red);
-      color: var(--white);
-      border: none;
-      padding: 8px 16px;
-      border-radius: 5px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      font-family: 'Inter';
-    }
-
-    .theme-toggle {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-
-    .menu-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--white);
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    /* ===== SIDEBAR ===== */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: var(--sidebar-w);
-      height: 100vh;
-      background: linear-gradient(180deg, var(--sidebar-red) 0%, #322222 52%, var(--sidebar-dark) 100%);
-      overflow-y: auto;
-      z-index: 110;
-      padding: 12px;
-      transition: left .2s;
-    }
-
-    .sidebar::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb {
-      background: #4a2020;
-      border-radius: 4px;
-    }
-
-    .sb-logo {
-      text-align: center;
-      padding: 4px 0 10px;
-    }
-
-    .sb-logo img {
-      width: 92px;
-      height: 92px;
-      margin: 0 auto;
-      object-fit: contain;
-    }
-
-    .sb-logo .txt {
-      color: var(--white);
-      font-family: 'Inter';
-      font-weight: 800;
-      font-size: 13px;
-      letter-spacing: 3px;
-      margin-top: 4px;
-    }
-
-    .profile-card {
-      text-align: center;
-      margin-top: 6px;
-    }
-
-    .profile-ava-wrap {
-      position: relative;
-      width: 78px;
-      height: 78px;
-      margin: 0 auto 6px;
-    }
-
-    .profile-ava {
-      width: 78px;
-      height: 78px;
-      border-radius: 50%;
-      border: 3px solid var(--red);
-      object-fit: cover;
-      background: radial-gradient(circle at 42% 34%, #e8d4f5, #a674c4 60%, #6a4080);
-    }
-
-    .online-dot {
-      position: absolute;
-      right: 2px;
-      bottom: 4px;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: #2ecc4a;
-      border: 2px solid #240c0c;
-    }
-
-    .profile-name {
-      color: #b82626;
-      font-weight: 700;
-      font-size: 15px;
-      font-family: 'Inter';
-    }
-
-    .profile-role {
-      color: var(--gray-2);
-      font-size: 9px;
-      letter-spacing: 1.5px;
-      margin: 2px 0 8px;
-    }
-
-    .join-bar {
-      background: #303030;
-      border-radius: 4px;
-      padding: 4px;
-      font-size: 9px;
-      color: var(--white);
-      margin-bottom: 6px;
-    }
-
-    .stat-line {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #303030;
-      border-radius: 4px;
-      padding: 4px 8px;
-      margin-bottom: 4px;
-      font-size: 10px;
-      color: var(--white);
-    }
-
-    .stat-line .lbl {
-      flex: 1;
-      text-align: left;
-    }
-
-    .stat-line .val {
-      font-weight: 600;
-    }
-
-    .add-row {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin: 10px 0;
-    }
-
-    .add-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: #3a1515;
-      border: 1px solid #5a2020;
-      color: var(--orange);
-      font-size: 16px;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-    }
-
-    .nav-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      margin-top: 6px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      color: var(--white);
-      font-size: 13px;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .nav-item .ic {
-      width: 16px;
-      height: 16px;
-      filter: brightness(0) invert(1);
-      flex-shrink: 0;
-    }
-
-    .nav-item:hover {
-      background: rgba(255, 255, 255, .06);
-    }
-
-    .nav-item.jail {
-      background: linear-gradient(180deg, #e23b3b, #c81e1e);
-      font-weight: 700;
-    }
-
-    .nav-item.shop {
-      background: linear-gradient(180deg, #d9a445, #b8822a);
-      font-weight: 700;
-    }
-
-    .balance-box {
-      background: var(--sidebar-dark);
-      border-radius: 10px;
-      padding: 10px;
-      margin-top: 12px;
-      background-image: linear-gradient(rgba(0, 0, 0, .4), rgba(0, 0, 0, .4));
-    }
-
-    .balance-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--white);
-      font-weight: 700;
-      font-size: 12px;
-      margin-bottom: 8px;
-      justify-content: center;
-    }
-
-    .coin-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0, 0, 0, .35);
-      border-radius: 6px;
-      padding: 5px 8px;
-      margin-bottom: 6px;
-    }
-
-    .coin-ico {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 40% 35%, #ffe08a, #e0a020);
-      flex-shrink: 0;
-    }
-
-    .coin-ico.pink {
-      background: radial-gradient(circle at 40% 35%, #ffb0d0, #e05090);
-    }
-
-    .coin-val {
-      flex: 1;
-      background: rgba(0, 0, 0, .4);
-      border-radius: 4px;
-      padding: 2px 8px;
-      color: var(--white);
-      font-size: 11px;
-    }
-
-    .coin-eye {
-      color: var(--gray-2);
-      font-size: 12px;
-    }
-
-    .coin-plus {
-      color: var(--orange);
-      font-size: 16px;
-    }
-
-    /* ===== MAIN ===== */
-    .main {
-      margin-left: var(--sidebar-w);
-      padding-top: var(--header-h);
-      background: #fff;
-      min-height: 100vh;
-      transition: margin-left .2s;
-    }
-
-    .container {
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 16px 16px 40px;
-    }
-
-    .ad-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .ad-box {
-      height: 85px;
-      border-radius: 6px;
-      display: grid;
-      place-items: center;
-      color: var(--white);
-      font-family: 'Inter';
-      font-size: 24px;
-      font-weight: 400;
-      background: linear-gradient(120deg, #3a5f2a, #4a7a35), repeating-linear-gradient(90deg, rgba(255, 255, 255, .04) 0 4px, transparent 4px 8px);
-    }
-
-    .announce {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--off);
-      border-radius: 6px;
-      padding: 8px 14px;
-      margin-bottom: 6px;
-      font-size: 15px;
-      font-weight: 400;
-      color: #1d1b1b;
-    }
-
-    .announce img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .ticker {
-      display: flex;
-      background: var(--dark);
-      border-radius: 8px;
-      overflow: hidden;
-      margin: 14px 0 20px;
-      flex-wrap: wrap;
-    }
-
-    .ticker-live {
-      background: var(--orange);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0 18px;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--dark);
-      white-space: nowrap;
-      font-family: 'Inter';
-      height: 90px;
-    }
-
-    .ticker-scroll {
-      display: flex;
-      overflow-x: auto;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .ticker-scroll::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .ticker-scroll::-webkit-scrollbar-thumb {
-      background: #444;
-      border-radius: 4px;
-    }
-
-    .match {
-      min-width: 162px;
-      padding: 12px 16px;
-      border-left: 1px solid #383840;
-    }
-
-    .match-date {
-      color: var(--gray-2);
-      font-size: 11px;
-      margin-bottom: 8px;
-    }
-
-    .match-team {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 6px 0;
-    }
-
-    .team-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .match-team span {
-      color: var(--white);
-      font-size: 12px;
-      white-space: nowrap;
-      font-weight: 600;
-    }
-
-    .match-team.away span {
-      color: var(--gray-2);
-      font-weight: 400;
-    }
-
-    .ticker-btn {
-      background: var(--red-btn);
-      color: var(--white);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0 22px;
-      font-weight: 600;
-      font-size: 13px;
-      text-align: center;
-      white-space: nowrap;
-      cursor: pointer;
-      height: 90px;
-    }
-
-    /* News hero */
-    .hero {
-      display: grid;
-      grid-template-columns: 1fr 282px 172px;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .hero-main-img {
-      border-radius: 10px 10px 0 0;
-      overflow: hidden;
-      aspect-ratio: 571/326;
-      background: linear-gradient(160deg, #c8102e, #a01020 40%, #600a15);
-      box-shadow: 0 3px 3px rgba(0, 0, 0, .5);
-    }
-
-    .hero-main-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .hero-main-body {
-      background: var(--white);
-      padding: 16px;
-    }
-
-    .hero-main-body h3 {
-      font-size: 22px;
-      color: #000;
-      font-weight: 400;
-    }
-
-    .hero-main-body .meta {
-      font-size: 11px;
-      color: #646060;
-      margin: 8px 0 6px;
-    }
-
-    .hero-main-body .excerpt {
-      font-size: 11px;
-      color: #000;
-    }
-
-    .hero-side {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .hero-card-img {
-      border-radius: 8px 8px 0 0;
-      aspect-ratio: 281/160;
-      position: relative;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      box-shadow: 0 3px 3px rgba(0, 0, 0, .5);
-    }
-
-    .hero-card-img.c1 {
-      background: linear-gradient(135deg, #1a1a1a, #000);
-    }
-
-    .hero-card-img.c2 {
-      background: linear-gradient(135deg, #2a2a30, #101015);
-    }
-
-    .hero-card-img img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .here-we-go {
-      position: relative;
-      z-index: 1;
-      color: var(--white);
-      font-family: 'Inter';
-      font-weight: 700;
-      font-size: 20px;
-      border-bottom: 3px solid var(--red);
-      padding-bottom: 4px;
-    }
-
-    .hero-card-body {
-      padding: 10px 12px;
-      background: var(--white);
-    }
-
-    .hero-card-body h4 {
-      font-size: 13px;
-      color: #000;
-      font-weight: 400;
-    }
-
-    .hero-card-body p {
-      font-size: 11px;
-      color: #646060;
-      margin-top: 3px;
-    }
-
-    .hero-tall {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .hero-tall-img {
-      border-radius: 8px;
-      overflow: hidden;
-      aspect-ratio: 171/214;
-    }
-
-    .hero-tall-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .section {
-      margin-bottom: 26px;
-    }
-
-    .card-wrap {
-      background: var(--off);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .sec-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .sec-head .badge-ic {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      background: var(--white);
-      border: 2px solid var(--border);
-      display: grid;
-      place-items: center;
-      font-family: 'Passion One';
-      font-size: 9px;
-      color: var(--red);
-      line-height: 1;
-      text-align: center;
-    }
-
-    .sec-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #1a1a1f;
-      font-family: 'Inter';
-    }
-
-    .see-all {
-      margin-left: auto;
-      font-size: 11px;
-      color: var(--gray);
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .news-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--white);
-      border: 1px solid #e5e5e8;
-      border-radius: 6px;
-      padding: 8px 12px;
-      margin-bottom: 6px;
-      flex-wrap: wrap;
-    }
-
-    .lg-badge {
-      width: 29px;
-      height: 29px;
-      border-radius: 7px;
-      display: grid;
-      place-items: center;
-      color: var(--white);
-      font-family: 'Inter';
-      font-weight: 700;
-      font-size: 9px;
-      flex-shrink: 0;
-    }
-
-    .lg-badge.pl {
-      background: var(--pl);
-    }
-
-    .lg-badge.sa {
-      background: var(--sa);
-    }
-
-    .lg-badge.ll {
-      background: var(--ll);
-    }
-
-    .hot-pill {
-      background: #ffeded;
-      color: var(--red);
-      font-weight: 700;
-      font-size: 8px;
-      padding: 2px 5px;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
-
-    .news-title {
-      flex: 1;
-      min-width: 160px;
-      font-size: 11px;
-      color: #1a1a1f;
-      font-weight: 600;
-    }
-
-    .news-stat {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      color: var(--gray);
-      font-size: 10px;
-    }
-
-    .news-date {
-      color: var(--gray);
-      font-size: 8px;
-      line-height: 1.5;
-    }
-
-    .news-author {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .n-ava {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #c0c4cc;
-      flex-shrink: 0;
-    }
-
-    .news-author span {
-      font-size: 9px;
-      color: var(--gray);
-    }
-
-    .thread-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--white);
-      border-radius: 7px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
-      padding: 8px 12px;
-      margin-bottom: 6px;
-      flex-wrap: wrap;
-    }
-
-    .rank-badge {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      color: var(--white);
-      font-family: 'Inter';
-      font-weight: 800;
-      font-size: 11px;
-      flex-shrink: 0;
-    }
-
-    .rk1 {
-      background: #d9a621;
-    }
-
-    .rk2 {
-      background: #999ea6;
-    }
-
-    .rk3 {
-      background: #b87333;
-    }
-
-    .rkn {
-      background: #666b7a;
-    }
-
-    .hot-tag {
-      background: #ffeded;
-      color: var(--red);
-      font-weight: 700;
-      font-size: 8px;
-      padding: 2px 5px;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
-
-    .thread-title {
-      flex: 1;
-      min-width: 160px;
-      font-size: 10.5px;
-      color: #1a1a1f;
-    }
-
-    .thread-stat {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      color: var(--gray);
-      font-size: 9.6px;
-    }
-
-    .thread-date {
-      color: var(--gray);
-      font-size: 8.7px;
-    }
-
-    .thread-author {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .article-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: var(--white);
-      border-radius: 9px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
-      padding: 8px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-
-    .article-thumb {
-      width: 84px;
-      height: 49px;
-      border-radius: 7px;
-      background: #c7ccd6;
-      flex-shrink: 0;
-      object-fit: cover;
-    }
-
-    .article-tag {
-      display: inline-block;
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 4px;
-      margin-bottom: 5px;
-    }
-
-    .article-title {
-      font-size: 11.5px;
-      font-weight: 600;
-      color: #1a1a1f;
-    }
-
-    .article-meta {
-      font-size: 9.6px;
-      color: var(--gray);
-      margin-top: 3px;
-    }
-
-    .footer {
-      background: #1a1a1f;
-      color: var(--gray-2);
-      padding: 48px 40px 24px;
-      margin-top: 30px;
-    }
-
-    .footer-cols {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1.5fr;
-      gap: 32px;
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-
-    .footer-logo {
-      font-family: 'Inter';
-      font-weight: 700;
-      font-size: 24px;
-      color: var(--orange);
-      margin-bottom: 10px;
-    }
-
-    .footer-tag {
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .footer-col h4 {
-      color: var(--white);
-      font-size: 14px;
-      margin-bottom: 14px;
-      font-weight: 600;
-    }
-
-    .footer-col a {
-      display: block;
-      color: var(--gray-2);
-      font-size: 13px;
-      text-decoration: none;
-      margin-bottom: 10px;
-    }
-
-    .footer-col a:hover {
-      color: var(--orange);
-    }
-
-    .footer-social {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .footer-social div {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #2e2e35;
-      display: grid;
-      place-items: center;
-      color: var(--white);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .footer-divider {
-      height: 1px;
-      background: #404047;
-      margin: 32px auto 20px;
-      max-width: 1280px;
-    }
-
-    .footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      max-width: 1280px;
-      margin: 0 auto;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    #backToTop {
-      position: fixed;
-      bottom: 40px;
-      right: 40px;
-      width: 56px;
-      height: 56px;
-      border-radius: 28px;
-      background: var(--orange);
-      border: none;
-      color: #17171c;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
-    }
-
-    /* ===== RESPONSIVE (real, single version) ===== */
-    @media (max-width: 980px) {
-      :root {
-        --sidebar-w: 0px;
-      }
-
-      .header {
-        left: 0;
-      }
-
-      .main {
-        margin-left: 0;
-      }
-
-      .menu-toggle {
-        display: block;
-      }
-
-      .sidebar {
-        left: -260px;
-        width: 240px;
-        box-shadow: 4px 0 20px rgba(0, 0, 0, .4);
-      }
-
-      .sidebar.open {
-        left: 0;
-      }
-
-      .auth-input {
-        width: 90px;
-      }
-
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-tall {
-        flex-direction: row;
-      }
-
-      .hero-tall-img {
-        aspect-ratio: 1/1;
-      }
-
-      .ad-row {
-        grid-template-columns: 1fr;
-      }
-
-      #backToTop {
-        width: 46px;
-        height: 46px;
-        bottom: 20px;
-        right: 20px;
-        font-size: 20px;
-        border-radius: 23px;
-      }
-    }
-
-    @media (max-width: 600px) {
-
-      .auth-input,
-      .btn-login {
-        display: none;
-      }
-
-      .footer-cols {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .ticker-live {
-        height: auto;
-        padding: 10px 16px;
-      }
-
-      .ticker-btn {
-        height: auto;
-        padding: 10px 16px;
-      }
-
-      .news-row,
-      .thread-row {
-        font-size: 10px;
-      }
-
-      .news-date,
-      .thread-date {
-        display: none;
-      }
-    }
-
-    .sidebar-overlay {
-      display: none;
-    }
-
-    @media (max-width: 980px) {
-      .sidebar-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, .5);
-        z-index: 105;
-      }
-
-      .sidebar-overlay.show {
-        display: block;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoubleTen — ชุมชนคนรักฟุตบอล</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Passion+One:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-dark: #282424;
+            --sidebar-red: #7f0c0c;
+            --header-bg: #17171c;
+            --dark: #1c1c21;
+            --orange: #feba4b;
+            --red: #eb2e2e;
+            --red-btn: #7f0c0c;
+            --white: #fff;
+            --off: #f5f5f7;
+            --gray: #808087;
+            --gray-2: #a6a6ad;
+            --border: #e0e0e3;
+            --green: #268a4d;
+            --pl: #3d008c;
+            --sa: #0059a6;
+            --ll: #d9590d;
+            --sidebar-w: 250px;
+            --header-h: 66px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai','Inter',sans-serif;
+            background: #0d0d10;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-w);
+            right: 0;
+            height: var(--header-h);
+            background: var(--header-bg);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 20px;
+            transition: left .2s;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .h-icon {
+            width: 22px;
+            height: 22px;
+            filter: brightness(0) invert(1);
+        }
+
+        .header-spacer {
+            flex: 1;
+        }
+
+        .auth-input {
+            background: var(--off);
+            border: none;
+            border-radius: 6px;
+            padding: 9px 12px;
+            font-size: 12px;
+            width: 110px;
+            font-family: inherit;
+        }
+
+        .btn-login {
+            background: none;
+            border: none;
+            color: var(--orange);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Inter';
+        }
+
+        .btn-register {
+            background: var(--red);
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Inter';
+        }
+
+        .theme-toggle {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--sidebar-red) 0%, #322222 52%, var(--sidebar-dark) 100%);
+            overflow-y: auto;
+            z-index: 110;
+            padding: 12px;
+            transition: left .2s;
+        }
+
+            .sidebar::-webkit-scrollbar {
+                width: 5px;
+            }
+
+            .sidebar::-webkit-scrollbar-thumb {
+                background: #4a2020;
+                border-radius: 4px;
+            }
+
+        .sb-logo {
+            text-align: center;
+            padding: 4px 0 10px;
+        }
+
+            .sb-logo img {
+                width: 92px;
+                height: 92px;
+                margin: 0 auto;
+                object-fit: contain;
+            }
+
+            .sb-logo .txt {
+                color: var(--white);
+                font-family: 'Inter';
+                font-weight: 800;
+                font-size: 13px;
+                letter-spacing: 3px;
+                margin-top: 4px;
+            }
+
+        .profile-card {
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        .profile-ava-wrap {
+            position: relative;
+            width: 78px;
+            height: 78px;
+            margin: 0 auto 6px;
+        }
+
+        .profile-ava {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            border: 3px solid var(--red);
+            object-fit: cover;
+            background: radial-gradient(circle at 42% 34%,#e8d4f5,#a674c4 60%,#6a4080);
+        }
+
+        .online-dot {
+            position: absolute;
+            right: 2px;
+            bottom: 4px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #2ecc4a;
+            border: 2px solid #240c0c;
+        }
+
+        .profile-name {
+            color: #b82626;
+            font-weight: 700;
+            font-size: 15px;
+            font-family: 'Inter';
+        }
+
+        .profile-role {
+            color: var(--gray-2);
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            margin: 2px 0 8px;
+        }
+
+        .join-bar {
+            background: #303030;
+            border-radius: 4px;
+            padding: 4px;
+            font-size: 9px;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+
+        .stat-line {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #303030;
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin-bottom: 4px;
+            font-size: 10px;
+            color: var(--white);
+        }
+
+            .stat-line .lbl {
+                flex: 1;
+                text-align: left;
+            }
+
+            .stat-line .val {
+                font-weight: 600;
+            }
+
+        .add-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .add-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #3a1515;
+            border: 1px solid #5a2020;
+            color: var(--orange);
+            font-size: 16px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .nav-item .ic {
+                width: 16px;
+                height: 16px;
+                filter: brightness(0) invert(1);
+                flex-shrink: 0;
+            }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,.06);
+            }
+
+            .nav-item.jail {
+                background: linear-gradient(180deg,#e23b3b,#c81e1e);
+                font-weight: 700;
+            }
+
+            .nav-item.shop {
+                background: linear-gradient(180deg,#d9a445,#b8822a);
+                font-weight: 700;
+            }
+
+        .balance-box {
+            background: var(--sidebar-dark);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 12px;
+            background-image: linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4));
+        }
+
+        .balance-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 12px;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+
+        .coin-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,.35);
+            border-radius: 6px;
+            padding: 5px 8px;
+            margin-bottom: 6px;
+        }
+
+        .coin-ico {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%,#ffe08a,#e0a020);
+            flex-shrink: 0;
+        }
+
+            .coin-ico.pink {
+                background: radial-gradient(circle at 40% 35%,#ffb0d0,#e05090);
+            }
+
+        .coin-val {
+            flex: 1;
+            background: rgba(0,0,0,.4);
+            border-radius: 4px;
+            padding: 2px 8px;
+            color: var(--white);
+            font-size: 11px;
+        }
+
+        .coin-eye {
+            color: var(--gray-2);
+            font-size: 12px;
+        }
+
+        .coin-plus {
+            color: var(--orange);
+            font-size: 16px;
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            margin-left: var(--sidebar-w);
+            padding-top: var(--header-h);
+            background: #fff;
+            min-height: 100vh;
+            transition: margin-left .2s;
+        }
+
+        .container {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 16px 16px 40px;
+        }
+
+        .ad-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .ad-box {
+            height: 85px;
+            border-radius: 6px;
+            display: grid;
+            place-items: center;
+            color: var(--white);
+            font-family: 'Inter';
+            font-size: 24px;
+            font-weight: 400;
+            background: linear-gradient(120deg,#3a5f2a,#4a7a35),repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 4px,transparent 4px 8px);
+        }
+
+        .announce {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--off);
+            border-radius: 6px;
+            padding: 8px 14px;
+            margin-bottom: 6px;
+            font-size: 15px;
+            font-weight: 400;
+            color: #1d1b1b;
+        }
+
+            .announce img {
+                width: 20px;
+                height: 20px;
+            }
+
+        .ticker {
+            display: flex;
+            background: var(--dark);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 14px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .ticker-live {
+            background: var(--orange);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 18px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--dark);
+            white-space: nowrap;
+            font-family: 'Inter';
+            height: 90px;
+        }
+
+        .ticker-scroll {
+            display: flex;
+            overflow-x: auto;
+            flex: 1;
+            min-width: 0;
+        }
+
+            .ticker-scroll::-webkit-scrollbar {
+                height: 4px;
+            }
+
+            .ticker-scroll::-webkit-scrollbar-thumb {
+                background: #444;
+                border-radius: 4px;
+            }
+
+        .match {
+            min-width: 162px;
+            padding: 12px 16px;
+            border-left: 1px solid #383840;
+        }
+
+        .match-date {
+            color: var(--gray-2);
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .match-team {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 6px 0;
+        }
+
+        .team-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .match-team span {
+            color: var(--white);
+            font-size: 12px;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .match-team.away span {
+            color: var(--gray-2);
+            font-weight: 400;
+        }
+
+        .ticker-btn {
+            background: var(--red-btn);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 22px;
+            font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+            white-space: nowrap;
+            cursor: pointer;
+            height: 90px;
+        }
+
+        /* News hero */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 282px 172px;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .hero-main-img {
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            aspect-ratio: 571/326;
+            background: linear-gradient(160deg,#c8102e,#a01020 40%,#600a15);
+            box-shadow: 0 3px 3px rgba(0,0,0,.5);
+        }
+
+            .hero-main-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .hero-main-body {
+            background: var(--white);
+            padding: 16px;
+        }
+
+            .hero-main-body h3 {
+                font-size: 22px;
+                color: #000;
+                font-weight: 400;
+            }
+
+            .hero-main-body .meta {
+                font-size: 11px;
+                color: #646060;
+                margin: 8px 0 6px;
+            }
+
+            .hero-main-body .excerpt {
+                font-size: 11px;
+                color: #000;
+            }
+
+        .hero-side {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hero-card-img {
+            border-radius: 8px 8px 0 0;
+            aspect-ratio: 281/160;
+            position: relative;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            box-shadow: 0 3px 3px rgba(0,0,0,.5);
+        }
+
+            .hero-card-img.c1 {
+                background: linear-gradient(135deg,#1a1a1a,#000);
+            }
+
+            .hero-card-img.c2 {
+                background: linear-gradient(135deg,#2a2a30,#101015);
+            }
+
+            .hero-card-img img {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .here-we-go {
+            position: relative;
+            z-index: 1;
+            color: var(--white);
+            font-family: 'Inter';
+            font-weight: 700;
+            font-size: 20px;
+            border-bottom: 3px solid var(--red);
+            padding-bottom: 4px;
+        }
+
+        .hero-card-body {
+            padding: 10px 12px;
+            background: var(--white);
+        }
+
+            .hero-card-body h4 {
+                font-size: 13px;
+                color: #000;
+                font-weight: 400;
+            }
+
+            .hero-card-body p {
+                font-size: 11px;
+                color: #646060;
+                margin-top: 3px;
+            }
+
+        .hero-tall {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hero-tall-img {
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 171/214;
+        }
+
+            .hero-tall-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .section {
+            margin-bottom: 26px;
+        }
+
+        .card-wrap {
+            background: var(--off);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .sec-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+            .sec-head .badge-ic {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                background: var(--white);
+                border: 2px solid var(--border);
+                display: grid;
+                place-items: center;
+                font-family: 'Passion One';
+                font-size: 9px;
+                color: var(--red);
+                line-height: 1;
+                text-align: center;
+            }
+
+        .sec-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1f;
+            font-family: 'Inter';
+        }
+
+        .see-all {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--gray);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .news-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+            border: 1px solid #e5e5e8;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .lg-badge {
+            width: 29px;
+            height: 29px;
+            border-radius: 7px;
+            display: grid;
+            place-items: center;
+            color: var(--white);
+            font-family: 'Inter';
+            font-weight: 700;
+            font-size: 9px;
+            flex-shrink: 0;
+        }
+
+            .lg-badge.pl {
+                background: var(--pl);
+            }
+
+            .lg-badge.sa {
+                background: var(--sa);
+            }
+
+            .lg-badge.ll {
+                background: var(--ll);
+            }
+
+        .hot-pill {
+            background: #ffeded;
+            color: var(--red);
+            font-weight: 700;
+            font-size: 8px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .news-title {
+            flex: 1;
+            min-width: 160px;
+            font-size: 11px;
+            color: #1a1a1f;
+            font-weight: 600;
+        }
+
+        .news-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray);
+            font-size: 10px;
+        }
+
+        .news-date {
+            color: var(--gray);
+            font-size: 8px;
+            line-height: 1.5;
+        }
+
+        .news-author {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .n-ava {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #c0c4cc;
+            flex-shrink: 0;
+        }
+
+        .news-author span {
+            font-size: 9px;
+            color: var(--gray);
+        }
+
+        .thread-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+            border-radius: 7px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.05);
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .rank-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: var(--white);
+            font-family: 'Inter';
+            font-weight: 800;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .rk1 {
+            background: #d9a621;
+        }
+
+        .rk2 {
+            background: #999ea6;
+        }
+
+        .rk3 {
+            background: #b87333;
+        }
+
+        .rkn {
+            background: #666b7a;
+        }
+
+        .hot-tag {
+            background: #ffeded;
+            color: var(--red);
+            font-weight: 700;
+            font-size: 8px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .thread-title {
+            flex: 1;
+            min-width: 160px;
+            font-size: 10.5px;
+            color: #1a1a1f;
+        }
+
+        .thread-stat {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            color: var(--gray);
+            font-size: 9.6px;
+        }
+
+        .thread-date {
+            color: var(--gray);
+            font-size: 8.7px;
+        }
+
+        .thread-author {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .article-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--white);
+            border-radius: 9px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.05);
+            padding: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .article-thumb {
+            width: 84px;
+            height: 49px;
+            border-radius: 7px;
+            background: #c7ccd6;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .article-tag {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        .article-title {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #1a1a1f;
+        }
+
+        .article-meta {
+            font-size: 9.6px;
+            color: var(--gray);
+            margin-top: 3px;
+        }
+
+        .footer {
+            background: #1a1a1f;
+            color: var(--gray-2);
+            padding: 48px 40px 24px;
+            margin-top: 30px;
+        }
+
+        .footer-cols {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 32px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Inter';
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--orange);
+            margin-bottom: 10px;
+        }
+
+        .footer-tag {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer-col h4 {
+            color: var(--white);
+            font-size: 14px;
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--gray-2);
+            font-size: 13px;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+            .footer-col a:hover {
+                color: var(--orange);
+            }
+
+        .footer-social {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+            .footer-social div {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: #2e2e35;
+                display: grid;
+                place-items: center;
+                color: var(--white);
+                font-size: 11px;
+                font-weight: 700;
+            }
+
+        .footer-divider {
+            height: 1px;
+            background: #404047;
+            margin: 32px auto 20px;
+            max-width: 1280px;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            max-width: 1280px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        #backToTop {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background: var(--orange);
+            border: none;
+            color: #17171c;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,.25);
+        }
+
+        /* ===== HIGHLIGHT CLIPS ===== */
+        .clip-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 16px;
+        }
+
+        .clip-card {
+            cursor: pointer;
+        }
+
+        .clip-thumb {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg,#c0c4cc,#98a0aa);
+        }
+
+        .clip-play {
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,.92);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+            color: #1a1a1f;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+        }
+
+        .clip-dur {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,.75);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .clip-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #1a1a1f;
+            margin-top: 9px;
+            line-height: 1.4;
+        }
+
+        .clip-views {
+            font-size: 10.5px;
+            color: var(--gray);
+            margin-top: 3px;
+        }
+
+        @media (max-width: 700px) {
+            .clip-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        /* ===== GAME EVENT SECTION ===== */
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .game-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06);
+            padding: 10px;
+        }
+
+        .game-card-thumb {
+            width: 70px;
+            height: 52px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+            .game-card-thumb.c1 {
+                background: linear-gradient(135deg,#1a5c3a,#0d3a24);
+            }
+
+            .game-card-thumb.c2 {
+                background: linear-gradient(135deg,#8a5a2a,#5c3a18);
+            }
+
+        .game-card-tag {
+            font-size: 10px;
+            color: var(--orange-deep, var(--gray));
+            font-weight: 700;
+        }
+
+        .game-card-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a1a1f;
+            margin: 2px 0;
+        }
+
+        .game-card-desc {
+            font-size: 10px;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        /* ===== MOBILE ICON-RAIL SIDEBAR (matches real Figma mobile frame) ===== */
+        .icon-rail {
+            display: none;
+        }
+
+        /* ===== RESPONSIVE (single file, real breakpoints) ===== */
+        @media (max-width: 980px) {
+            :root {
+                --sidebar-w: 56px;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .icon-rail {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 14px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 56px;
+                height: 100vh;
+                background: linear-gradient(180deg, var(--sidebar-red) 0%, #322222 52%, var(--sidebar-dark) 100%);
+                z-index: 110;
+                padding: 12px 0;
+                overflow-y: auto;
+            }
+
+                .icon-rail img {
+                    width: 22px;
+                    height: 22px;
+                    filter: brightness(0) invert(1);
+                    opacity: .9;
+                }
+
+                    .icon-rail img.active-jail {
+                        background: #c81e1e;
+                        border-radius: 8px;
+                        padding: 6px;
+                        width: 22px;
+                        height: 22px;
+                    }
+
+            .header {
+                left: var(--sidebar-w);
+            }
+
+            .main {
+                margin-left: var(--sidebar-w);
+            }
+
+            .menu-toggle {
+                display: none;
+            }
+
+            .auth-input {
+                width: 90px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-tall {
+                flex-direction: row;
+            }
+
+            .hero-tall-img {
+                aspect-ratio: 1/1;
+            }
+
+            .ad-row {
+                grid-template-columns: 1fr;
+            }
+
+            #backToTop {
+                width: 46px;
+                height: 46px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 20px;
+                border-radius: 23px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .auth-input, .btn-login {
+                display: none;
+            }
+
+            .footer-cols {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .ticker-live {
+                height: auto;
+                padding: 10px 16px;
+            }
+
+            .ticker-btn {
+                height: auto;
+                padding: 10px 16px;
+            }
+
+            .news-row, .thread-row {
+                font-size: 10px;
+            }
+
+            .news-date, .thread-date {
+                display: none;
+            }
+
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sb-logo">
-      <img src="assets/logo-doubleten.png" alt="DoubleTen">
-      <div class="txt">DOUBLETEN</div>
-    </div>
-    <div class="profile-card">
-      <div class="profile-ava-wrap">
-        <div class="profile-ava"></div>
-        <div class="online-dot"></div>
-      </div>
-      <div class="profile-name">แอดน้อนแดง</div>
-      <div class="profile-role">WEBMASTER</div>
-      <div class="join-bar">เข้าร่วม : 28.06.26　001 DAY</div>
-      <div class="stat-line"><span class="lbl">ตอบ</span><span>:</span><span class="val">000</span></div>
-      <div class="stat-line"><span class="lbl">หล่อสะสม</span><span>:</span><span class="val">000</span></div>
-      <div class="stat-line"><span class="lbl">ถุยสะสม</span><span>:</span><span class="val">000</span></div>
-      <div class="stat-line"><span class="lbl">ใบเหลือง</span><span>:</span><span class="val">1</span></div>
-      <div class="stat-line"><span class="lbl">ใบแดง</span><span>:</span><span class="val">1</span></div>
-    </div>
-    <div class="add-row">
-      <div class="add-btn">+</div>
-      <div class="add-btn">+</div>
-      <div class="add-btn">+</div>
-      <div class="add-btn">+</div>
-    </div>
-    <nav class="nav-menu">
-      <a class="nav-item" href="index.html"><img class="ic" src="assets/icon-add-circles.png" alt="">หน้าแรก</a>
-      <a class="nav-item" href="#"><img class="ic" src="assets/NEWS ICON.svg" alt="">อัพเดทข่าว</a>
-      <a class="nav-item" href="#"><img class="ic" src="assets/icon-add-circles.png" alt="">บทความ</a>
-      <a class="nav-item" href="board.html"><img class="ic" src="assets/SOCIETY ICON.svg" alt="">บอร์ดโซไซตี้</a>
-      <a class="nav-item" href="board.html"><img class="ic" src="assets/icon-game.png" alt="">บอร์ดบอลนอก</a>
-      <a class="nav-item" href="board.html"><img class="ic" src="assets/icon-thai.png" alt="">บอร์ดบอลไทย</a>
-      <a class="nav-item" href="#"><img class="ic" src="assets/icon-add-circles.png" alt="">ออลสปอร์ต</a>
-      <a class="nav-item" href="#"><img class="ic" src="assets/icon-game.png" alt="">บอร์ดเกมส์</a>
-      <a class="nav-item" href="#"><img class="ic" src="assets/icon-add-circles.png" alt="">เดลล่างมอ</a>
-      <a class="nav-item jail" href="#"><img class="ic" src="assets/Prisoner Icon.svg" alt="">เรือนจำคนง่าว</a>
-      <a class="nav-item shop" href="#"><img class="ic" src="assets/SEE_01.svg" alt="">ซื้อไอเท็มเว็บ</a>
+    <!-- ICON RAIL (mobile only, always visible per real Figma mobile design) -->
+    <nav class="icon-rail">
+        <img src="assets/icon-add-circles.png" alt="หน้าแรก">
+        <img src="assets/NEWS ICON.svg" alt="ข่าว">
+        <img src="assets/icon-add-circles.png" alt="บทความ">
+        <img src="assets/SOCIETY ICON.svg" alt="สังคม">
+        <img src="assets/icon-game.png" alt="บอลนอก">
+        <img src="assets/icon-thai.png" alt="บอลไทย">
+        <img src="assets/icon-add-circles.png" alt="ออลสปอร์ต">
+        <img src="assets/icon-game.png" alt="เกมส์">
+        <img src="assets/Prisoner Icon.svg" alt="เรือนจำคนง่าว" class="active-jail">
+        <img src="assets/SEE_01.svg" alt="ซื้อไอเท็ม">
     </nav>
-    <div class="balance-box">
-      <div class="balance-head">BALANCE</div>
-      <div class="coin-row">
-        <div class="coin-ico"></div>
-        <div class="coin-val">0</div><span class="coin-eye">👁</span><span class="coin-plus">+</span>
-      </div>
-      <div class="coin-row">
-        <div class="coin-ico pink"></div>
-        <div class="coin-val">0</div><span class="coin-eye">👁</span><span class="coin-plus">+</span>
-      </div>
-    </div>
-  </aside>
 
-  <!-- HEADER -->
-  <header class="header">
-    <button class="menu-toggle" id="menuToggle">☰</button>
-    <div class="header-icons">
-      <img class="h-icon" src="assets/mynaui_bell.svg" alt="notifications">
-      <img class="h-icon" src="assets/mynaui_mail.svg" alt="mail">
-    </div>
-    <div class="header-spacer"></div>
-    <input class="auth-input" type="email" placeholder="Email">
-    <input class="auth-input" type="password" placeholder="Password">
-    <button class="btn-login">LOGIN</button>
-    <button class="btn-register">REGISTER</button>
-    <img class="theme-toggle" src="assets/icon-lightmode.png" alt="theme">
-  </header>
-
-  <!-- MAIN -->
-  <main class="main">
-    <div class="container">
-      <div class="ad-row">
-        <div class="ad-box">ติดต่อโฆษณา</div>
-        <div class="ad-box">ติดต่อโฆษณา</div>
-      </div>
-      <div class="announce"><img src="assets/megaphone-solid.svg" alt="">ประกาศเว็บ :</div>
-      <div class="announce"><img src="assets/megaphone-solid2.svg" alt="">ประกาศสมาชิก :</div>
-
-      <div class="ticker">
-        <div class="ticker-live">LIVE UPDATE ▾</div>
-        <div class="ticker-scroll">
-          <div class="match">
-            <div class="match-date">20 ก.ค. 23:00</div>
-            <div class="match-team"><span class="team-dot" style="background:#3379d9"></span><span>มาร์ซานั่น</span>
-            </div>
-            <div class="match-team away"><span class="team-dot" style="background:#999"></span><span>ลาห์ติ</span></div>
-          </div>
-          <div class="match">
-            <div class="match-date">20 ก.ค. 00:00</div>
-            <div class="match-team"><span class="team-dot" style="background:#d93333"></span><span>คัลมาร์</span></div>
-            <div class="match-team away"><span class="team-dot" style="background:#2666cc"></span><span>มัลโม</span>
-            </div>
-          </div>
-          <div class="match">
-            <div class="match-date">20 ก.ค. 00:00</div>
-            <div class="match-team"><span class="team-dot" style="background:#334dcc"></span><span>ออร์โกรทท์</span>
-            </div>
-            <div class="match-team away"><span class="team-dot" style="background:#d9bf26"></span><span>เยอร์การ์ด
-                เด้น</span></div>
-          </div>
-          <div class="match">
-            <div class="match-date">20 ก.ค. 02:15</div>
-            <div class="match-team"><span class="team-dot" style="background:#1a8059"></span><span>สปอร์ติ้ง
-                ลิสบอน</span></div>
-            <div class="match-team away"><span class="team-dot"
-                style="background:#338cd9"></span><span>สตราสบูร์ก</span></div>
-          </div>
-          <div class="match">
-            <div class="match-date">21 ก.ค. 18:00</div>
-            <div class="match-team"><span class="team-dot" style="background:#d92626"></span><span>เชฟฯ ยูไนเต็ด</span>
-            </div>
-            <div class="match-team away"><span class="team-dot" style="background:#2659bf"></span><span>ฮัดเดอร์สฟิลด์
-                ทาวน์</span></div>
-          </div>
-          <div class="match">
-            <div class="match-date">21 ก.ค. 23:00</div>
-            <div class="match-team"><span class="team-dot" style="background:#e6bf1a"></span><span>มอลล์บี้</span></div>
-            <div class="match-team away"><span class="team-dot" style="background:#d91a26"></span><span>ลินคอล์น เร้ด
-                อิมป์ส</span></div>
-          </div>
+    <!-- SIDEBAR (desktop only) -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sb-logo">
+            <img src="assets/logo-doubleten.png" alt="DoubleTen">
+            <div class="txt">DOUBLETEN</div>
         </div>
-        <div class="ticker-btn">โปรแกรม<br>บอล</div>
-      </div>
-
-      <div class="hero">
-        <div>
-          <div class="hero-main-img"><img src="assets/featured-totti.png" alt=""></div>
-          <div class="hero-main-body">
-            <h3>HEAD</h3>
-            <div class="meta">BY..... DATE...... SOURCE......</div>
-            <div class="excerpt">ย่อข่าว 3 บรรทัด</div>
-          </div>
+        <div class="profile-card">
+            <div class="profile-ava-wrap"><div class="profile-ava"></div><div class="online-dot"></div></div>
+            <div class="profile-name">แอดน้อนแดง</div>
+            <div class="profile-role">WEBMASTER</div>
+            <div class="join-bar">เข้าร่วม : 28.06.26　001 DAY</div>
+            <div class="stat-line"><span class="lbl">ตอบ</span><span>:</span><span class="val">000</span></div>
+            <div class="stat-line"><span class="lbl">หล่อสะสม</span><span>:</span><span class="val">000</span></div>
+            <div class="stat-line"><span class="lbl">ถุยสะสม</span><span>:</span><span class="val">000</span></div>
+            <div class="stat-line"><span class="lbl">ใบเหลือง</span><span>:</span><span class="val">1</span></div>
+            <div class="stat-line"><span class="lbl">ใบแดง</span><span>:</span><span class="val">1</span></div>
         </div>
-        <div class="hero-side">
-          <div>
-            <div class="hero-card-img c1"><span class="here-we-go">HERE WE GO!</span></div>
-            <div class="hero-card-body">
-              <h4>HEAD</h4>
-              <p>เนื้อข่าวสั้น 1 บรรทัด</p>
+        <div class="add-row"><div class="add-btn">+</div><div class="add-btn">+</div><div class="add-btn">+</div><div class="add-btn">+</div></div>
+        <nav class="nav-menu">
+            <a class="nav-item" href="index.html"><img class="ic" src="assets/icon-add-circles.png" alt="">หน้าแรก</a>
+            <a class="nav-item" href="#"><img class="ic" src="assets/NEWS ICON.svg" alt="">อัพเดทข่าว</a>
+            <a class="nav-item" href="#"><img class="ic" src="assets/icon-add-circles.png" alt="">บทความ</a>
+            <a class="nav-item" href="board.html"><img class="ic" src="assets/SOCIETY ICON.svg" alt="">บอร์ดโซไซตี้</a>
+            <a class="nav-item" href="board.html"><img class="ic" src="assets/icon-game.png" alt="">บอร์ดบอลนอก</a>
+            <a class="nav-item" href="board.html"><img class="ic" src="assets/icon-thai.png" alt="">บอร์ดบอลไทย</a>
+            <a class="nav-item" href="#"><img class="ic" src="assets/icon-add-circles.png" alt="">ออลสปอร์ต</a>
+            <a class="nav-item" href="#"><img class="ic" src="assets/icon-game.png" alt="">บอร์ดเกมส์</a>
+            <a class="nav-item" href="#"><img class="ic" src="assets/icon-add-circles.png" alt="">เดลล่างมอ</a>
+            <a class="nav-item jail" href="#"><img class="ic" src="assets/Prisoner Icon.svg" alt="">เรือนจำคนง่าว</a>
+            <a class="nav-item shop" href="#"><img class="ic" src="assets/SEE_01.svg" alt="">ซื้อไอเท็มเว็บ</a>
+        </nav>
+        <div class="balance-box">
+            <div class="balance-head">BALANCE</div>
+            <div class="coin-row"><div class="coin-ico"></div><div class="coin-val">0</div><span class="coin-eye">👁</span><span class="coin-plus">+</span></div>
+            <div class="coin-row"><div class="coin-ico pink"></div><div class="coin-val">0</div><span class="coin-eye">👁</span><span class="coin-plus">+</span></div>
+        </div>
+    </aside>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-icons">
+            <img class="h-icon" src="assets/mynaui_bell.svg" alt="notifications">
+            <img class="h-icon" src="assets/mynaui_mail.svg" alt="mail">
+        </div>
+        <div class="header-spacer"></div>
+        <input class="auth-input" type="email" placeholder="Email">
+        <input class="auth-input" type="password" placeholder="Password">
+        <button class="btn-login">LOGIN</button>
+        <button class="btn-register">REGISTER</button>
+        <img class="theme-toggle" src="assets/icon-lightmode.png" alt="theme">
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+        <div class="container">
+            <div class="ad-row">
+                <div class="ad-box">ติดต่อโฆษณา</div>
+                <div class="ad-box">ติดต่อโฆษณา</div>
             </div>
-          </div>
-          <div>
-            <div class="hero-card-img c2"><span class="here-we-go">HERE WE GO!</span></div>
-            <div class="hero-card-body">
-              <h4>HEAD</h4>
-              <p>เนื้อข่าวสั้น 1 บรรทัด</p>
+            <div class="announce"><img src="assets/megaphone-solid.svg" alt="">ประกาศเว็บ :</div>
+            <div class="announce"><img src="assets/megaphone-solid2.svg" alt="">ประกาศสมาชิก :</div>
+
+            <div class="ticker">
+                <div class="ticker-live">LIVE UPDATE ▾</div>
+                <div class="ticker-scroll">
+                    <div class="match"><div class="match-date">20 ก.ค. 23:00</div><div class="match-team"><span class="team-dot" style="background:#3379d9"></span><span>มาร์ซานั่น</span></div><div class="match-team away"><span class="team-dot" style="background:#999"></span><span>ลาห์ติ</span></div></div>
+                    <div class="match"><div class="match-date">20 ก.ค. 00:00</div><div class="match-team"><span class="team-dot" style="background:#d93333"></span><span>คัลมาร์</span></div><div class="match-team away"><span class="team-dot" style="background:#2666cc"></span><span>มัลโม</span></div></div>
+                    <div class="match"><div class="match-date">20 ก.ค. 00:00</div><div class="match-team"><span class="team-dot" style="background:#334dcc"></span><span>ออร์โกรทท์</span></div><div class="match-team away"><span class="team-dot" style="background:#d9bf26"></span><span>เยอร์การ์ด เด้น</span></div></div>
+                    <div class="match"><div class="match-date">20 ก.ค. 02:15</div><div class="match-team"><span class="team-dot" style="background:#1a8059"></span><span>สปอร์ติ้ง ลิสบอน</span></div><div class="match-team away"><span class="team-dot" style="background:#338cd9"></span><span>สตราสบูร์ก</span></div></div>
+                    <div class="match"><div class="match-date">21 ก.ค. 18:00</div><div class="match-team"><span class="team-dot" style="background:#d92626"></span><span>เชฟฯ ยูไนเต็ด</span></div><div class="match-team away"><span class="team-dot" style="background:#2659bf"></span><span>ฮัดเดอร์สฟิลด์ ทาวน์</span></div></div>
+                    <div class="match"><div class="match-date">21 ก.ค. 23:00</div><div class="match-team"><span class="team-dot" style="background:#e6bf1a"></span><span>มอลล์บี้</span></div><div class="match-team away"><span class="team-dot" style="background:#d91a26"></span><span>ลินคอล์น เร้ด อิมป์ส</span></div></div>
+                </div>
+                <div class="ticker-btn">โปรแกรม<br>บอล</div>
             </div>
-          </div>
-        </div>
-        <div class="hero-tall">
-          <div class="hero-tall-img"><img src="assets/ad-side-goal.png" alt=""></div>
-          <div class="hero-tall-img"><img src="assets/ad-side-goal.png" alt=""></div>
-        </div>
-      </div>
 
-      <section class="section">
-        <div class="card-wrap">
-          <div class="sec-head">
-            <div class="badge-ic">10<br>NEWS</div><span class="sec-title">อัพเดทข่าว</span>
-          </div>
-          <div class="news-row">
-            <div class="lg-badge pl">PL</div><span class="hot-pill">🔥HOT</span>
-            <div class="news-title">HERE WE GO! ลิเวอร์พูลคว้าตัวปีกดาวรุ่งจากบุนเดสลีกา</div>
-            <div class="news-stat">👁 2,340</div>
-            <div class="news-stat">💬 128</div>
-            <div class="news-date">20. 07. 2026<br>2 min. ago</div>
-            <div class="news-author"><span class="n-ava"></span><span>แอดน้อนแดง</span></div>
-          </div>
-          <div class="news-row">
-            <div class="lg-badge sa">SA</div>
-            <div class="news-title">อินเตอร์ มิลาน เปิดตัวเบอร์เก้าคนใหม่พร้อมลุยลีก</div>
-            <div class="news-stat">👁 890</div>
-            <div class="news-stat">💬 34</div>
-            <div class="news-date">20. 07. 2026<br>2 min. ago</div>
-            <div class="news-author"><span class="n-ava"></span><span>แอดหมูทอด</span></div>
-          </div>
-          <div class="news-row">
-            <div class="lg-badge ll">LL</div><span class="hot-pill">🔥HOT</span>
-            <div class="news-title">เรอัล มาดริด ซิวแชมป์พรีซีซั่นทัวร์อเมริกา</div>
-            <div class="news-stat">👁 3,102</div>
-            <div class="news-stat">💬 210</div>
-            <div class="news-date">20. 07. 2026<br>2 min. ago</div>
-            <div class="news-author"><span class="n-ava"></span><span>แอดบอล24</span></div>
-          </div>
-          <div class="news-row">
-            <div class="lg-badge pl">PL</div>
-            <div class="news-title">แมนฯ ยูไนเต็ด เตรียมเปิดตัวกุนซือใหม่สัปดาห์หน้า</div>
-            <div class="news-stat">👁 654</div>
-            <div class="news-stat">💬 19</div>
-            <div class="news-date">20. 07. 2026<br>2 min. ago</div>
-            <div class="news-author"><span class="n-ava"></span><span>แอดน้อนแดง</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="card-wrap">
-          <div class="sec-head">
-            <div class="badge-ic" style="color:#eb2e2e;font-size:11px;font-weight:800">🔥10</div><span
-              class="sec-title">10 กระทู้เดือด</span>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rk1">1</div><span class="hot-tag">🔥HOT</span>
-            <div class="thread-title">ทางการ! ลิเวอร์พูลปิดดีลปีกดาวรุ่งจากบุนเดสลีกา</div>
-            <div class="thread-stat">👁 8,940</div>
-            <div class="thread-stat">💬 412</div>
-            <div class="thread-date">📅 20.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดน้อนแดง</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rk2">2</div><span class="hot-tag">🔥HOT</span>
-            <div class="thread-title">เรอัล มาดริด ซิวแชมป์พรีซีซั่นทัวร์อเมริกา</div>
-            <div class="thread-stat">👁 7,102</div>
-            <div class="thread-stat">💬 310</div>
-            <div class="thread-date">📅 20.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดบอล24</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rk3">3</div><span class="hot-tag">🔥HOT</span>
-            <div class="thread-title">ดราม่า! แฟนบอลบุกวิจารณ์กุนซือทีมชาติหลังพ่าย</div>
-            <div class="thread-stat">👁 6,530</div>
-            <div class="thread-stat">💬 289</div>
-            <div class="thread-date">📅 19.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดหมูทอด</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rkn">4</div>
-            <div class="thread-title">อินเตอร์ มิลาน เปิดตัวเบอร์เก้าคนใหม่พร้อมลุยลีก</div>
-            <div class="thread-stat">👁 5,890</div>
-            <div class="thread-stat">💬 201</div>
-            <div class="thread-date">📅 20.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดหมูทอด</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rkn">5</div>
-            <div class="thread-title">แมนฯ ยูไนเต็ด เตรียมเปิดตัวกุนซือใหม่สัปดาห์หน้า</div>
-            <div class="thread-stat">👁 5,120</div>
-            <div class="thread-stat">💬 178</div>
-            <div class="thread-date">📅 21.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดน้อนแดง</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rkn">6</div>
-            <div class="thread-title">ทีมชาติไทยเก็บชัยนัดกระชับมิตรก่อนศึกใหญ่</div>
-            <div class="thread-stat">👁 4,760</div>
-            <div class="thread-stat">💬 165</div>
-            <div class="thread-date">📅 19.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดบอลไทย</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rkn">7</div>
-            <div class="thread-title">นาโปลี ต่อสัญญากับกัปตันทีมยาว 3 ปี</div>
-            <div class="thread-stat">👁 3,980</div>
-            <div class="thread-stat">💬 120</div>
-            <div class="thread-date">📅 18.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดหมูทอด</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rkn">8</div>
-            <div class="thread-title">เชฟฯ ยูไนเต็ด ปะทะ ฮัดเดอร์สฟิลด์ ศึกลุ้นเลื่อนชั้น</div>
-            <div class="thread-stat">👁 3,410</div>
-            <div class="thread-stat">💬 98</div>
-            <div class="thread-date">📅 21.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดบอล24</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rkn">9</div>
-            <div class="thread-title">สปอร์ติ้ง ลิสบอน เปิดบ้านรับสตราสบูร์กคืนนี้</div>
-            <div class="thread-stat">👁 2,890</div>
-            <div class="thread-stat">💬 76</div>
-            <div class="thread-date">📅 20.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดน้อนแดง</span></div>
-          </div>
-          <div class="thread-row">
-            <div class="rank-badge rkn">10</div>
-            <div class="thread-title">วิเคราะห์บอล: มอลล์บี้ vs ลินคอล์น เร้ด อิมป์ส</div>
-            <div class="thread-stat">👁 2,340</div>
-            <div class="thread-stat">💬 54</div>
-            <div class="thread-date">📅 21.07.2026</div>
-            <div class="thread-author"><span class="n-ava"></span><span
-                style="font-size:9px;color:#808087">แอดบอลไทย</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="card-wrap">
-          <div class="sec-head"><span class="sec-title">📝 บทความ</span><a class="see-all" href="#">ดูทั้งหมด →</a>
-          </div>
-          <div class="article-row"><img class="article-thumb" src="assets/badge-inter-outline.png" alt="">
-            <div><span class="article-tag" style="background:rgba(38,115,191,.12);color:#2673bf">วิเคราะห์</span>
-              <div class="article-title">ทำไมลิเวอร์พูลถึงแกร่งขึ้นหลังเปลี่ยนระบบการเล่น</div>
-              <div class="article-meta">แอดน้อนแดง · 20.07.2026</div>
+            <div class="hero">
+                <div>
+                    <div class="hero-main-img"><img src="assets/featured-totti.png" alt=""></div>
+                    <div class="hero-main-body"><h3>HEAD</h3><div class="meta">BY..... DATE...... SOURCE......</div><div class="excerpt">ย่อข่าว 3 บรรทัด</div></div>
+                </div>
+                <div class="hero-side">
+                    <div>
+                        <div class="hero-card-img c1"><span class="here-we-go">HERE WE GO!</span></div>
+                        <div class="hero-card-body"><h4>HEAD</h4><p>เนื้อข่าวสั้น 1 บรรทัด</p></div>
+                    </div>
+                    <div>
+                        <div class="hero-card-img c2"><span class="here-we-go">HERE WE GO!</span></div>
+                        <div class="hero-card-body"><h4>HEAD</h4><p>เนื้อข่าวสั้น 1 บรรทัด</p></div>
+                    </div>
+                </div>
+                <div class="hero-tall">
+                    <div class="hero-tall-img"><img src="assets/ad-side-goal.png" alt=""></div>
+                    <div class="hero-tall-img"><img src="assets/ad-side-goal.png" alt=""></div>
+                </div>
             </div>
-          </div>
-          <div class="article-row"><img class="article-thumb" src="assets/badge-inter-red.png" alt="">
-            <div><span class="article-tag" style="background:rgba(191,51,140,.12);color:#bf338c">ซุบซิบ</span>
-              <div class="article-title">ข่าวลือ! ดาวยิงดังเล็งย้ายซบทีมใหญ่ซัมเมอร์นี้</div>
-              <div class="article-meta">แอดหมูทอด · 19.07.2026</div>
-            </div>
-          </div>
-          <div class="article-row">
-            <div class="article-thumb"></div>
-            <div><span class="article-tag" style="background:rgba(38,140,89,.12);color:#268c59">สัมภาษณ์</span>
-              <div class="article-title">คุยกับกุนซือดาวรุ่ง เส้นทางสู่พรีเมียร์ลีก</div>
-              <div class="article-meta">แอดบอล24 · 19.07.2026</div>
-            </div>
-          </div>
-          <div class="article-row">
-            <div class="article-thumb"></div>
-            <div><span class="article-tag" style="background:rgba(153,102,26,.12);color:#99661a">ประวัติ</span>
-              <div class="article-title">ย้อนรอย 10 ปี แชมป์แชมเปียนส์ลีกที่น่าจดจำ</div>
-              <div class="article-meta">แอดบอลไทย · 18.07.2026</div>
-            </div>
-          </div>
-          <div class="article-row">
-            <div class="article-thumb"></div>
-            <div><span class="article-tag" style="background:rgba(128,77,191,.12);color:#804dbf">รีวิว</span>
-              <div class="article-title">รีวิวรองเท้าสตั๊ดรุ่นใหม่ล่าสุดที่นักเตะระดับโลกใช้</div>
-              <div class="article-meta">แอดน้อนแดง · 18.07.2026</div>
-            </div>
-          </div>
+
+            <section class="section">
+                <div class="card-wrap">
+                    <div class="sec-head"><div class="badge-ic">10<br>NEWS</div><span class="sec-title">อัพเดทข่าว</span></div>
+                    <div class="news-row"><div class="lg-badge pl">PL</div><span class="hot-pill">🔥HOT</span><div class="news-title">HERE WE GO! ลิเวอร์พูลคว้าตัวปีกดาวรุ่งจากบุนเดสลีกา</div><div class="news-stat">👁 2,340</div><div class="news-stat">💬 128</div><div class="news-date">20. 07. 2026<br>2 min. ago</div><div class="news-author"><span class="n-ava"></span><span>แอดน้อนแดง</span></div></div>
+                    <div class="news-row"><div class="lg-badge sa">SA</div><div class="news-title">อินเตอร์ มิลาน เปิดตัวเบอร์เก้าคนใหม่พร้อมลุยลีก</div><div class="news-stat">👁 890</div><div class="news-stat">💬 34</div><div class="news-date">20. 07. 2026<br>2 min. ago</div><div class="news-author"><span class="n-ava"></span><span>แอดหมูทอด</span></div></div>
+                    <div class="news-row"><div class="lg-badge ll">LL</div><span class="hot-pill">🔥HOT</span><div class="news-title">เรอัล มาดริด ซิวแชมป์พรีซีซั่นทัวร์อเมริกา</div><div class="news-stat">👁 3,102</div><div class="news-stat">💬 210</div><div class="news-date">20. 07. 2026<br>2 min. ago</div><div class="news-author"><span class="n-ava"></span><span>แอดบอล24</span></div></div>
+                    <div class="news-row"><div class="lg-badge pl">PL</div><div class="news-title">แมนฯ ยูไนเต็ด เตรียมเปิดตัวกุนซือใหม่สัปดาห์หน้า</div><div class="news-stat">👁 654</div><div class="news-stat">💬 19</div><div class="news-date">20. 07. 2026<br>2 min. ago</div><div class="news-author"><span class="n-ava"></span><span>แอดน้อนแดง</span></div></div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="sec-head"><span class="sec-title">🎬 คลิปไฮไลท์ฟุตบอล</span><a class="see-all" href="#">ดูทั้งหมด →</a></div>
+                <div class="clip-grid">
+                    <div class="clip-card"><div class="clip-thumb"><div class="clip-play">▶</div><div class="clip-dur">8:24</div></div><div class="clip-title">ไฮไลท์ ลิเวอร์พูล 3-1 แมนฯ ซิตี้ | พรีเมียร์ลีก</div><div class="clip-views">45K views</div></div>
+                    <div class="clip-card"><div class="clip-thumb"><div class="clip-play">▶</div><div class="clip-dur">5:12</div></div><div class="clip-title">ประตูสุดสวย เรอัล มาดริด vs บาร์เซโลนา</div><div class="clip-views">128K views</div></div>
+                    <div class="clip-card"><div class="clip-thumb"><div class="clip-play">▶</div><div class="clip-dur">6:47</div></div><div class="clip-title">ไฮไลท์ อินเตอร์ มิลาน 2-0 ยูเวนตุส</div><div class="clip-views">32K views</div></div>
+                    <div class="clip-card"><div class="clip-thumb"><div class="clip-play">▶</div><div class="clip-dur">4:33</div></div><div class="clip-title">10 ประตูยอดเยี่ยมสัปดาห์นี้ พรีเมียร์ลีก</div><div class="clip-views">89K views</div></div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="sec-head"><span class="sec-title">🎮 Game Event</span><a class="see-all" href="#">ดูทั้งหมด →</a></div>
+                <div class="game-grid">
+                    <div class="game-card">
+                        <div class="game-card-thumb c1"></div>
+                        <div><div class="game-card-tag">ทายผล</div><div class="game-card-title">ทายผลบอลชิงรางวัล</div><div class="game-card-desc">ทายผลการแข่งขันที่ชอบ ลุ้นรับเหรียญและของรางวัลพิเศษ</div></div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-card-thumb c2"></div>
+                        <div><div class="game-card-tag">มินิเกม</div><div class="game-card-title">อัพเลเวลนักบอล</div><div class="game-card-desc">สะสมค่าประสบการณ์ อัพเกรดนักเตะในทีมของคุณให้แข็งแกร่งขึ้น</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="card-wrap">
+                    <div class="sec-head"><div class="badge-ic" style="color:#eb2e2e;font-size:11px;font-weight:800">🔥10</div><span class="sec-title">10 กระทู้เดือด</span></div>
+                    <div class="thread-row"><div class="rank-badge rk1">1</div><span class="hot-tag">🔥HOT</span><div class="thread-title">ทางการ! ลิเวอร์พูลปิดดีลปีกดาวรุ่งจากบุนเดสลีกา</div><div class="thread-stat">👁 8,940</div><div class="thread-stat">💬 412</div><div class="thread-date">📅 20.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดน้อนแดง</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rk2">2</div><span class="hot-tag">🔥HOT</span><div class="thread-title">เรอัล มาดริด ซิวแชมป์พรีซีซั่นทัวร์อเมริกา</div><div class="thread-stat">👁 7,102</div><div class="thread-stat">💬 310</div><div class="thread-date">📅 20.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดบอล24</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rk3">3</div><span class="hot-tag">🔥HOT</span><div class="thread-title">ดราม่า! แฟนบอลบุกวิจารณ์กุนซือทีมชาติหลังพ่าย</div><div class="thread-stat">👁 6,530</div><div class="thread-stat">💬 289</div><div class="thread-date">📅 19.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดหมูทอด</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rkn">4</div><div class="thread-title">อินเตอร์ มิลาน เปิดตัวเบอร์เก้าคนใหม่พร้อมลุยลีก</div><div class="thread-stat">👁 5,890</div><div class="thread-stat">💬 201</div><div class="thread-date">📅 20.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดหมูทอด</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rkn">5</div><div class="thread-title">แมนฯ ยูไนเต็ด เตรียมเปิดตัวกุนซือใหม่สัปดาห์หน้า</div><div class="thread-stat">👁 5,120</div><div class="thread-stat">💬 178</div><div class="thread-date">📅 21.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดน้อนแดง</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rkn">6</div><div class="thread-title">ทีมชาติไทยเก็บชัยนัดกระชับมิตรก่อนศึกใหญ่</div><div class="thread-stat">👁 4,760</div><div class="thread-stat">💬 165</div><div class="thread-date">📅 19.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดบอลไทย</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rkn">7</div><div class="thread-title">นาโปลี ต่อสัญญากับกัปตันทีมยาว 3 ปี</div><div class="thread-stat">👁 3,980</div><div class="thread-stat">💬 120</div><div class="thread-date">📅 18.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดหมูทอด</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rkn">8</div><div class="thread-title">เชฟฯ ยูไนเต็ด ปะทะ ฮัดเดอร์สฟิลด์ ศึกลุ้นเลื่อนชั้น</div><div class="thread-stat">👁 3,410</div><div class="thread-stat">💬 98</div><div class="thread-date">📅 21.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดบอล24</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rkn">9</div><div class="thread-title">สปอร์ติ้ง ลิสบอน เปิดบ้านรับสตราสบูร์กคืนนี้</div><div class="thread-stat">👁 2,890</div><div class="thread-stat">💬 76</div><div class="thread-date">📅 20.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดน้อนแดง</span></div></div>
+                    <div class="thread-row"><div class="rank-badge rkn">10</div><div class="thread-title">วิเคราะห์บอล: มอลล์บี้ vs ลินคอล์น เร้ด อิมป์ส</div><div class="thread-stat">👁 2,340</div><div class="thread-stat">💬 54</div><div class="thread-date">📅 21.07.2026</div><div class="thread-author"><span class="n-ava"></span><span style="font-size:9px;color:#808087">แอดบอลไทย</span></div></div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="card-wrap">
+                    <div class="sec-head"><span class="sec-title">📝 บทความ</span><a class="see-all" href="#">ดูทั้งหมด →</a></div>
+                    <div class="article-row"><img class="article-thumb" src="assets/badge-inter-outline.png" alt=""><div><span class="article-tag" style="background:rgba(38,115,191,.12);color:#2673bf">วิเคราะห์</span><div class="article-title">ทำไมลิเวอร์พูลถึงแกร่งขึ้นหลังเปลี่ยนระบบการเล่น</div><div class="article-meta">แอดน้อนแดง · 20.07.2026</div></div></div>
+                    <div class="article-row"><img class="article-thumb" src="assets/badge-inter-red.png" alt=""><div><span class="article-tag" style="background:rgba(191,51,140,.12);color:#bf338c">ซุบซิบ</span><div class="article-title">ข่าวลือ! ดาวยิงดังเล็งย้ายซบทีมใหญ่ซัมเมอร์นี้</div><div class="article-meta">แอดหมูทอด · 19.07.2026</div></div></div>
+                    <div class="article-row"><div class="article-thumb"></div><div><span class="article-tag" style="background:rgba(38,140,89,.12);color:#268c59">สัมภาษณ์</span><div class="article-title">คุยกับกุนซือดาวรุ่ง เส้นทางสู่พรีเมียร์ลีก</div><div class="article-meta">แอดบอล24 · 19.07.2026</div></div></div>
+                    <div class="article-row"><div class="article-thumb"></div><div><span class="article-tag" style="background:rgba(153,102,26,.12);color:#99661a">ประวัติ</span><div class="article-title">ย้อนรอย 10 ปี แชมป์แชมเปียนส์ลีกที่น่าจดจำ</div><div class="article-meta">แอดบอลไทย · 18.07.2026</div></div></div>
+                    <div class="article-row"><div class="article-thumb"></div><div><span class="article-tag" style="background:rgba(128,77,191,.12);color:#804dbf">รีวิว</span><div class="article-title">รีวิวรองเท้าสตั๊ดรุ่นใหม่ล่าสุดที่นักเตะระดับโลกใช้</div><div class="article-meta">แอดน้อนแดง · 18.07.2026</div></div></div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="sec-head" style="margin-bottom:12px"><span class="sec-title">🏆 ตารางคะแนนฟุตบอล</span></div>
+                <div class="card-wrap" style="padding:0;overflow:hidden">
+                    <div style="display:flex;background:var(--off)">
+                        <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;font-weight:700;background:#fff;border-bottom:3px solid var(--orange)">ENG</div>
+                        <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">ESP</div>
+                        <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">ITA</div>
+                        <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">GER</div>
+                        <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">FRA</div>
+                        <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">THA</div>
+                    </div>
+                    <table style="width:100%;border-collapse:collapse;background:#fff">
+                        <thead><tr style="font-size:10px;color:var(--gray)"><th style="padding:10px 6px">#</th><th style="text-align:left;padding:10px 6px">ทีม</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr></thead>
+                        <tbody style="font-size:12px;text-align:center">
+                            <tr style="background:#fafafb"><td style="border-left:3px solid var(--green);padding:9px 6px">1</td><td style="text-align:left">ลิเวอร์พูล</td><td>20</td><td>15</td><td>3</td><td>2</td><td style="font-weight:800">48</td></tr>
+                            <tr><td style="border-left:3px solid var(--green);padding:9px 6px">2</td><td style="text-align:left">แมนฯ ซิตี้</td><td>20</td><td>14</td><td>4</td><td>2</td><td style="font-weight:800">46</td></tr>
+                            <tr style="background:#fafafb"><td style="border-left:3px solid var(--green);padding:9px 6px">3</td><td style="text-align:left">อาร์เซนอล</td><td>20</td><td>13</td><td>5</td><td>2</td><td style="font-weight:800">44</td></tr>
+                            <tr><td style="border-left:3px solid var(--green);padding:9px 6px">4</td><td style="text-align:left">เชลซี</td><td>20</td><td>12</td><td>4</td><td>4</td><td style="font-weight:800">40</td></tr>
+                            <tr style="background:#fafafb"><td style="padding:9px 6px">18</td><td style="text-align:left;border-left:3px solid var(--red)">เซาแธมป์ตัน</td><td>20</td><td>3</td><td>4</td><td>13</td><td style="font-weight:800">13</td></tr>
+                            <tr><td style="padding:9px 6px">19</td><td style="text-align:left;border-left:3px solid var(--red)">อิปสวิช</td><td>20</td><td>2</td><td>5</td><td>13</td><td style="font-weight:800">11</td></tr>
+                            <tr style="background:#fafafb"><td style="padding:9px 6px">20</td><td style="text-align:left;border-left:3px solid var(--red)">เลสเตอร์</td><td>20</td><td>2</td><td>4</td><td>14</td><td style="font-weight:800">10</td></tr>
+                        </tbody>
+                    </table>
+                    <div style="display:flex;gap:20px;padding:12px 16px;font-size:10px;color:var(--gray)">
+                        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px"></span>โซนแชมเปียนส์ลีก</span>
+                        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px"></span>โซนตกชั้น</span>
+                    </div>
+                </div>
+            </section>
         </div>
-      </section>
+    </main>
 
-      <section class="section">
-        <div class="sec-head" style="margin-bottom:12px"><span class="sec-title">🏆 ตารางคะแนนฟุตบอล</span></div>
-        <div class="card-wrap" style="padding:0;overflow:hidden">
-          <div style="display:flex;background:var(--off)">
-            <div
-              style="flex:1;text-align:center;padding:12px 4px;font-size:12px;font-weight:700;background:#fff;border-bottom:3px solid var(--orange)">
-              ENG</div>
-            <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">ESP</div>
-            <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">ITA</div>
-            <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">GER</div>
-            <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">FRA</div>
-            <div style="flex:1;text-align:center;padding:12px 4px;font-size:12px;color:var(--gray)">THA</div>
-          </div>
-          <table style="width:100%;border-collapse:collapse;background:#fff">
-            <thead>
-              <tr style="font-size:10px;color:var(--gray)">
-                <th style="padding:10px 6px">#</th>
-                <th style="text-align:left;padding:10px 6px">ทีม</th>
-                <th>P</th>
-                <th>W</th>
-                <th>D</th>
-                <th>L</th>
-                <th>Pts</th>
-              </tr>
-            </thead>
-            <tbody style="font-size:12px;text-align:center">
-              <tr style="background:#fafafb">
-                <td style="border-left:3px solid var(--green);padding:9px 6px">1</td>
-                <td style="text-align:left">ลิเวอร์พูล</td>
-                <td>20</td>
-                <td>15</td>
-                <td>3</td>
-                <td>2</td>
-                <td style="font-weight:800">48</td>
-              </tr>
-              <tr>
-                <td style="border-left:3px solid var(--green);padding:9px 6px">2</td>
-                <td style="text-align:left">แมนฯ ซิตี้</td>
-                <td>20</td>
-                <td>14</td>
-                <td>4</td>
-                <td>2</td>
-                <td style="font-weight:800">46</td>
-              </tr>
-              <tr style="background:#fafafb">
-                <td style="border-left:3px solid var(--green);padding:9px 6px">3</td>
-                <td style="text-align:left">อาร์เซนอล</td>
-                <td>20</td>
-                <td>13</td>
-                <td>5</td>
-                <td>2</td>
-                <td style="font-weight:800">44</td>
-              </tr>
-              <tr>
-                <td style="border-left:3px solid var(--green);padding:9px 6px">4</td>
-                <td style="text-align:left">เชลซี</td>
-                <td>20</td>
-                <td>12</td>
-                <td>4</td>
-                <td>4</td>
-                <td style="font-weight:800">40</td>
-              </tr>
-              <tr style="background:#fafafb">
-                <td style="padding:9px 6px">18</td>
-                <td style="text-align:left;border-left:3px solid var(--red)">เซาแธมป์ตัน</td>
-                <td>20</td>
-                <td>3</td>
-                <td>4</td>
-                <td>13</td>
-                <td style="font-weight:800">13</td>
-              </tr>
-              <tr>
-                <td style="padding:9px 6px">19</td>
-                <td style="text-align:left;border-left:3px solid var(--red)">อิปสวิช</td>
-                <td>20</td>
-                <td>2</td>
-                <td>5</td>
-                <td>13</td>
-                <td style="font-weight:800">11</td>
-              </tr>
-              <tr style="background:#fafafb">
-                <td style="padding:9px 6px">20</td>
-                <td style="text-align:left;border-left:3px solid var(--red)">เลสเตอร์</td>
-                <td>20</td>
-                <td>2</td>
-                <td>4</td>
-                <td>14</td>
-                <td style="font-weight:800">10</td>
-              </tr>
-            </tbody>
-          </table>
-          <div style="display:flex;gap:20px;padding:12px 16px;font-size:10px;color:var(--gray)">
-            <span><span
-                style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px"></span>โซนแชมเปียนส์ลีก</span>
-            <span><span
-                style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px"></span>โซนตกชั้น</span>
-          </div>
+    <footer class="footer">
+        <div class="footer-cols">
+            <div>
+                <div class="footer-logo">DoubleTen</div>
+                <div class="footer-tag">ชุมชนคนรักฟุตบอลไทย พูดคุย แชร์ข่าว อัพเดทวงการลูกหนัง</div>
+            </div>
+            <div class="footer-col"><h4>เมนูหลัก</h4><a href="#">หน้าแรก</a><a href="#">บทความ</a><a href="#">บอร์ดโซไซตี้</a><a href="#">บอร์ดบอลไทย</a><a href="#">ออลสปอร์ต</a></div>
+            <div class="footer-col"><h4>ชุมชน</h4><a href="#">สมัครสมาชิก</a><a href="#">เข้าสู่ระบบ</a><a href="#">กติกาชุมชน</a><a href="#">ติดต่อแอดมิน</a></div>
+            <div class="footer-col">
+                <h4>ติดต่อเรา</h4><a href="#">ติดต่อโฆษณา</a><a href="#">ร่วมงานกับเรา</a><a href="#">อีเมล: contact@doubleten.io</a>
+                <div class="footer-social"><div>FB</div><div>IG</div><div>TG</div><div>YT</div></div>
+            </div>
         </div>
-      </section>
-    </div>
-  </main>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom"><span>© 2026 DoubleTen.io — สงวนลิขสิทธิ์</span><span>นโยบายความเป็นส่วนตัว &nbsp;|&nbsp; ข้อตกลงการใช้งาน</span></div>
+    </footer>
 
-  <footer class="footer">
-    <div class="footer-cols">
-      <div>
-        <div class="footer-logo">DoubleTen</div>
-        <div class="footer-tag">ชุมชนคนรักฟุตบอลไทย พูดคุย แชร์ข่าว อัพเดทวงการลูกหนัง</div>
-      </div>
-      <div class="footer-col">
-        <h4>เมนูหลัก</h4><a href="#">หน้าแรก</a><a href="#">บทความ</a><a href="#">บอร์ดโซไซตี้</a><a
-          href="#">บอร์ดบอลไทย</a><a href="#">ออลสปอร์ต</a>
-      </div>
-      <div class="footer-col">
-        <h4>ชุมชน</h4><a href="#">สมัครสมาชิก</a><a href="#">เข้าสู่ระบบ</a><a href="#">กติกาชุมชน</a><a
-          href="#">ติดต่อแอดมิน</a>
-      </div>
-      <div class="footer-col">
-        <h4>ติดต่อเรา</h4><a href="#">ติดต่อโฆษณา</a><a href="#">ร่วมงานกับเรา</a><a href="#">อีเมล:
-          contact@doubleten.io</a>
-        <div class="footer-social">
-          <div>FB</div>
-          <div>IG</div>
-          <div>TG</div>
-          <div>YT</div>
-        </div>
-      </div>
-    </div>
-    <div class="footer-divider"></div>
-    <div class="footer-bottom"><span>© 2026 DoubleTen.io — สงวนลิขสิทธิ์</span><span>นโยบายความเป็นส่วนตัว &nbsp;|&nbsp;
-        ข้อตกลงการใช้งาน</span></div>
-  </footer>
+    <button id="backToTop">↑</button>
 
-  <button id="backToTop">↑</button>
 
-  <script>
-    // เฉพาะ toggle เมนูมือถือเท่านั้น (ยังไม่ใส่ function อื่น ตามที่ตกลงไว้)
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    menuToggle.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('show'); });
-    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); });
-  </script>
 </body>
-
 </html>
