@@ -1,504 +1,164 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoubleTen — ชุมชนคนรักฟุตบอล</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
-            --sidebar-dark: #282424;
-            --sidebar-red: #7f0c0c;
-            --header-bg: #17171c;
-            --off: #f5f5f7;
-            --gray: #808087;
-            --gray-2: #a6a6ad;
-            --border: #e0e0e3;
-            --orange: #feba4b;
-            --red: #eb2e2e;
-            --rail-w: 64px;
-            --header-h: 64px;
-            --content-max: 1000px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DoubleTen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sidebar-w: 198px;
+    --header-h: 60px;
+  }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Noto Sans Thai', 'Inter', sans-serif;
-            background: #0d0d10;
-        }
+  html, body {
+    height: 100%;
+    background: #2c2b2b;
+    font-family: 'Kanit', sans-serif;
+    color: #fff;
+  }
 
-        img {
-            display: block;
-            max-width: 100%;
-        }
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
 
-        /* ===== ICON RAIL (single template, always visible) ===== */
-        .icon-rail {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--rail-w);
-            height: 100vh;
-            background: linear-gradient(180deg, var(--sidebar-red) 0%, #322222 40%, var(--sidebar-dark) 100%);
-            z-index: 110;
-            padding: 12px 0;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
+  /* ===== Sidebar ===== */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: linear-gradient(to bottom, #872929 0%, #0d0a0a 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 14px 0 0 0;
+  }
 
-        .icon-rail::-webkit-scrollbar {
-            width: 0;
-        }
+  .sidebar .logo {
+    display: block;
+    width: 127px;
+    height: auto;
+    margin: 0 0 20px 36px;
+  }
 
-        .rail-item {
-            width: 36px;
-            height: 36px;
-            border-radius: 9px;
-            display: grid;
-            place-items: center;
-            cursor: pointer;
-            text-decoration: none;
-            flex-shrink: 0;
-        }
+  .sidebar .menu-panel {
+    background: rgba(18, 17, 17, 0.28);
+    border-radius: 15px;
+    margin: 0 15px;
+    padding: 8px 0;
+  }
 
-        .rail-item img {
-            width: 19px;
-            height: 19px;
-            filter: brightness(0) invert(1);
-            opacity: .92;
-        }
+  .sidebar .menu-panel ul {
+    list-style: none;
+  }
 
-        .rail-item.active {
-            background: var(--red);
-        }
+  .sidebar .menu-panel li {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding-left: 18px;
+    cursor: pointer;
+  }
 
-        .rail-item.shop {
-            background: linear-gradient(180deg, #d9a445, #b8822a);
-        }
+  .sidebar .menu-panel li img {
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+  }
 
-        .rail-spacer {
-            flex: 1;
-        }
+  .sidebar .menu-panel li span {
+    margin-left: 11px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    white-space: nowrap;
+  }
 
-        /* ===== HEADER ===== */
-        .header {
-            position: fixed;
-            top: 0;
-            left: var(--rail-w);
-            right: 0;
-            height: var(--header-h);
-            background: var(--header-bg);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 0 20px;
-        }
+  .sidebar .balance-box {
+    margin: 13px 15px 0 15px;
+    width: 170px;
+  }
 
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+  .sidebar .balance-box img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 
-        .header-logo img {
-            width: 30px;
-            height: 30px;
-            object-fit: contain;
-        }
+  /* ===== Header + main ===== */
+  .content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 
-        .header-logo .txt {
-            color: #fff;
-            font-family: 'Inter';
-            font-weight: 800;
-            font-size: 11px;
-            letter-spacing: 1.5px;
-        }
+  .header {
+    height: var(--header-h);
+    background: #121214;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding-left: 25px;
+    flex-shrink: 0;
+  }
 
-        .header-icons {
-            display: flex;
-            gap: 14px;
-        }
+  .header img {
+    width: 27px;
+    height: 27px;
+    cursor: pointer;
+  }
 
-        .h-icon {
-            width: 20px;
-            height: 20px;
-            filter: brightness(0) invert(1);
-            cursor: pointer;
-        }
-
-        .header-spacer {
-            flex: 1;
-        }
-
-        .btn-login {
-            background: none;
-            border: none;
-            color: var(--orange);
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: 'Inter';
-        }
-
-        .header-divider {
-            color: var(--gray-2);
-            font-size: 13px;
-        }
-
-        .btn-register {
-            background: none;
-            border: none;
-            color: #fff;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: 'Inter';
-        }
-
-        .theme-toggle {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        /* ===== MAIN ===== */
-        .main {
-            margin-left: var(--rail-w);
-            padding-top: var(--header-h);
-            background: #fff;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: var(--content-max);
-            margin: 0 auto;
-            padding: 16px 16px 40px;
-        }
-
-        .section-img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 14px;
-        }
-
-        .section-img.no-radius {
-            border-radius: 0;
-        }
-
-        .announce {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--off);
-            border-radius: 6px;
-            padding: 8px 14px;
-            margin-bottom: 6px;
-            font-size: 13px;
-            color: #1d1b1b;
-        }
-
-        .announce img {
-            width: 18px;
-            height: 18px;
-        }
-
-        .announce .link {
-            margin-left: auto;
-            font-size: 11px;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* News update (hand-coded, no dedicated export available) */
-        .card-wrap {
-            background: var(--off);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 14px;
-        }
-
-        .sec-head {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .sec-head .badge-ic {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #fff;
-            border: 2px solid var(--border);
-            display: grid;
-            place-items: center;
-            font-size: 8px;
-            color: var(--red);
-            font-weight: 800;
-        }
-
-        .sec-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #1a1a1f;
-            font-family: 'Inter';
-        }
-
-        .sec-sub {
-            font-size: 10px;
-            color: var(--gray);
-        }
-
-        .news-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #fff;
-            border: 1px solid #e5e5e8;
-            border-radius: 6px;
-            padding: 7px 10px;
-            margin-bottom: 6px;
-            flex-wrap: wrap;
-        }
-
-        .lg-badge {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            display: grid;
-            place-items: center;
-            color: #fff;
-            font-family: 'Inter';
-            font-weight: 700;
-            font-size: 8px;
-            flex-shrink: 0;
-        }
-
-        .lg-badge.pl {
-            background: #3d008c;
-        }
-
-        .lg-badge.sa {
-            background: #0059a6;
-        }
-
-        .lg-badge.ll {
-            background: #d9590d;
-        }
-
-        .hot-pill {
-            background: #ffeded;
-            color: var(--red);
-            font-weight: 700;
-            font-size: 8px;
-            padding: 2px 5px;
-            border-radius: 4px;
-            white-space: nowrap;
-        }
-
-        .news-title {
-            flex: 1;
-            min-width: 140px;
-            font-size: 10.5px;
-            color: #1a1a1f;
-            font-weight: 600;
-        }
-
-        .news-stat {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            color: var(--gray);
-            font-size: 9.5px;
-        }
-
-        .news-date {
-            color: var(--gray);
-            font-size: 8px;
-            line-height: 1.4;
-        }
-
-        .news-author {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .n-ava {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #c0c4cc;
-            flex-shrink: 0;
-        }
-
-        .news-author span {
-            font-size: 8.5px;
-            color: var(--gray);
-        }
-
-        #backToTop {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 46px;
-            height: 46px;
-            border-radius: 23px;
-            background: var(--orange);
-            border: none;
-            color: #17171c;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
-            z-index: 90;
-        }
-
-        @media (max-width: 600px) {
-            .news-date {
-                display: none;
-            }
-        }
-    </style>
+  .main {
+    flex: 1;
+    background: #2c2b2b;
+  }
+</style>
 </head>
-
 <body>
 
-    <!-- ICON RAIL -->
-    <nav class="icon-rail">
-        <a class="rail-item" href="index.html"><img src="assets/HOME ICON.svg" alt="หน้าแรก"></a>
-        <a class="rail-item" href="#"><img src="assets/NEWS ICON.svg" alt="ข่าว"></a>
-        <a class="rail-item" href="#"><img src="assets/ARTICLE ICON.svg" alt="บทความ"></a>
-        <a class="rail-item" href="board.html"><img src="assets/SOCIETY ICON.svg" alt="สังคม"></a>
-        <a class="rail-item" href="board.html"><img src="assets/BALL_INTER ICON.svg" alt="บอลนอก"></a>
-        <a class="rail-item" href="board.html"><img src="assets/BALL_THAI ICON.svg" alt="บอลไทย"></a>
-        <a class="rail-item" href="#"><img src="assets/all sport icon.svg" alt="ออลสปอร์ต"></a>
-        <a class="rail-item" href="#"><img src="assets/games icon.svg" alt="เกมส์"></a>
-        <a class="rail-item" href="#"><img src="assets/deal icon.svg" alt="เดลล่างมอ"></a>
-        <div class="rail-spacer"></div>
-        <a class="rail-item active" href="#"><img src="assets/Prisoner Icon.svg" alt="เรือนจำคนง่าว"></a>
-        <a class="rail-item shop" href="#"><img src="assets/SEE_01.svg" alt="ซื้อไอเท็ม"></a>
-    </nav>
+  <div class="layout">
 
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-logo"><img src="assets/LOGO_WEB_01.svg" alt=""><span class="txt">DOUBLETEN</span></div>
-        <div class="header-icons">
-            <img class="h-icon" src="assets/mynaui_bell.svg" alt="notifications">
-            <img class="h-icon" src="assets/mynaui_mail.svg" alt="mail">
-        </div>
-        <div class="header-spacer"></div>
-        <button class="btn-login">LOGIN</button>
-        <span class="header-divider">|</span>
-        <button class="btn-register">REGISTER</button>
-        <img class="theme-toggle" src="assets/light_mode.svg" alt="theme">
-    </header>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <img class="logo" src="assets/LOGO_WEB_01.svg" alt="DoubleTen">
 
-    <!-- MAIN -->
-    <main class="main">
-        <div class="container">
+      <nav class="menu-panel">
+        <ul>
+          <li><img src="assets/HOME ICON.svg" alt=""><span>หน้าแรก</span></li>
+          <li><img src="assets/NEWS ICON.svg" alt=""><span>อัพเดทข่าว</span></li>
+          <li><img src="assets/ARTICLE ICON.svg" alt=""><span>บทความ</span></li>
+          <li><img src="assets/SOCIETY ICON.svg" alt=""><span>บอร์ดโซไซตี้</span></li>
+          <li><img src="assets/BALL_INTER ICON.svg" alt=""><span>บอร์ดบอลนอก</span></li>
+          <li><img src="assets/BALL_THAI ICON.svg" alt=""><span>บอร์ดบอลไทย</span></li>
+          <li><img src="assets/all sport icon.svg" alt=""><span>ออลสปอร์ต</span></li>
+          <li><img src="assets/games icon.svg" alt=""><span>บอร์ดเกมส์</span></li>
+          <li><img src="assets/deal icon.svg" alt=""><span>เดลล่างมอ</span></li>
+          <li><img src="assets/Prisoner Icon.svg" alt=""><span>เรือนจำคนง่าว</span></li>
+          <li><img src="assets/buy item icon.svg" alt=""><span>ซื้อไอเท็มเว็บ</span></li>
+        </ul>
+      </nav>
 
-            <!-- Ad banners (exported section) -->
-            <img class="section-img" src="assets/Group 34.png" alt="โฆษณา">
+      <div class="balance-box">
+        <img src="assets/balance.svg" alt="Balance">
+      </div>
+    </aside>
 
-            <!-- Announcements (hand-coded, no dedicated export) -->
-            <div class="announce"><img src="assets/megaphone-solid.svg" alt="">ประกาศเว็บ :<span class="link"><img
-                        src="assets/LINK_01.svg" alt="" style="width:12px;height:12px">LINK</span></div>
-            <div class="announce"><img src="assets/megaphone-solid2.svg" alt="">ประกาศสมาชิก :<span class="link"><img
-                        src="assets/LINK_01.svg" alt="" style="width:12px;height:12px">LINK</span></div>
+    <!-- Header + main content -->
+    <div class="content-area">
+      <header class="header">
+        <img src="assets/mynaui_bell.svg" alt="Notifications">
+        <img src="assets/mynaui_mail.svg" alt="Messages">
+      </header>
 
-            <!-- Match ticker (exported section) -->
-            <img class="section-img" src="assets/Match Schedule Ticker.png" alt="ตารางแข่งขัน" style="margin-top:14px">
+      <main class="main">
+        <!-- เนื้อหาส่วนกลาง/ขวา ยังไม่มีในดีไซน์นี้ (เฉพาะ sidebar + header เท่านั้น) -->
+      </main>
+    </div>
 
-            <!-- Hero: main image + 2 HERE WE GO cards (exported sections) -->
-            <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:10px;margin-bottom:14px">
-                <img class="section-img" src="assets/Group 50.png" alt="ข่าวเด่น" style="margin-bottom:0">
-                <div style="display:flex;flex-direction:column;gap:10px">
-                    <img class="section-img" src="assets/Group 52.png" alt="Here we go" style="margin-bottom:0">
-                    <img class="section-img" src="assets/Group 53.png" alt="Here we go" style="margin-bottom:0">
-                </div>
-            </div>
-
-            <!-- News Update (hand-coded, no dedicated export) -->
-            <div class="card-wrap">
-                <div class="sec-head">
-                    <div class="badge-ic">10<br>NEWS</div>
-                    <div>
-                        <div class="sec-title">NEWS UPDATE</div>
-                        <div class="sec-sub">อัพเดทข่าว</div>
-                    </div>
-                </div>
-                <div class="news-row">
-                    <div class="lg-badge pl">PL</div><span class="hot-pill">🔥HOT</span>
-                    <div class="news-title">HERE WE GO! ลิเวอร์พูลคว้าตัวปีกดาวรุ่งจากบุนเดสลีกา</div>
-                    <div class="news-stat">👁 2,340</div>
-                    <div class="news-stat">💬 128</div>
-                    <div class="news-date">20. 07. 2026<br>2 min. ago</div>
-                    <div class="news-author"><span class="n-ava"></span><span>แอดน้อนแดง</span></div>
-                </div>
-                <div class="news-row">
-                    <div class="lg-badge sa">SA</div>
-                    <div class="news-title">อินเตอร์ มิลาน เปิดตัวเบอร์เก้าคนใหม่พร้อมลุยลีก</div>
-                    <div class="news-stat">👁 890</div>
-                    <div class="news-stat">💬 34</div>
-                    <div class="news-date">20. 07. 2026<br>2 min. ago</div>
-                    <div class="news-author"><span class="n-ava"></span><span>แอดหมูทอด</span></div>
-                </div>
-                <div class="news-row">
-                    <div class="lg-badge ll">LL</div>
-                    <div class="news-title">เรอัล มาดริด ซิวแชมป์พรีซีซั่นทัวร์อเมริกา</div>
-                    <div class="news-stat">👁 3,102</div>
-                    <div class="news-stat">💬 210</div>
-                    <div class="news-date">20. 07. 2026<br>2 min. ago</div>
-                    <div class="news-author"><span class="n-ava"></span><span>แอดบอล24</span></div>
-                </div>
-                <div class="news-row">
-                    <div class="lg-badge pl">PL</div>
-                    <div class="news-title">แมนฯ ยูไนเต็ด เตรียมเปิดตัวกุนซือใหม่สัปดาห์หน้า</div>
-                    <div class="news-stat">👁 654</div>
-                    <div class="news-stat">💬 19</div>
-                    <div class="news-date">20. 07. 2026<br>2 min. ago</div>
-                    <div class="news-author"><span class="n-ava"></span><span>แอดน้อนแดง</span></div>
-                </div>
-            </div>
-
-            <!-- Highlight Clips (exported section) -->
-            <img class="section-img" src="assets/Highlight Clips Section.png" alt="คลิปไฮไลท์">
-
-            <!-- Game Event (exported section) -->
-            <img class="section-img" src="assets/Group 99.png" alt="Game Event">
-
-            <!-- Top 10 threads (exported section) -->
-            <img class="section-img" src="assets/Group 97.png" alt="10 กระทู้เดือด">
-
-            <!-- Articles (exported section) -->
-            <img class="section-img" src="assets/Group 98.png" alt="บทความ">
-
-            <!-- Standings (exported section) -->
-            <img class="section-img" src="assets/Group 85.png" alt="ตารางคะแนน" style="margin-bottom:0">
-
-        </div>
-    </main>
-
-    <button id="backToTop">↑</button>
+  </div>
 
 </body>
-
 </html>
