@@ -25,6 +25,7 @@
   .layout {
     display: flex;
     min-height: 100vh;
+    position: relative;
   }
 
   /* ===== Sidebar ===== */
@@ -35,6 +36,8 @@
     display: flex;
     flex-direction: column;
     padding: 14px 0 0 0;
+    transition: width 0.2s ease;
+    overflow: hidden;
   }
 
   .sidebar .logo {
@@ -61,6 +64,7 @@
     align-items: center;
     padding-left: 34px;
     cursor: pointer;
+    white-space: nowrap;
   }
 
   .sidebar .menu-panel li img {
@@ -74,7 +78,6 @@
     font-weight: 400;
     font-size: 13px;
     color: #fff;
-    white-space: nowrap;
   }
 
   .sidebar .balance-box {
@@ -88,11 +91,69 @@
     height: auto;
   }
 
+  /* ===== Collapsed menu (icon-only) ===== */
+  .sidebar .menu-collapsed {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding-top: 15px;
+  }
+
+  .sidebar .menu-collapsed li {
+    list-style: none;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+  }
+
+  .sidebar .menu-collapsed li img {
+    width: 35px;
+    height: 35px;
+    display: block;
+  }
+
+  /* ===== Collapsed state ===== */
+  .sidebar.collapsed {
+    width: 56px;
+  }
+
+  .sidebar.collapsed .logo,
+  .sidebar.collapsed .menu-panel,
+  .sidebar.collapsed .balance-box {
+    display: none;
+  }
+
+  .sidebar.collapsed .menu-collapsed {
+    display: flex;
+  }
+
+  /* ===== Toggle arrow button ===== */
+  .sidebar-toggle {
+    position: absolute;
+    top: 108px;
+    left: calc(var(--sidebar-w) - 5px);
+    width: 10px;
+    height: 30px;
+    background: #1a1a1a;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 10px;
+    line-height: 30px;
+    text-align: center;
+    padding: 0;
+    cursor: pointer;
+    z-index: 10;
+    transition: left 0.2s ease;
+  }
+
   /* ===== Header + main ===== */
   .content-area {
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0;
   }
 
   .header {
@@ -100,9 +161,31 @@
     background: #121214;
     display: flex;
     align-items: center;
-    gap: 11px;
     padding-left: 25px;
     flex-shrink: 0;
+  }
+
+  .header .wordmark {
+    display: none;
+    font-size: 20px;
+    font-weight: 400;
+    color: #fff;
+    margin-right: 26px;
+    white-space: nowrap;
+  }
+
+  .sidebar.collapsed ~ .content-area .header {
+    padding-left: 26px;
+  }
+
+  .sidebar.collapsed ~ .content-area .header .wordmark {
+    display: block;
+  }
+
+  .header .icons {
+    display: flex;
+    align-items: center;
+    gap: 11px;
   }
 
   .header img {
@@ -122,7 +205,7 @@
   <div class="layout">
 
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <img class="logo" src="assets/LOGO_WEB_01.svg" alt="DoubleTen">
 
       <nav class="menu-panel">
@@ -144,13 +227,34 @@
       <div class="balance-box">
         <img src="assets/balance.svg" alt="Balance">
       </div>
+
+      <!-- Collapsed (icon-only) menu -->
+      <ul class="menu-collapsed">
+        <li><img src="assets/HOME ICON.svg" alt="หน้าแรก"></li>
+        <li><img src="assets/NEWS ICON.svg" alt="อัพเดทข่าว"></li>
+        <li><img src="assets/ARTICLE ICON.svg" alt="บทความ"></li>
+        <li><img src="assets/SOCIETY ICON.svg" alt="บอร์ดโซไซตี้"></li>
+        <li><img src="assets/BALL_INTER ICON.svg" alt="บอร์ดบอลนอก"></li>
+        <li><img src="assets/BALL_THAI ICON.svg" alt="บอร์ดบอลไทย"></li>
+        <li><img src="assets/all sport icon.svg" alt="ออลสปอร์ต"></li>
+        <li><img src="assets/games icon.svg" alt="บอร์ดเกมส์"></li>
+        <li><img src="assets/deal icon.svg" alt="เดลล่างมอ"></li>
+        <li><img src="assets/Prisoner Icon.svg" alt="เรือนจำคนง่าว"></li>
+        <li><img src="assets/buy item icon.svg" alt="ซื้อไอเท็มเว็บ"></li>
+      </ul>
     </aside>
+
+    <!-- Toggle arrow -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&#10094;</button>
 
     <!-- Header + main content -->
     <div class="content-area">
       <header class="header">
-        <img src="assets/mynaui_bell.svg" alt="Notifications">
-        <img src="assets/mynaui_mail.svg" alt="Messages">
+        <span class="wordmark">DOUBLETEN</span>
+        <div class="icons">
+          <img src="assets/mynaui_bell.svg" alt="Notifications">
+          <img src="assets/mynaui_mail.svg" alt="Messages">
+        </div>
       </header>
 
       <main class="main">
@@ -159,6 +263,17 @@
     </div>
 
   </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    toggleBtn.addEventListener('click', () => {
+      const collapsed = sidebar.classList.toggle('collapsed');
+      document.documentElement.style.setProperty('--sidebar-w', collapsed ? '56px' : '198px');
+      toggleBtn.innerHTML = collapsed ? '&#10095;' : '&#10094;';
+    });
+  </script>
 
 </body>
 </html>
