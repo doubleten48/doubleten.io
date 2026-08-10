@@ -48,23 +48,42 @@
   }
 
   .sidebar .menu-panel {
-    background: rgba(18, 17, 17, 0.28);
-    border-radius: 15px;
     margin: 0 15px;
     padding: 8px 0;
+    position: relative;
   }
 
   .sidebar .menu-panel ul {
     list-style: none;
+    position: relative;
+  }
+
+  .menu-highlight {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    z-index: 0;
+    transition: top 0.2s ease;
+    pointer-events: none;
   }
 
   .sidebar .menu-panel li {
+    position: relative;
     height: 40px;
     display: flex;
     align-items: center;
     padding-left: 34px;
     cursor: pointer;
     white-space: nowrap;
+  }
+
+  .sidebar .menu-panel li img,
+  .sidebar .menu-panel li span {
+    position: relative;
+    z-index: 1;
   }
 
   .sidebar .menu-panel li img {
@@ -80,8 +99,15 @@
     color: #fff;
   }
 
+  .sidebar .menu-divider {
+    width: 163px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 8px auto;
+  }
+
   .sidebar .balance-box {
-    margin: 13px 15px 0 15px;
+    margin: 0 15px;
     width: 170px;
   }
 
@@ -120,6 +146,7 @@
 
   .sidebar.collapsed .logo,
   .sidebar.collapsed .menu-panel,
+  .sidebar.collapsed .menu-divider,
   .sidebar.collapsed .balance-box {
     display: none;
   }
@@ -206,10 +233,11 @@
 
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-      <img class="logo" src="assets/LOGO_WEB_01.svg" alt="DoubleTen">
+      <img class="logo" src="assets/LOGO_WEB_02.svg" alt="DoubleTen">
 
       <nav class="menu-panel">
-        <ul>
+        <div class="menu-highlight" id="menuHighlight"></div>
+        <ul id="menuList">
           <li><img src="assets/HOME ICON.svg" alt=""><span>หน้าแรก</span></li>
           <li><img src="assets/NEWS ICON.svg" alt=""><span>อัพเดทข่าว</span></li>
           <li><img src="assets/ARTICLE ICON.svg" alt=""><span>บทความ</span></li>
@@ -224,23 +252,25 @@
         </ul>
       </nav>
 
+      <div class="menu-divider"></div>
+
       <div class="balance-box">
         <img src="assets/balance.svg" alt="Balance">
       </div>
 
       <!-- Collapsed (icon-only) menu -->
       <ul class="menu-collapsed">
-        <li><img src="assets/HOME ICON.svg" alt="หน้าแรก"></li>
-        <li><img src="assets/NEWS ICON.svg" alt="อัพเดทข่าว"></li>
-        <li><img src="assets/ARTICLE ICON.svg" alt="บทความ"></li>
-        <li><img src="assets/SOCIETY ICON.svg" alt="บอร์ดโซไซตี้"></li>
-        <li><img src="assets/BALL_INTER ICON.svg" alt="บอร์ดบอลนอก"></li>
-        <li><img src="assets/BALL_THAI ICON.svg" alt="บอร์ดบอลไทย"></li>
-        <li><img src="assets/all sport icon.svg" alt="ออลสปอร์ต"></li>
-        <li><img src="assets/games icon.svg" alt="บอร์ดเกมส์"></li>
-        <li><img src="assets/deal icon.svg" alt="เดลล่างมอ"></li>
-        <li><img src="assets/Prisoner Icon.svg" alt="เรือนจำคนง่าว"></li>
-        <li><img src="assets/buy item icon.svg" alt="ซื้อไอเท็มเว็บ"></li>
+        <li><img src="assets/HOME ICON_2.svg" alt="หน้าแรก"></li>
+        <li><img src="assets/NEWS ICON_2.svg" alt="อัพเดทข่าว"></li>
+        <li><img src="assets/ARTICLE ICON_2.svg" alt="บทความ"></li>
+        <li><img src="assets/SOCIETY ICON_2.svg" alt="บอร์ดโซไซตี้"></li>
+        <li><img src="assets/BALL_INTER ICON_2.svg" alt="บอร์ดบอลนอก"></li>
+        <li><img src="assets/BALL_THAI ICON_2.svg" alt="บอร์ดบอลไทย"></li>
+        <li><img src="assets/all sport icon_2.svg" alt="ออลสปอร์ต"></li>
+        <li><img src="assets/games icon_2.svg" alt="บอร์ดเกมส์"></li>
+        <li><img src="assets/deal icon_2.svg" alt="เดลล่างมอ"></li>
+        <li><img src="assets/Prisoner Icon_2.svg" alt="เรือนจำคนง่าว"></li>
+        <li><img src="assets/buy item icon_2.svg" alt="ซื้อไอเท็มเว็บ"></li>
       </ul>
     </aside>
 
@@ -272,6 +302,28 @@
       const collapsed = sidebar.classList.toggle('collapsed');
       document.documentElement.style.setProperty('--sidebar-w', collapsed ? '56px' : '198px');
       toggleBtn.innerHTML = collapsed ? '&#10095;' : '&#10094;';
+    });
+
+    // Sliding menu highlight follows the hovered item
+    const menuList = document.getElementById('menuList');
+    const highlight = document.getElementById('menuHighlight');
+    const menuItems = menuList.querySelectorAll('li');
+    const defaultActiveIndex = 0; // หน้าแรก
+
+    function moveHighlightTo(li) {
+      highlight.style.top = (li.offsetTop + (li.offsetHeight - 32) / 2) + 'px';
+    }
+
+    if (menuItems.length) {
+      moveHighlightTo(menuItems[defaultActiveIndex]);
+    }
+
+    menuItems.forEach((li) => {
+      li.addEventListener('mouseenter', () => moveHighlightTo(li));
+    });
+
+    menuList.addEventListener('mouseleave', () => {
+      moveHighlightTo(menuItems[defaultActiveIndex]);
     });
   </script>
 
