@@ -76,26 +76,24 @@
     left: 0;
     right: 0;
     height: 40px;
-    display: flex;
-    align-items: center;
-    padding-left: 44px;
     cursor: pointer;
     white-space: nowrap;
   }
 
-  .sidebar .menu-panel li img,
-  .sidebar .menu-panel li span {
-    position: relative;
-    z-index: 1;
-  }
-
   .sidebar .menu-panel li img {
-    flex-shrink: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
     display: block;
   }
 
   .sidebar .menu-panel li span {
-    margin-left: 12px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 52px;
+    z-index: 1;
     font-weight: 400;
     font-size: 13px;
     color: #fff;
@@ -240,17 +238,17 @@
       <nav class="menu-panel">
         <div class="menu-highlight" id="menuHighlight"></div>
         <ul id="menuList">
-          <li style="top:9px"><img src="assets/HOME ICON_2.svg" alt="" style="width:10px;height:12px"><span>หน้าแรก</span></li>
-          <li style="top:46px"><img src="assets/NEWS ICON_2.svg" alt="" style="width:13px;height:10.6px"><span>อัพเดทข่าว</span></li>
-          <li style="top:79px"><img src="assets/ARTICLE ICON_2.svg" alt="" style="width:10px;height:10px"><span>บทความ</span></li>
-          <li style="top:115px"><img src="assets/SOCIETY ICON_2.svg" alt="" style="width:11px;height:10px"><span>บอร์ดโซไซตี้</span></li>
-          <li style="top:148px"><img src="assets/BALL_INTER ICON_2.svg" alt="" style="width:11px;height:14px"><span>บอร์ดบอลนอก</span></li>
-          <li style="top:182px"><img src="assets/BALL_THAI ICON_2.svg" alt="" style="width:9px;height:13px"><span>บอร์ดบอลไทย</span></li>
-          <li style="top:214px"><img src="assets/all sport icon_2.svg" alt="" style="width:11px;height:15px"><span>ออลสปอร์ต</span></li>
-          <li style="top:250px"><img src="assets/games icon_2.svg" alt="" style="width:12px;height:12px"><span>บอร์ดเกมส์</span></li>
-          <li style="top:282px"><img src="assets/deal icon_2.svg" alt="" style="width:13px;height:13px"><span>เดลล่างมอ</span></li>
-          <li style="top:316px"><img src="assets/Prisoner Icon_2.svg" alt="" style="width:12px;height:13px"><span>เรือนจำคนง่าว</span></li>
-          <li style="top:353px"><img src="assets/buy item icon_2.svg" alt="" style="width:13px;height:13px"><span>ซื้อไอเท็มเว็บ</span></li>
+          <li style="top:9px"><img src="assets/HOME ICON_2.svg" alt="" style="left:15px;width:10px;height:12px"><span style="left:39px">หน้าแรก</span></li>
+          <li style="top:46px"><img src="assets/NEWS ICON_2.svg" alt="" style="left:14px;width:13px;height:10.6px"><span style="left:39px">อัพเดทข่าว</span></li>
+          <li style="top:79px"><img src="assets/ARTICLE ICON_2.svg" alt="" style="left:15px;width:10px;height:10px"><span style="left:39px">บทความ</span></li>
+          <li style="top:115px"><img src="assets/SOCIETY ICON_2.svg" alt="" style="left:15px;width:11px;height:10px"><span style="left:38px">บอร์ดโซไซตี้</span></li>
+          <li style="top:148px"><img src="assets/BALL_INTER ICON_2.svg" alt="" style="left:15px;width:11px;height:14px"><span style="left:38px">บอร์ดบอลนอก</span></li>
+          <li style="top:182px"><img src="assets/BALL_THAI ICON_2.svg" alt="" style="left:16px;width:9px;height:13px"><span style="left:38px">บอร์ดบอลไทย</span></li>
+          <li style="top:214px"><img src="assets/all sport icon_2.svg" alt="" style="left:16px;width:11px;height:15px"><span style="left:38px">ออลสปอร์ต</span></li>
+          <li style="top:250px"><img src="assets/games icon_2.svg" alt="" style="left:16px;width:12px;height:12px"><span style="left:38px">บอร์ดเกมส์</span></li>
+          <li style="top:282px"><img src="assets/deal icon_2.svg" alt="" style="left:15px;width:13px;height:13px"><span style="left:38px">เดลล่างมอ</span></li>
+          <li style="top:316px"><img src="assets/Prisoner Icon_2.svg" alt="" style="left:14px;width:12px;height:13px"><span style="left:38px">เรือนจำคนง่าว</span></li>
+          <li style="top:353px"><img src="assets/buy item icon_2.svg" alt="" style="left:15px;width:13px;height:13px"><span style="left:38px">ซื้อไอเท็มเว็บ</span></li>
         </ul>
       </nav>
 
