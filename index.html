@@ -191,6 +191,7 @@
     align-items: center;
     padding-left: 25px;
     flex-shrink: 0;
+    position: relative;
   }
 
   .header .wordmark {
@@ -219,6 +220,33 @@
   .header img {
     width: 27px;
     height: 27px;
+    cursor: pointer;
+  }
+
+  .header .login-btn {
+    position: absolute;
+    left: 1041px;
+    top: 25px;
+    width: 56px;
+    height: 28px;
+    cursor: pointer;
+  }
+
+  .header .register-btn {
+    position: absolute;
+    left: 1102px;
+    top: 25px;
+    width: 92px;
+    height: 28px;
+    cursor: pointer;
+  }
+
+  .header .light-mode-btn {
+    position: absolute;
+    left: 1203px;
+    top: 26px;
+    width: 25px;
+    height: 25px;
     cursor: pointer;
   }
 
@@ -286,6 +314,9 @@
           <img src="assets/mynaui_bell.svg" alt="Notifications">
           <img src="assets/mynaui_mail.svg" alt="Messages">
         </div>
+        <img class="login-btn" src="assets/Group 101.svg" alt="Login">
+        <img class="register-btn" src="assets/Group 102.svg" alt="Register">
+        <img class="light-mode-btn" src="assets/light_mode.svg" alt="Toggle light mode">
       </header>
 
       <main class="main">
