@@ -186,18 +186,7 @@
 
   <!-- LOGO -->
   <a href="/" class="logo-wrap">
-    <svg width="44" height="32" viewBox="0 0 140 100">
-      <rect x="2" y="10" width="58" height="80" rx="10" fill="#c0392b"/>
-      <text x="31" y="63" text-anchor="middle" dominant-baseline="middle"
-        fill="#fff" font-family="'DM Sans',sans-serif" font-size="36" font-weight="700" letter-spacing="-1">10</text>
-      <rect x="80" y="10" width="58" height="80" rx="10" fill="#2a2a2a" stroke="#c0392b" stroke-width="2"/>
-      <text x="109" y="63" text-anchor="middle" dominant-baseline="middle"
-        fill="#c0392b" font-family="'DM Sans',sans-serif" font-size="36" font-weight="700" letter-spacing="-1">10</text>
-    </svg>
-    <div>
-      <div class="logo-wordmark">DoubleTen</div>
-      <div class="logo-sub">By น้อนแดง</div>
-    </div>
+    <img src="assets/LOGO_WEB_01.svg" alt="DoubleTen" style="height:48px;width:auto;">
   </a>
 
   <!-- CARD -->
@@ -326,6 +315,11 @@
           </div>
         </div>
 
+        <div class="check-wrap">
+          <input type="checkbox" id="remember-check"/>
+          <label class="check-label" for="remember-check">จดจำการเข้าสู่ระบบ</label>
+        </div>
+
         <div class="alert alert-error" id="login-alert-error"></div>
         <div class="alert alert-success" id="login-alert-success"></div>
 
@@ -351,7 +345,29 @@
   const SUPABASE_URL = 'https://dnrcardbuuwnvuridubb.supabase.co'
   const SUPABASE_KEY = 'sb_publishable_uz4Tj8HDZef7T2OLEzyvUw_wcGsn0ZW'
   const { createClient } = supabase
-  const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+  // จดจำการเข้าสู่ระบบ: ติ๊ก = เก็บ session ไว้ใน localStorage (อยู่ข้ามการปิดเบราว์เซอร์)
+  // ไม่ติ๊ก = เก็บใน sessionStorage (หายเมื่อปิดแท็บ/เบราว์เซอร์)
+  const rememberStorage = {
+    getItem: (key) => localStorage.getItem(key) || sessionStorage.getItem(key),
+    setItem: (key, value) => {
+      const remember = localStorage.getItem('rememberMe') === '1'
+      if (remember) {
+        localStorage.setItem(key, value)
+      } else {
+        sessionStorage.setItem(key, value)
+        localStorage.removeItem(key)
+      }
+    },
+    removeItem: (key) => {
+      localStorage.removeItem(key)
+      sessionStorage.removeItem(key)
+    }
+  }
+
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { storage: rememberStorage, persistSession: true, autoRefreshToken: true }
+  })
 
   // ── CHECKBOX + TURNSTILE ──
   function checkAgree() {
@@ -625,6 +641,10 @@
     const btn = document.getElementById('btn-login')
     btn.disabled = true
     btn.innerHTML = '<span class="spinner"></span>กำลังเข้าสู่ระบบ...'
+
+    // บันทึกตัวเลือก "จดจำการเข้าสู่ระบบ" ก่อน Supabase จะเขียน session ลง storage
+    const remember = document.getElementById('remember-check').checked
+    localStorage.setItem('rememberMe', remember ? '1' : '0')
 
     try {
       let email = input
