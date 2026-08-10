@@ -49,33 +49,36 @@
 
   .sidebar .menu-panel {
     margin: 0 15px;
-    padding: 8px 0;
     position: relative;
+    height: 403px;
   }
 
   .sidebar .menu-panel ul {
     list-style: none;
     position: relative;
+    height: 100%;
   }
 
   .menu-highlight {
     position: absolute;
-    left: 8px;
-    right: 8px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
+    left: 17px;
+    width: 137px;
+    height: 27px;
+    background: rgba(29, 28, 28, 0.33);
+    border-radius: 5px;
     z-index: 0;
     transition: top 0.2s ease;
     pointer-events: none;
   }
 
   .sidebar .menu-panel li {
-    position: relative;
+    position: absolute;
+    left: 0;
+    right: 0;
     height: 40px;
     display: flex;
     align-items: center;
-    padding-left: 34px;
+    padding-left: 29px;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -93,7 +96,7 @@
   }
 
   .sidebar .menu-panel li span {
-    margin-left: 7px;
+    margin-left: 3px;
     font-weight: 400;
     font-size: 13px;
     color: #fff;
@@ -103,7 +106,7 @@
     width: 163px;
     height: 1px;
     background: rgba(255, 255, 255, 0.15);
-    margin: 8px auto;
+    margin: 0 auto 18px auto;
   }
 
   .sidebar .balance-box {
@@ -238,17 +241,17 @@
       <nav class="menu-panel">
         <div class="menu-highlight" id="menuHighlight"></div>
         <ul id="menuList">
-          <li><img src="assets/HOME ICON_2.svg" alt=""><span>หน้าแรก</span></li>
-          <li><img src="assets/NEWS ICON_2.svg" alt=""><span>อัพเดทข่าว</span></li>
-          <li><img src="assets/ARTICLE ICON_2.svg" alt=""><span>บทความ</span></li>
-          <li><img src="assets/SOCIETY ICON_2.svg" alt=""><span>บอร์ดโซไซตี้</span></li>
-          <li><img src="assets/BALL_INTER ICON_2.svg" alt=""><span>บอร์ดบอลนอก</span></li>
-          <li><img src="assets/BALL_THAI ICON_2.svg" alt=""><span>บอร์ดบอลไทย</span></li>
-          <li><img src="assets/all sport icon_2.svg" alt=""><span>ออลสปอร์ต</span></li>
-          <li><img src="assets/games icon_2.svg" alt=""><span>บอร์ดเกมส์</span></li>
-          <li><img src="assets/deal icon_2.svg" alt=""><span>เดลล่างมอ</span></li>
-          <li><img src="assets/Prisoner Icon_2.svg" alt=""><span>เรือนจำคนง่าว</span></li>
-          <li><img src="assets/buy item icon_2.svg" alt=""><span>ซื้อไอเท็มเว็บ</span></li>
+          <li style="top:9px"><img src="assets/HOME ICON_2.svg" alt=""><span>หน้าแรก</span></li>
+          <li style="top:46px"><img src="assets/NEWS ICON_2.svg" alt=""><span>อัพเดทข่าว</span></li>
+          <li style="top:79px"><img src="assets/ARTICLE ICON_2.svg" alt=""><span>บทความ</span></li>
+          <li style="top:115px"><img src="assets/SOCIETY ICON_2.svg" alt=""><span>บอร์ดโซไซตี้</span></li>
+          <li style="top:148px"><img src="assets/BALL_INTER ICON_2.svg" alt=""><span>บอร์ดบอลนอก</span></li>
+          <li style="top:182px"><img src="assets/BALL_THAI ICON_2.svg" alt=""><span>บอร์ดบอลไทย</span></li>
+          <li style="top:214px"><img src="assets/all sport icon_2.svg" alt=""><span>ออลสปอร์ต</span></li>
+          <li style="top:250px"><img src="assets/games icon_2.svg" alt=""><span>บอร์ดเกมส์</span></li>
+          <li style="top:282px"><img src="assets/deal icon_2.svg" alt=""><span>เดลล่างมอ</span></li>
+          <li style="top:316px"><img src="assets/Prisoner Icon_2.svg" alt=""><span>เรือนจำคนง่าว</span></li>
+          <li style="top:353px"><img src="assets/buy item icon_2.svg" alt=""><span>ซื้อไอเท็มเว็บ</span></li>
         </ul>
       </nav>
 
@@ -311,7 +314,7 @@
     const defaultActiveIndex = 0; // หน้าแรก
 
     function moveHighlightTo(li) {
-      highlight.style.top = (li.offsetTop + (li.offsetHeight - 32) / 2) + 'px';
+      highlight.style.top = (li.offsetTop + (li.offsetHeight - 27) / 2) + 'px';
     }
 
     if (menuItems.length) {
