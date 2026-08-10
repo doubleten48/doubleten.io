@@ -67,7 +67,8 @@
     background: rgba(29, 28, 28, 0.33);
     border-radius: 5px;
     z-index: 0;
-    transition: top 0.2s ease;
+    opacity: 0;
+    transition: top 0.2s ease, opacity 0.15s ease;
     pointer-events: none;
   }
 
@@ -304,26 +305,24 @@
       toggleBtn.innerHTML = collapsed ? '&#10095;' : '&#10094;';
     });
 
-    // Sliding menu highlight follows the hovered item
+    // Sliding menu highlight — appears only while hovering an item
     const menuList = document.getElementById('menuList');
     const highlight = document.getElementById('menuHighlight');
     const menuItems = menuList.querySelectorAll('li');
-    const defaultActiveIndex = 0; // หน้าแรก
 
     function moveHighlightTo(li) {
       highlight.style.top = (li.offsetTop + (li.offsetHeight - 27) / 2) + 'px';
     }
 
-    if (menuItems.length) {
-      moveHighlightTo(menuItems[defaultActiveIndex]);
-    }
-
     menuItems.forEach((li) => {
-      li.addEventListener('mouseenter', () => moveHighlightTo(li));
+      li.addEventListener('mouseenter', () => {
+        moveHighlightTo(li);
+        highlight.style.opacity = '1';
+      });
     });
 
     menuList.addEventListener('mouseleave', () => {
-      moveHighlightTo(menuItems[defaultActiveIndex]);
+      highlight.style.opacity = '0';
     });
   </script>
 
