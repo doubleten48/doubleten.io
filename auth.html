@@ -6,6 +6,7 @@
 <title>DoubleTen — เข้าสู่ระบบ</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-init.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" defer></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -355,33 +356,8 @@
   </div>
 
 <script>
-  // ── SUPABASE INIT ──
-  const SUPABASE_URL = 'https://dnrcardbuuwnvuridubb.supabase.co'
-  const SUPABASE_KEY = 'sb_publishable_uz4Tj8HDZef7T2OLEzyvUw_wcGsn0ZW'
-  const { createClient } = supabase
-
-  // จดจำการเข้าสู่ระบบ: ติ๊ก = เก็บ session ไว้ใน localStorage (อยู่ข้ามการปิดเบราว์เซอร์)
-  // ไม่ติ๊ก = เก็บใน sessionStorage (หายเมื่อปิดแท็บ/เบราว์เซอร์)
-  const rememberStorage = {
-    getItem: (key) => localStorage.getItem(key) || sessionStorage.getItem(key),
-    setItem: (key, value) => {
-      const remember = localStorage.getItem('rememberMe') === '1'
-      if (remember) {
-        localStorage.setItem(key, value)
-      } else {
-        sessionStorage.setItem(key, value)
-        localStorage.removeItem(key)
-      }
-    },
-    removeItem: (key) => {
-      localStorage.removeItem(key)
-      sessionStorage.removeItem(key)
-    }
-  }
-
-  const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: { storage: rememberStorage, persistSession: true, autoRefreshToken: true }
-  })
+  // ── SUPABASE ──
+  // ตัวแปร sb มาจาก supabase-init.js (config กลาง + remember-me storage)
 
   // ── CHECKBOX + TURNSTILE ──
   function checkAgree() {
