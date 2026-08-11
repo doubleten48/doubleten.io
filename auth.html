@@ -493,7 +493,17 @@
   }
   function validatePassword() {
     const val = document.getElementById('reg-password').value
-    const ok = val.length >= 8 && val.length <= 12
+    // อนุญาตเฉพาะ A-Z a-z 0-9 และอักขระพิเศษที่กำหนด (ห้ามภาษาไทย/ภาษาอื่น)
+    const allowedChars = /^[A-Za-z0-9!@#$%^&*()_+\-={};:,./]+$/
+    const lengthOk = val.length >= 8 && val.length <= 12
+    const charsOk = allowedChars.test(val)
+    const ok = lengthOk && charsOk
+    const errEl = document.getElementById('err-password')
+    if (val !== '' && !charsOk) {
+      errEl.textContent = 'ใช้ได้เฉพาะภาษาอังกฤษ ตัวเลข และอักขระพิเศษที่กำหนด (ห้ามภาษาไทย)'
+    } else {
+      errEl.textContent = 'Password 8-12 ตัว (ตัวอักษร, ตัวเลข หรืออักขระพิเศษ)'
+    }
     setField('reg-password', 'err-password', ok || val === '')
     if (document.getElementById('reg-confirm').value) validateConfirm()
     return ok
