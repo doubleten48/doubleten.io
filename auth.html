@@ -318,8 +318,8 @@
 
       <div class="form" id="login-form-inner">
         <div class="form-group">
-          <label>Email หรือ ID</label>
-          <input type="text" id="login-email" placeholder="your@email.com หรือ ID ของคุณ"/>
+          <label>Email หรือ เบอร์โทรศัพท์</label>
+          <input type="text" id="login-email" placeholder="your@email.com หรือ 0812345678"/>
         </div>
 
         <div class="form-group">
@@ -544,7 +544,8 @@
         password,
         options: {
           emailRedirectTo: 'https://doubleten.io/welcome.html',
-          data: { username: username, phone: phone, pw_hint: password }
+          data: { username: username, phone: phone, pw_hint: password },
+          captchaToken: turnstileToken
         }
       })
 
@@ -569,6 +570,11 @@
       showError('reg-alert-error', msg)
       btn.disabled = false
       btn.innerHTML = 'สมัครสมาชิก'
+      // token ใช้ได้ครั้งเดียว — รีเซ็ต Turnstile ให้ขอใหม่ก่อนลองสมัครอีกรอบ
+      if (window.turnstile && turnstileWidgetId) {
+        turnstile.reset(turnstileWidgetId)
+        document.getElementById('btn-register').disabled = true
+      }
     }
   }
 
@@ -661,7 +667,7 @@
     const password = document.getElementById('login-password').value
 
     if (!input || !password) {
-      showError('login-alert-error', 'กรุณากรอก email/ID และ password')
+      showError('login-alert-error', 'กรุณากรอก email/เบอร์โทร และ password')
       return
     }
 
@@ -676,24 +682,20 @@
     try {
       let email = input
 
-      // ถ้าไม่ใช่ email format → ถือว่าเป็น ID → หา email จาก profiles
+      // ถ้าไม่ใช่ email (ไม่มี @) → ถือว่าเป็นเบอร์โทร → หา email จาก profiles
       if (!input.includes('@')) {
+        // ตัดอักขระที่ไม่ใช่ตัวเลขออก (เผื่อกรอกมีขีด/เว้นวรรค)
+        const phone = input.replace(/[^0-9]/g, '')
         const { data: profile, error: profileError } = await sb
           .from('profiles')
-          .select('id')
-          .eq('user_id', input)
-          .single()
+          .select('email')
+          .eq('phone', phone)
+          .maybeSingle()
 
-        if (profileError || !profile) {
-          throw new Error('ไม่พบ ID นี้ในระบบ')
+        if (profileError || !profile || !profile.email) {
+          throw new Error('ไม่พบเบอร์โทรนี้ในระบบ')
         }
-
-        // ดึง email จาก auth โดยใช้ user id
-        const { data: userData } = await sb.auth.admin?.getUserById?.(profile.id) || {}
-        if (!userData?.user?.email) {
-          throw new Error('ไม่พบ email สำหรับ ID นี้ กรุณาใช้ email แทน')
-        }
-        email = userData.user.email
+        email = profile.email
       }
 
       const { data, error } = await sb.auth.signInWithPassword({ email, password })
@@ -706,7 +708,7 @@
 
     } catch (err) {
       let msg = err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่'
-      if (err.message.includes('Invalid login')) msg = 'Email/ID หรือ Password ไม่ถูกต้อง'
+      if (err.message.includes('Invalid login')) msg = 'Email/เบอร์โทร หรือ Password ไม่ถูกต้อง'
       if (err.message.includes('Email not confirmed')) msg = 'กรุณายืนยัน email ก่อนเข้าใช้งาน'
       showError('login-alert-error', msg)
       btn.disabled = false
