@@ -327,6 +327,8 @@
           <label class="check-label" for="remember-check">จดจำการเข้าสู่ระบบ</label>
         </div>
 
+        <div class="turnstile-wrap" id="turnstile-wrap-login"></div>
+
         <div class="alert alert-error" id="login-alert-error"></div>
         <div class="alert alert-success" id="login-alert-success"></div>
 
@@ -354,7 +356,7 @@
   // ── CHECKBOX + TURNSTILE ──
   function checkAgree() {
     const checked = document.getElementById('agree-check').checked
-    const token = getTurnstileToken()
+    const token = getTurnstileToken('turnstile-wrap')
     document.getElementById('btn-register').disabled = !(checked && token)
     if (checked && !token) {
       // turnstile not yet verified, keep disabled but don't block
@@ -362,8 +364,9 @@
     }
   }
 
-  function getTurnstileToken() {
-    const resp = document.querySelector('[name="cf-turnstile-response"]')
+  function getTurnstileToken(containerId) {
+    const wrap = document.getElementById(containerId)
+    const resp = wrap ? wrap.querySelector('[name="cf-turnstile-response"]') : null
     return resp ? resp.value : null
   }
 
@@ -479,7 +482,7 @@
     const confirm = document.getElementById('reg-confirm').value
 
     // validate all
-    const turnstileToken = getTurnstileToken()
+    const turnstileToken = getTurnstileToken('turnstile-wrap')
     if (!turnstileToken) {
       showError('reg-alert-error', 'กรุณายืนยัน Captcha ก่อนสมัครสมาชิก')
       return
@@ -644,8 +647,20 @@
     const remember = document.getElementById('remember-check').checked
     localStorage.setItem('rememberMe', remember ? '1' : '0')
 
+    const loginCaptchaToken = getTurnstileToken('turnstile-wrap-login')
+    if (!loginCaptchaToken) {
+      showError('login-alert-error', 'กรุณายืนยัน Captcha ก่อนเข้าสู่ระบบ')
+      btn.disabled = false
+      btn.innerHTML = 'เข้าสู่ระบบ'
+      return
+    }
+
     try {
-      const { data, error } = await sb.auth.signInWithPassword({ email, password })
+      const { data, error } = await sb.auth.signInWithPassword({
+        email,
+        password,
+        options: { captchaToken: loginCaptchaToken }
+      })
       if (error) throw error
 
       document.getElementById('login-form-inner').style.display = 'none'
@@ -660,6 +675,10 @@
       showError('login-alert-error', msg)
       btn.disabled = false
       btn.innerHTML = 'เข้าสู่ระบบ'
+      // token ใช้ได้ครั้งเดียว — รีเซ็ต Turnstile ให้ขอใหม่ก่อนลองอีกรอบ
+      if (window.turnstile && turnstileWidgetIdLogin) {
+        turnstile.reset(turnstileWidgetIdLogin)
+      }
     }
   }
 
@@ -707,9 +726,16 @@
 
   // ── TURNSTILE ──
   let turnstileWidgetId = null
+  let turnstileWidgetIdLogin = null
 
   function onloadTurnstileCallback() {
-    renderTurnstile()
+    // เรนเดอร์เฉพาะ widget ของแท็บที่กำลังโชว์อยู่ (ไม่เรนเดอร์ลง container ที่ display:none)
+    const loginVisible = document.getElementById('form-login').style.display !== 'none'
+    if (loginVisible) {
+      renderTurnstileLogin()
+    } else {
+      renderTurnstile()
+    }
   }
 
   function renderTurnstile() {
@@ -728,6 +754,22 @@
     })
   }
 
+  function renderTurnstileLogin() {
+    const wrap = document.getElementById('turnstile-wrap-login')
+    if (!wrap || !window.turnstile) return
+    wrap.innerHTML = ''
+    turnstileWidgetIdLogin = turnstile.render(wrap, {
+      sitekey: '0x4AAAAAADscnTpczkQNL7LX',
+      theme: 'dark',
+      appearance: 'always',
+      callback: () => console.log('Turnstile (login) verified ✅'),
+      'error-callback': () => {
+        console.warn('Turnstile (login) error — retrying')
+        if (window.turnstile && turnstileWidgetIdLogin) turnstile.reset(turnstileWidgetIdLogin)
+      }
+    })
+  }
+
   // ── TURNSTILE CALLBACKS ──
   function onTurnstileSuccess(token) {
     console.log('Turnstile verified ✅')
@@ -739,15 +781,17 @@
 
   function onTurnstileError() {
     console.warn('Turnstile error — retrying')
-    if (window.turnstile) turnstile.reset()
+    if (window.turnstile && turnstileWidgetId) turnstile.reset(turnstileWidgetId)
   }
 
-  // Re-render turnstile when switching to register tab
+  // Re-render the relevant widget when switching tabs
   const _origSwitch = switchTab
   window.switchTab = function(tab) {
     _origSwitch(tab)
     if (tab === 'register') {
       setTimeout(renderTurnstile, 150)
+    } else if (tab === 'login') {
+      setTimeout(renderTurnstileLogin, 150)
     }
   }
 
