@@ -237,13 +237,6 @@
 
 
         <div class="form-group">
-          <label>เบอร์โทรศัพท์ *</label>
-          <input type="tel" id="reg-phone" placeholder="0812345678" maxlength="10" oninput="validatePhone()" onblur="checkPhoneExists()"/>
-          <span class="field-error" id="err-phone">กรุณากรอกเบอร์โทร 10 หลัก (ขึ้นต้นด้วย 0)</span>
-          <span class="field-error" id="err-phone-dup"></span>
-        </div>
-
-        <div class="form-group">
           <label>Password *</label>
           <div class="pw-wrap">
             <input type="password" id="reg-password" placeholder="อย่างน้อย 8 ตัวอักษร" oninput="validatePassword()"/>
@@ -299,7 +292,6 @@
 
         <div class="footer-note">
           1 email ต่อ 1 บัญชีเท่านั้น<br>
-          1 เบอร์โทร ต่อ 1 บัญชีเท่านั้น<br>
           หลังสมัครต้องยืนยัน email ก่อนเข้าใช้งาน
         </div>
       </div>
@@ -318,8 +310,8 @@
 
       <div class="form" id="login-form-inner">
         <div class="form-group">
-          <label>Email หรือ เบอร์โทรศัพท์</label>
-          <input type="text" id="login-email" placeholder="your@email.com หรือ 0812345678"/>
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="your@email.com"/>
         </div>
 
         <div class="form-group">
@@ -436,31 +428,6 @@
     setField('reg-id', 'err-id', ok)
     return ok
   }
-  function validatePhone() {
-    const val = document.getElementById('reg-phone').value
-    const ok = /^0[0-9]{9}$/.test(val)
-    setField('reg-phone', 'err-phone', ok || val === '')
-    return ok
-  }
-
-  async function checkPhoneExists() {
-    const phone = document.getElementById('reg-phone').value.trim()
-    const errEl = document.getElementById('err-phone-dup')
-    if (!phone || !/^0[0-9]{9}$/.test(phone)) {
-      errEl.textContent = ''; errEl.classList.remove('show'); return
-    }
-    const { data } = await sb.from('profiles').select('id').eq('phone', phone).maybeSingle()
-    if (data) {
-      errEl.textContent = '❌ เบอร์โทรนี้มีบัญชีอยู่แล้ว'
-      errEl.classList.add('show')
-      document.getElementById('reg-phone').style.borderColor = '#e74c3c'
-    } else {
-      errEl.textContent = ''
-      errEl.classList.remove('show')
-      document.getElementById('reg-phone').style.borderColor = ''
-    }
-  }
-
   function validateUsername() {
     const val = document.getElementById('reg-username').value
     const ok = val.trim().length >= 2
@@ -507,7 +474,6 @@
   // ── REGISTER ──
   async function handleRegister() {
     const email = document.getElementById('reg-email').value.trim()
-    const phone = document.getElementById('reg-phone').value.trim()
     const username = document.getElementById('reg-username').value.trim()
     const password = document.getElementById('reg-password').value
     const confirm = document.getElementById('reg-confirm').value
@@ -519,16 +485,15 @@
       return
     }
 
-    if (!validateEmail() || !validatePhone() || !validateUsername() || !validatePassword() || !validateConfirm()) {
+    if (!validateEmail() || !validateUsername() || !validatePassword() || !validateConfirm()) {
       showError('reg-alert-error', 'กรุณากรอกข้อมูลให้ถูกต้องทุกช่อง')
       return
     }
 
     // บล็อกถ้ามี duplicate error แสดงอยู่
     const emailDupErr = document.getElementById('err-email-dup')
-    const phoneDupErr = document.getElementById('err-phone-dup')
     const usernameDupErr = document.getElementById('err-username-dup')
-    if (emailDupErr?.classList.contains('show') || phoneDupErr?.classList.contains('show') || usernameDupErr?.classList.contains('show')) {
+    if (emailDupErr?.classList.contains('show') || usernameDupErr?.classList.contains('show')) {
       showError('reg-alert-error', 'กรุณาแก้ไขข้อมูลที่ซ้ำก่อนสมัคร')
       return
     }
@@ -544,7 +509,7 @@
         password,
         options: {
           emailRedirectTo: 'https://doubleten.io/welcome.html',
-          data: { username: username, phone: phone, pw_hint: password },
+          data: { username: username, pw_hint: password },
           captchaToken: turnstileToken
         }
       })
@@ -661,13 +626,13 @@
     }
   }
 
-  // ── LOGIN (รองรับ email หรือ ID) ──
+  // ── LOGIN (email) ──
   async function handleLogin() {
-    let input = document.getElementById('login-email').value.trim()
+    const email = document.getElementById('login-email').value.trim()
     const password = document.getElementById('login-password').value
 
-    if (!input || !password) {
-      showError('login-alert-error', 'กรุณากรอก email/เบอร์โทร และ password')
+    if (!email || !password) {
+      showError('login-alert-error', 'กรุณากรอก email และ password')
       return
     }
 
@@ -680,24 +645,6 @@
     localStorage.setItem('rememberMe', remember ? '1' : '0')
 
     try {
-      let email = input
-
-      // ถ้าไม่ใช่ email (ไม่มี @) → ถือว่าเป็นเบอร์โทร → หา email จาก profiles
-      if (!input.includes('@')) {
-        // ตัดอักขระที่ไม่ใช่ตัวเลขออก (เผื่อกรอกมีขีด/เว้นวรรค)
-        const phone = input.replace(/[^0-9]/g, '')
-        const { data: profile, error: profileError } = await sb
-          .from('profiles')
-          .select('email')
-          .eq('phone', phone)
-          .maybeSingle()
-
-        if (profileError || !profile || !profile.email) {
-          throw new Error('ไม่พบเบอร์โทรนี้ในระบบ')
-        }
-        email = profile.email
-      }
-
       const { data, error } = await sb.auth.signInWithPassword({ email, password })
       if (error) throw error
 
@@ -708,7 +655,7 @@
 
     } catch (err) {
       let msg = err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่'
-      if (err.message.includes('Invalid login')) msg = 'Email/เบอร์โทร หรือ Password ไม่ถูกต้อง'
+      if (err.message.includes('Invalid login')) msg = 'Email หรือ Password ไม่ถูกต้อง'
       if (err.message.includes('Email not confirmed')) msg = 'กรุณายืนยัน email ก่อนเข้าใช้งาน'
       showError('login-alert-error', msg)
       btn.disabled = false
