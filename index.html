@@ -212,16 +212,21 @@
   }
 
   .header .icons {
-    display: flex;
-    align-items: center;
-    gap: 11px;
+    position: absolute;
+    top: 25px;
+    left: 25px;
   }
 
-  .header img {
+  .header .icons img {
+    position: absolute;
+    top: 0;
     width: 27px;
     height: 27px;
     cursor: pointer;
   }
+
+  .header .icons img.bell { left: 0; }
+  .header .icons img.mail { left: 38px; }
 
   .header .login-btn {
     position: absolute;
@@ -319,8 +324,8 @@
       <header class="header">
         <span class="wordmark">DOUBLETEN</span>
         <div class="icons">
-          <img src="assets/mynaui_bell.svg" alt="Notifications">
-          <img src="assets/mynaui_mail.svg" alt="Messages">
+          <img class="bell" src="assets/mynaui_bell.svg" alt="Notifications">
+          <img class="mail" src="assets/mynaui_mail.svg" alt="Messages">
         </div>
         <a class="login-btn" href="auth.html?tab=login"><img src="assets/Login Icon.svg" alt="Login"></a>
         <a class="register-btn" href="auth.html?tab=register"><img src="assets/Register Icon.svg" alt="Register"></a>
