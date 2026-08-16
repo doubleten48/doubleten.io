@@ -289,6 +289,23 @@
     color: var(--main-text);
     transition: background 0.2s ease, color 0.2s ease;
   }
+
+  .ads-banner {
+    width: 100%;
+    max-width: 1160px;
+    height: 100px;
+    margin: 20px auto 0 auto;
+    padding: 0 20px;
+    display: block;
+  }
+
+  .ads-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+  }
 </style>
 </head>
 <body>
@@ -355,6 +372,9 @@
       </header>
 
       <main class="main">
+        <div class="ads-banner">
+          <a href="#" target="_blank"><img src="assets/ads-banner-1.jpg" alt="โฆษณา"></a>
+        </div>
         <!-- เนื้อหาส่วนกลาง/ขวา ยังไม่มีในดีไซน์นี้ (เฉพาะ sidebar + header เท่านั้น) -->
       </main>
     </div>
