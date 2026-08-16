@@ -11,15 +11,25 @@
   :root{
     --sidebar-w: 198px;
     --header-h: 60px;
+    --main-bg: #2c2b2b;
+    --main-text: #fff;
+    --body-bg: #2c2b2b;
+  }
+
+  html.light-mode {
+    --main-bg: #f4f4f5;
+    --main-text: #1a1a1a;
+    --body-bg: #f4f4f5;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
     height: 100%;
-    background: #2c2b2b;
+    background: var(--body-bg);
     font-family: 'Kanit', sans-serif;
     color: #fff;
+    transition: background 0.2s ease;
   }
 
   .layout {
@@ -275,7 +285,9 @@
 
   .main {
     flex: 1;
-    background: #2c2b2b;
+    background: var(--main-bg);
+    color: var(--main-text);
+    transition: background 0.2s ease, color 0.2s ease;
   }
 </style>
 </head>
@@ -339,7 +351,7 @@
         </div>
         <a class="login-btn" href="auth.html?tab=login"><img src="assets/Login Icon.svg" alt="Login"></a>
         <a class="register-btn" href="auth.html?tab=register"><img src="assets/Register Icon.svg" alt="Register"></a>
-        <img class="light-mode-btn" src="assets/light_mode.svg" alt="Toggle light mode">
+        <img class="light-mode-btn" id="themeToggle" src="assets/light_mode.svg" alt="Toggle light mode">
       </header>
 
       <main class="main">
@@ -350,6 +362,22 @@
   </div>
 
   <script>
+    // Light/dark mode toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const htmlEl = document.documentElement;
+
+    function applyTheme(isLight) {
+      htmlEl.classList.toggle('light-mode', isLight);
+    }
+
+    const savedTheme = localStorage.getItem('doubleten-theme');
+    applyTheme(savedTheme === 'light');
+
+    themeToggle.addEventListener('click', () => {
+      const isLight = htmlEl.classList.toggle('light-mode');
+      localStorage.setItem('doubleten-theme', isLight ? 'light' : 'dark');
+    });
+
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('sidebarToggle');
 
