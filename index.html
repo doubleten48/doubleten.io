@@ -228,6 +228,16 @@
   .header .icons img.bell { left: 0; }
   .header .icons img.mail { left: 38px; }
 
+  /* ===== Collapsed-only fix: logo vs bell/mail overlap ===== */
+  .sidebar.collapsed ~ .content-area .header .icons {
+    left: 165px; /* ปรับตัวเลขนี้ได้ถ้ายังชิด/ห่างไป */
+  }
+
+  .sidebar.collapsed ~ .content-area .header .wordmark {
+    position: relative;
+    top: 4px; /* ปรับตัวเลขนี้ได้ถ้ายังไม่ตรงระดับกระดิ่งพอดี */
+  }
+
   .header .login-btn {
     position: absolute;
     right: 48px;
