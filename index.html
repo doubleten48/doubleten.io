@@ -357,6 +357,41 @@
     padding: 0 20px;
   }
 
+  .scores-list-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .scores-nav-btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--main-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.15s ease;
+  }
+
+  .scores-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  html.light-mode .scores-nav-btn {
+    background: #d9d9de;
+  }
+
+  html.light-mode .scores-nav-btn:hover {
+    background: #c5c5cb;
+  }
+
   .scores-tabs {
     display: flex;
     gap: 6px;
@@ -394,7 +429,14 @@
     gap: 10px;
     overflow-x: auto;
     padding-bottom: 6px;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .scores-list::-webkit-scrollbar {
+    display: none;
   }
 
   .score-card {
@@ -553,8 +595,12 @@
             <button data-comp="FL1">Ligue 1</button>
             <button data-comp="CL">Champions League</button>
           </div>
-          <div class="scores-list" id="scoresList">
-            <div class="scores-empty">กำลังโหลดผลบอล...</div>
+          <div class="scores-list-wrap">
+            <button class="scores-nav-btn" id="scoresPrev" aria-label="เลื่อนซ้าย">&#10094;</button>
+            <div class="scores-list" id="scoresList">
+              <div class="scores-empty">กำลังโหลดผลบอล...</div>
+            </div>
+            <button class="scores-nav-btn" id="scoresNext" aria-label="เลื่อนขวา">&#10095;</button>
           </div>
         </div>
         <!-- เนื้อหาส่วนกลาง/ขวา ยังไม่มีในดีไซน์นี้ (เฉพาะ sidebar + header เท่านั้น) -->
@@ -699,6 +745,13 @@
       e.target.classList.add('active');
       currentComp = e.target.dataset.comp;
       renderMatches();
+    });
+
+    document.getElementById('scoresPrev').addEventListener('click', () => {
+      scoresList.scrollBy({ left: -360, behavior: 'smooth' });
+    });
+    document.getElementById('scoresNext').addEventListener('click', () => {
+      scoresList.scrollBy({ left: 360, behavior: 'smooth' });
     });
 
     fetchScores();
