@@ -515,7 +515,7 @@
         const rowClass = isLive ? 'is-live' : (isFinished ? 'is-finished' : '');
         const timeLabel = isLive ? ('🔴 ' + (m.minute ? m.minute + "'" : 'สด')) : (isFinished ? 'จบแล้ว' : fmtTimeOnly(m.utc_date));
         const score = (isLive || isFinished) ? `${m.home_score ?? '-'} - ${m.away_score ?? '-'}` : 'VS';
-        const toggleBtn = isFinished ? `<button class="fixture-toggle-btn" data-match-id="${m.id}">คนยิง+จ่าย</button>` : '';
+        const toggleBtn = isFinished ? `<button class="fixture-toggle-btn" data-match-id="${m.id}" data-comp="${m.competition_code}" data-home="${m.home_team}" data-away="${m.away_team}" data-date="${m.utc_date}">คนยิง+จ่าย</button>` : '';
 
         html += `<div class="fixture-row ${rowClass}">
           <div class="fixture-time">${timeLabel}</div>
@@ -538,9 +538,10 @@
 
     const eventsCache = {};
 
-    async function loadMatchEvents(matchId) {
+    async function loadMatchEvents(matchId, comp, home, away, date) {
       if (eventsCache[matchId]) return eventsCache[matchId];
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/football-match-events?match_id=${matchId}`, {
+      const params = new URLSearchParams({ match_id: matchId, comp, home, away, date });
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/football-match-events?${params.toString()}`, {
         headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
       });
       const data = await res.json();
@@ -554,7 +555,7 @@
       }
       return events.map(ev => {
         const typeLabel = ev.type === 'OWN' ? ' (ยิงเข้าประตูตัวเอง)' : (ev.type === 'PENALTY' ? ' (จุดโทษ)' : '');
-        const minuteLabel = ev.minute + (ev.injuryTime ? '+' + ev.injuryTime : '') + "'";
+        const minuteLabel = ev.minute ? (typeof ev.minute === 'number' ? ev.minute + "'" : ev.minute) : '';
         const assistText = ev.assist ? `<span class="evt-assist">จ่ายโดย ${ev.assist}</span>` : '';
         return `<div class="fixture-event-row">
           <span class="evt-minute">${minuteLabel}</span>
@@ -584,7 +585,7 @@
       if (!detailsEl.dataset.loaded) {
         detailsEl.innerHTML = '<div class="fixture-details-empty">กำลังโหลด...</div>';
         try {
-          const events = await loadMatchEvents(matchId);
+          const events = await loadMatchEvents(matchId, btn.dataset.comp, btn.dataset.home, btn.dataset.away, btn.dataset.date);
           detailsEl.innerHTML = renderEventsList(events);
           detailsEl.dataset.loaded = '1';
         } catch (err) {
