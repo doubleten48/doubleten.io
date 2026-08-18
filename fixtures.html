@@ -388,6 +388,40 @@
       }
     }
 
+    function startOfWeekFor(date) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      const day = d.getDay();
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+      d.setDate(d.getDate() + diffToMonday);
+      return d;
+    }
+
+    function getCompDateBounds() {
+      const compMatches = currentComp === 'ALL' ? allMatches : allMatches.filter(m => m.competition_code === currentComp);
+      if (!compMatches.length) return null;
+      const dates = compMatches.map(m => new Date(m.utc_date).getTime());
+      return { earliest: new Date(Math.min(...dates)), latest: new Date(Math.max(...dates)) };
+    }
+
+    function updateWeekNavButtons() {
+      const bounds = getCompDateBounds();
+      const prevBtn = document.getElementById('weekPrev');
+      const nextBtn = document.getElementById('weekNext');
+      const { start, end } = getWeekRange(weekOffset);
+
+      if (!bounds) {
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+      }
+
+      const earliestWeekStart = startOfWeekFor(bounds.earliest);
+      const latestWeekStart = startOfWeekFor(bounds.latest);
+      prevBtn.disabled = start <= earliestWeekStart;
+      nextBtn.disabled = start >= latestWeekStart;
+    }
+
     function fmtDateTime(iso) {
       const d = new Date(iso);
       return d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short' }) + ' ' +
@@ -411,6 +445,7 @@
 
     function renderFixtures() {
       updateWeekLabel();
+      updateWeekNavButtons();
       const { start, end } = getWeekRange(weekOffset);
 
       let filtered = currentComp === 'ALL' ? allMatches : allMatches.filter(m => m.competition_code === currentComp);
@@ -544,14 +579,17 @@
       leagueTabs.querySelectorAll('button').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       currentComp = e.target.dataset.comp;
+      weekOffset = 0;
       if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
     });
 
     document.getElementById('weekPrev').addEventListener('click', () => {
+      if (document.getElementById('weekPrev').disabled) return;
       weekOffset--;
       renderFixtures();
     });
     document.getElementById('weekNext').addEventListener('click', () => {
+      if (document.getElementById('weekNext').disabled) return;
       weekOffset++;
       renderFixtures();
     });
