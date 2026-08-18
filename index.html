@@ -360,8 +360,48 @@
   .scores-list-wrap {
     position: relative;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: 6px;
+  }
+
+  .scores-live-tag {
+    flex-shrink: 0;
+    width: 22px;
+    background: #e63946;
+    color: #fff;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scores-cta {
+    flex-shrink: 0;
+    width: 90px;
+    background: linear-gradient(135deg, #ffc837, #ff8a00);
+    color: #1a1a1a;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .scores-cta .cta-arrow {
+    font-size: 14px;
   }
 
   .scores-nav-btn {
@@ -615,11 +655,16 @@
             <button data-comp="CL">Champions League</button>
           </div>
           <div class="scores-list-wrap">
+            <div class="scores-live-tag">LIVE</div>
             <button class="scores-nav-btn" id="scoresPrev" aria-label="เลื่อนซ้าย">&#10094;</button>
             <div class="scores-list" id="scoresList">
               <div class="scores-empty">กำลังโหลดผลบอล...</div>
             </div>
             <button class="scores-nav-btn" id="scoresNext" aria-label="เลื่อนขวา">&#10095;</button>
+            <a class="scores-cta" href="fixtures.html">
+              <span>ตารางคะแนน<br>ดาวซัลโว</span>
+              <span class="cta-arrow">&#10142;</span>
+            </a>
           </div>
         </div>
         <!-- เนื้อหาส่วนกลาง/ขวา ยังไม่มีในดีไซน์นี้ (เฉพาะ sidebar + header เท่านั้น) -->
