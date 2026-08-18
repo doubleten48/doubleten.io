@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตารางแข่ง - DoubleTen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sidebar-w: 198px;
+    --header-h: 60px;
+    --main-bg: #2c2b2b;
+    --main-text: #fff;
+    --body-bg: #2c2b2b;
+  }
+
+  html.light-mode {
+    --main-bg: #E5E5EA;
+    --main-text: #1a1a1a;
+    --body-bg: #E5E5EA;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--body-bg);
+    font-family: 'Kanit', sans-serif;
+    color: #fff;
+    transition: background 0.2s ease;
+  }
+
+  .layout { display: flex; min-height: 100vh; position: relative; }
+
+  /* ===== Sidebar (เหมือน index.html) ===== */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: linear-gradient(to bottom, #872929 0%, #0d0a0a 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 14px 0 0 0;
+    transition: width 0.2s ease;
+    overflow: hidden;
+  }
+
+  .sidebar .logo { display: block; width: 127px; height: 92px; margin: 0 0 34px 36px; }
+
+  .sidebar .menu-panel { margin: 0 15px; position: relative; height: 403px; }
+  .sidebar .menu-panel ul { list-style: none; position: relative; height: 100%; }
+
+  .menu-highlight {
+    position: absolute; left: 17px; width: 137px; height: 27px;
+    background: rgba(29, 28, 28, 0.33); border-radius: 5px; z-index: 0; opacity: 0;
+    transition: top 0.08s ease, opacity 0.1s ease; pointer-events: none;
+  }
+
+  .sidebar .menu-panel li { position: absolute; left: 0; right: 0; height: 40px; cursor: pointer; white-space: nowrap; }
+  .sidebar .menu-panel li img { position: absolute; top: 50%; transform: translateY(-50%) scale(1.3); transform-origin: left center; z-index: 1; display: block; }
+  .sidebar .menu-panel li span { position: absolute; top: 50%; transform: translateY(-50%); left: 52px; z-index: 1; font-weight: 400; font-size: 13px; color: #fff; }
+
+  .sidebar .menu-divider { width: 163px; height: 1px; background: rgba(255, 255, 255, 0.15); margin: 0 auto 18px auto; }
+  .sidebar .balance-box { margin: 0 15px; width: 170px; }
+  .sidebar .balance-box img { display: block; width: 100%; height: auto; }
+
+  .sidebar .menu-collapsed { display: none; flex-direction: column; align-items: center; gap: 5px; padding-top: 161px; }
+  .sidebar .menu-collapsed li { list-style: none; width: 35px; height: 35px; cursor: pointer; }
+  .sidebar .menu-collapsed li img { width: 35px; height: 35px; display: block; }
+
+  .sidebar.collapsed { width: 56px; }
+  .sidebar.collapsed .logo, .sidebar.collapsed .menu-panel, .sidebar.collapsed .menu-divider, .sidebar.collapsed .balance-box { display: none; }
+  .sidebar.collapsed .menu-collapsed { display: flex; }
+
+  .sidebar-toggle {
+    position: absolute; top: 108px; left: calc(var(--sidebar-w) - 5px); width: 10px; height: 30px;
+    background: #1a1a1a; border: none; border-radius: 4px; color: #fff; font-size: 10px; line-height: 30px;
+    text-align: center; padding: 0; cursor: pointer; z-index: 10; transition: left 0.2s ease;
+  }
+
+  .content-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+  .header { height: var(--header-h); background: #121214; display: flex; align-items: center; padding-left: 25px; flex-shrink: 0; position: relative; }
+  .header .wordmark { display: none; font-size: 20px; font-weight: 400; color: #fff; margin-right: 26px; white-space: nowrap; }
+  .sidebar.collapsed ~ .content-area .header { padding-left: 26px; }
+  .sidebar.collapsed ~ .content-area .header .wordmark { display: block; position: relative; top: 4px; }
+
+  .header .icons { position: absolute; top: 25px; left: 25px; }
+  .header .icons img { position: absolute; top: 0; width: 27px; height: 27px; cursor: pointer; }
+  .header .icons img.bell { left: 0; }
+  .header .icons img.mail { left: 38px; }
+  .sidebar.collapsed ~ .content-area .header .icons { left: 165px; }
+
+  .header .login-btn { position: absolute; right: 48px; top: 25px; width: 56px; height: 28px; display: block; }
+  .header .register-btn { position: absolute; right: 109px; top: 25px; width: 92px; height: 28px; display: block; }
+  .header .login-btn img, .header .register-btn img { width: 100%; height: 100%; display: block; cursor: pointer; }
+  .header .light-mode-btn { position: absolute; right: 14px; top: 26px; width: 25px; height: 25px; cursor: pointer; }
+
+  .main { flex: 1; background: var(--main-bg); color: var(--main-text); transition: background 0.2s ease, color 0.2s ease; padding: 20px; }
+
+  /* ===== Fixtures page content ===== */
+  .page-wrap { max-width: 1010px; margin: 0 auto; }
+
+  .page-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .page-tabs button {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: var(--main-text);
+    padding: 8px 18px; border-radius: 5px; font-family: 'Kanit', sans-serif; font-size: 14px; cursor: pointer;
+  }
+  html.light-mode .page-tabs button { background: #d9d9de; border-color: rgba(0,0,0,0.1); }
+  .page-tabs button.active { background: #872929; color: #fff; border-color: #872929; }
+
+  .league-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
+  .league-tabs button {
+    flex-shrink: 0; background: rgba(255,255,255,0.06); border: none; color: var(--main-text);
+    padding: 6px 14px; border-radius: 5px; font-family: 'Kanit', sans-serif; font-size: 13px; cursor: pointer; white-space: nowrap;
+  }
+  html.light-mode .league-tabs button { background: #d9d9de; }
+  .league-tabs button.active { background: #872929; color: #fff; }
+
+  .fixtures-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .fixture-row {
+    display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.06);
+    border-left: 3px solid #872929; border-radius: 4px; padding: 10px 16px; font-size: 13px;
+  }
+  html.light-mode .fixture-row { background: #d9d9de; }
+  .fixture-row.is-live { border-left-color: #ff4d4d; }
+  .fixture-row.is-finished { border-left-color: #6a6a6a; }
+
+  .fixture-time { width: 90px; flex-shrink: 0; font-size: 12px; color: #9a9a9a; }
+  .fixture-teams { flex: 1; display: flex; align-items: center; justify-content: center; gap: 14px; min-width: 0; }
+  .fixture-team { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+  .fixture-team.away { flex-direction: row-reverse; text-align: right; }
+  .fixture-team img { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+  .fixture-team span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fixture-score { flex-shrink: 0; font-weight: 600; min-width: 50px; text-align: center; }
+  .fixture-comp { width: 130px; flex-shrink: 0; font-size: 11px; color: #9a9a9a; text-align: right; }
+
+  .standings-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .standings-table th, .standings-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  html.light-mode .standings-table th, html.light-mode .standings-table td { border-bottom: 1px solid rgba(0,0,0,0.08); }
+  .standings-table th { color: #9a9a9a; font-weight: 400; font-size: 12px; }
+  .standings-table td.center { text-align: center; }
+  .standings-team { display: flex; align-items: center; gap: 8px; }
+  .standings-team img { width: 20px; height: 20px; object-fit: contain; }
+
+  .empty-state { text-align: center; padding: 40px; color: #9a9a9a; font-size: 13px; }
+</style>
+</head>
+<body>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <img class="logo" src="assets/LOGO_WEB_01.svg" alt="DoubleTen">
+      <nav class="menu-panel">
+        <div class="menu-highlight" id="menuHighlight"></div>
+        <ul id="menuList">
+          <li style="top:9px"><img src="assets/HOME ICON_2.svg" alt="" style="left:29px;width:10px;height:12px"><span style="left:57px">หน้าแรก</span></li>
+          <li style="top:46px"><img src="assets/NEWS ICON_2.svg" alt="" style="left:28px;width:13px;height:10.6px"><span style="left:57px">อัพเดทข่าว</span></li>
+          <li style="top:79px"><img src="assets/ARTICLE ICON_2.svg" alt="" style="left:29px;width:10px;height:10px"><span style="left:57px">บทความ</span></li>
+          <li style="top:115px"><img src="assets/SOCIETY ICON_2.svg" alt="" style="left:29px;width:11px;height:10px"><span style="left:56px">บอร์ดโซไซตี้</span></li>
+          <li style="top:148px"><img src="assets/BALL_INTER ICON_2.svg" alt="" style="left:29px;width:11px;height:14px"><span style="left:56px">บอร์ดบอลนอก</span></li>
+          <li style="top:182px"><img src="assets/BALL_THAI ICON_2.svg" alt="" style="left:30px;width:9px;height:13px"><span style="left:56px">บอร์ดบอลไทย</span></li>
+          <li style="top:214px"><img src="assets/all sport icon_2.svg" alt="" style="left:30px;width:11px;height:15px"><span style="left:56px">ออลสปอร์ต</span></li>
+          <li style="top:250px"><img src="assets/games icon_2.svg" alt="" style="left:30px;width:12px;height:12px"><span style="left:56px">บอร์ดเกมส์</span></li>
+          <li style="top:282px"><img src="assets/deal icon_2.svg" alt="" style="left:29px;width:13px;height:13px"><span style="left:56px">เดลล่างมอ</span></li>
+          <li style="top:316px"><img src="assets/Prisoner Icon_2.svg" alt="" style="left:28px;width:12px;height:13px"><span style="left:56px">เรือนจำคนง่าว</span></li>
+          <li style="top:353px"><img src="assets/buy item icon_2.svg" alt="" style="left:29px;width:13px;height:13px"><span style="left:56px;color:#FFC107">ซื้อไอเท็มเว็บ</span></li>
+        </ul>
+      </nav>
+      <div class="menu-divider"></div>
+      <div class="balance-box"><img src="assets/balance.svg" alt="Balance"></div>
+      <ul class="menu-collapsed">
+        <li><img src="assets/HOME ICON.svg" alt="หน้าแรก"></li>
+        <li><img src="assets/NEWS ICON.svg" alt="อัพเดทข่าว"></li>
+        <li><img src="assets/ARTICLE ICON.svg" alt="บทความ"></li>
+        <li><img src="assets/SOCIETY ICON.svg" alt="บอร์ดโซไซตี้"></li>
+        <li><img src="assets/BALL_INTER ICON.svg" alt="บอร์ดบอลนอก"></li>
+        <li><img src="assets/BALL_THAI ICON.svg" alt="บอร์ดบอลไทย"></li>
+        <li><img src="assets/all sport icon.svg" alt="ออลสปอร์ต"></li>
+        <li><img src="assets/games icon.svg" alt="บอร์ดเกมส์"></li>
+        <li><img src="assets/deal icon.svg" alt="เดลล่างมอ"></li>
+        <li><img src="assets/Prisoner Icon.svg" alt="เรือนจำคนง่าว"></li>
+        <li><img src="assets/buy item icon.svg" alt="ซื้อไอเท็มเว็บ"></li>
+      </ul>
+    </aside>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&#10094;</button>
+
+    <div class="content-area">
+      <header class="header">
+        <span class="wordmark">DOUBLETEN</span>
+        <div class="icons">
+          <img class="bell" src="assets/mynaui_bell.svg" alt="Notifications">
+          <img class="mail" src="assets/mynaui_mail.svg" alt="Messages">
+        </div>
+        <a class="login-btn" href="auth.html?tab=login"><img src="assets/Login Icon.svg" alt="Login"></a>
+        <a class="register-btn" href="auth.html?tab=register"><img src="assets/Register Icon.svg" alt="Register"></a>
+        <img class="light-mode-btn" id="themeToggle" src="assets/light_mode.svg" alt="Toggle light mode">
+      </header>
+
+      <main class="main">
+        <div class="page-wrap">
+          <div class="page-tabs">
+            <button class="active" data-page="fixtures">ตารางแข่ง</button>
+            <button data-page="standings">ตารางคะแนน</button>
+          </div>
+
+          <div class="league-tabs" id="leagueTabs">
+            <button class="active" data-comp="ALL">ทั้งหมด</button>
+            <button data-comp="PL">Premier League</button>
+            <button data-comp="PD">La Liga</button>
+            <button data-comp="BL1">Bundesliga</button>
+            <button data-comp="SA">Serie A</button>
+            <button data-comp="FL1">Ligue 1</button>
+            <button data-comp="CL">Champions League</button>
+          </div>
+
+          <div id="fixturesView">
+            <div class="fixtures-list" id="fixturesList">
+              <div class="empty-state">กำลังโหลด...</div>
+            </div>
+          </div>
+
+          <div id="standingsView" style="display:none;">
+            <table class="standings-table" id="standingsTable">
+              <thead>
+                <tr><th>#</th><th>ทีม</th><th class="center">แข่ง</th><th class="center">ชนะ</th><th class="center">เสมอ</th><th class="center">แพ้</th><th class="center">+/-</th><th class="center">คะแนน</th></tr>
+              </thead>
+              <tbody id="standingsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    toggleBtn.addEventListener('click', () => {
+      const collapsed = sidebar.classList.toggle('collapsed');
+      document.documentElement.style.setProperty('--sidebar-w', collapsed ? '56px' : '198px');
+      toggleBtn.innerHTML = collapsed ? '&#10095;' : '&#10094;';
+    });
+
+    const menuList = document.getElementById('menuList');
+    const highlight = document.getElementById('menuHighlight');
+    menuList.querySelectorAll('li').forEach((li) => {
+      li.addEventListener('mouseenter', () => {
+        highlight.style.top = (li.offsetTop + (li.offsetHeight - 27) / 2) + 'px';
+        highlight.style.opacity = '1';
+      });
+    });
+    menuList.addEventListener('mouseleave', () => { highlight.style.opacity = '0'; });
+
+    const themeToggle = document.getElementById('themeToggle');
+    const htmlEl = document.documentElement;
+    function applyTheme(isLight) { htmlEl.classList.toggle('light-mode', isLight); }
+    applyTheme(localStorage.getItem('doubleten-theme') === 'light');
+    themeToggle.addEventListener('click', () => {
+      const isLight = htmlEl.classList.toggle('light-mode');
+      localStorage.setItem('doubleten-theme', isLight ? 'light' : 'dark');
+    });
+  </script>
+
+  <script>
+    // ===== Fixtures & Standings from Supabase =====
+    const SUPABASE_URL = 'https://dnrcardbuuwnvuridubb.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_uz4Tj8HDZef7T2OLEzyvUw_wcGsn0ZW';
+    const ARCHIVE_SYNC_URL = SUPABASE_URL + '/functions/v1/football-archive-sync';
+
+    let currentPage = 'fixtures';
+    let currentComp = 'ALL';
+    let allMatches = [];
+    let allStandings = {};
+
+    const pageTabs = document.getElementById('page-tabs') || document.querySelector('.page-tabs');
+    const leagueTabs = document.getElementById('leagueTabs');
+    const fixturesView = document.getElementById('fixturesView');
+    const standingsView = document.getElementById('standingsView');
+    const fixturesList = document.getElementById('fixturesList');
+    const standingsBody = document.getElementById('standingsBody');
+
+    async function sb(path) {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+        }
+      });
+      return res.json();
+    }
+
+    function fmtDateTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short' }) + ' ' +
+             d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderFixtures() {
+      const filtered = currentComp === 'ALL' ? allMatches : allMatches.filter(m => m.competition_code === currentComp);
+      if (!filtered.length) {
+        fixturesList.innerHTML = '<div class="empty-state">ไม่มีข้อมูลแมตช์</div>';
+        return;
+      }
+      fixturesList.innerHTML = filtered.map(m => {
+        const isLive = m.status === 'IN_PLAY' || m.status === 'PAUSED';
+        const isFinished = m.status === 'FINISHED';
+        const rowClass = isLive ? 'is-live' : (isFinished ? 'is-finished' : '');
+        const timeLabel = isLive ? ('🔴 ' + (m.minute ? m.minute + "'" : 'สด')) : (isFinished ? 'จบแล้ว' : fmtDateTime(m.utc_date));
+        const score = (isLive || isFinished) ? `${m.home_score ?? '-'} - ${m.away_score ?? '-'}` : 'VS';
+        return `<div class="fixture-row ${rowClass}">
+          <div class="fixture-time">${timeLabel}</div>
+          <div class="fixture-teams">
+            <div class="fixture-team home"><img src="${m.home_crest || ''}" onerror="this.style.visibility='hidden'"><span>${m.home_team}</span></div>
+            <div class="fixture-score">${score}</div>
+            <div class="fixture-team away"><img src="${m.away_crest || ''}" onerror="this.style.visibility='hidden'"><span>${m.away_team}</span></div>
+          </div>
+          <div class="fixture-comp">${m.competition_name || ''}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderStandings() {
+      const comp = currentComp === 'ALL' ? 'PL' : currentComp;
+      const rows = allStandings[comp] || [];
+      if (!rows.length) {
+        standingsBody.innerHTML = '<tr><td colspan="8" class="empty-state">ไม่มีข้อมูลตารางคะแนนลีกนี้</td></tr>';
+        return;
+      }
+      standingsBody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.position}</td>
+          <td><div class="standings-team"><img src="${r.team_crest || ''}" onerror="this.style.visibility='hidden'"><span>${r.team_name}</span></div></td>
+          <td class="center">${r.played}</td>
+          <td class="center">${r.won}</td>
+          <td class="center">${r.draw}</td>
+          <td class="center">${r.lost}</td>
+          <td class="center">${r.goal_diff > 0 ? '+' : ''}${r.goal_diff}</td>
+          <td class="center"><strong>${r.points}</strong></td>
+        </tr>`).join('');
+    }
+
+    async function loadData() {
+      // สั่ง sync ก่อน (ฟังก์ชันจะเช็ค cache เองว่าควร sync จริงไหม)
+      fetch(ARCHIVE_SYNC_URL, { headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }).catch(() => {});
+
+      const matches = await sb('matches_archive?select=*&order=utc_date.asc&limit=200');
+      if (Array.isArray(matches)) allMatches = matches;
+
+      const standings = await sb('standings_archive?select=*&order=competition_code.asc,position.asc');
+      if (Array.isArray(standings)) {
+        allStandings = {};
+        standings.forEach(r => {
+          if (!allStandings[r.competition_code]) allStandings[r.competition_code] = [];
+          allStandings[r.competition_code].push(r);
+        });
+      }
+
+      if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
+    }
+
+    document.querySelector('.page-tabs').addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      document.querySelectorAll('.page-tabs button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentPage = e.target.dataset.page;
+      fixturesView.style.display = currentPage === 'fixtures' ? 'block' : 'none';
+      standingsView.style.display = currentPage === 'standings' ? 'block' : 'none';
+      if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
+    });
+
+    leagueTabs.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      leagueTabs.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentComp = e.target.dataset.comp;
+      if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
+    });
+
+    loadData();
+    setInterval(loadData, 30000);
+  </script>
+
+</body>
+</html>
