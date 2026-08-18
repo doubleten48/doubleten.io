@@ -236,7 +236,7 @@
           </div>
 
           <div class="league-tabs" id="leagueTabs">
-            <button class="active" data-comp="ALL">ทั้งหมด</button>
+            <button class="active" data-comp="ALL" id="allLeagueBtn">ทั้งหมด</button>
             <button data-comp="PL">Premier League</button>
             <button data-comp="PD">La Liga</button>
             <button data-comp="BL1">Bundesliga</button>
@@ -323,11 +323,11 @@
     }
 
     const ZONES = {
-      PL:  [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:18,to:20,color:'#e11d48',label:'ตกชั้น'}],
+      PL:  [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:18,to:20,color:'#e11d48',label:'ตกชั้น'}],
       PD:  [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:18,to:20,color:'#e11d48',label:'ตกชั้น'}],
       SA:  [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:18,to:20,color:'#e11d48',label:'ตกชั้น'}],
-      BL1: [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:16,to:16,color:'#a855f7',label:'เพลย์ออฟตกชั้น'},{from:17,to:18,color:'#e11d48',label:'ตกชั้น'}],
-      FL1: [{from:1,to:3,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:4,to:4,color:'#f97316',label:'ยูโรป้าลีก'},{from:5,to:5,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:16,to:18,color:'#e11d48',label:'ตกชั้น'}],
+      BL1: [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:16,to:16,color:'#9ca3af',label:'เพลย์ออฟตกชั้น'},{from:17,to:18,color:'#e11d48',label:'ตกชั้น'}],
+      FL1: [{from:1,to:3,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:4,to:4,color:'#7c3aed',label:'รอบคัดเลือกแชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:16,to:18,color:'#e11d48',label:'ตกชั้น'}],
       CL:  [{from:1,to:8,color:'#3b82f6',label:'ผ่านตรงรอบ 16 ทีม'},{from:9,to:24,color:'#f97316',label:'เพลย์ออฟ'},{from:25,to:36,color:'#e11d48',label:'ตกรอบ'}],
     };
 
@@ -458,6 +458,19 @@
       currentPage = e.target.dataset.page;
       fixturesView.style.display = currentPage === 'fixtures' ? 'block' : 'none';
       standingsView.style.display = currentPage === 'standings' ? 'block' : 'none';
+
+      const allBtn = document.getElementById('allLeagueBtn');
+      if (currentPage === 'standings') {
+        allBtn.style.display = 'none';
+        if (currentComp === 'ALL') {
+          currentComp = 'PL';
+          leagueTabs.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          leagueTabs.querySelector('[data-comp="PL"]').classList.add('active');
+        }
+      } else {
+        allBtn.style.display = '';
+      }
+
       if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
     });
 
