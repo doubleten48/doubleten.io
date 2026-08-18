@@ -366,11 +366,11 @@
 
   .scores-nav-btn {
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.1);
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
     color: var(--main-text);
     cursor: pointer;
     display: flex;
@@ -380,15 +380,21 @@
     transition: background 0.15s ease;
   }
 
-  .scores-nav-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+  .scores-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .scores-nav-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.16);
   }
 
   html.light-mode .scores-nav-btn {
     background: #d9d9de;
+    border-color: rgba(0, 0, 0, 0.1);
   }
 
-  html.light-mode .scores-nav-btn:hover {
+  html.light-mode .scores-nav-btn:hover:not(:disabled) {
     background: #c5c5cb;
   }
 
@@ -427,21 +433,13 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    scrollbar-width: none;
-    scroll-behavior: smooth;
     flex: 1;
     min-width: 0;
   }
 
-  .scores-list::-webkit-scrollbar {
-    display: none;
-  }
-
   .score-card {
-    flex-shrink: 0;
-    width: 168px;
+    flex: 1 1 0;
+    min-width: 0;
     background: rgba(255, 255, 255, 0.06);
     border-left: 3px solid #872929;
     border-radius: 4px;
@@ -665,6 +663,8 @@
     const scoresList = document.getElementById('scoresList');
     let currentComp = 'ALL';
     let latestMatches = [];
+    let currentPage = 0;
+    const CARDS_PER_PAGE = 5;
 
     const STATUS_LABEL = {
       IN_PLAY: 'สด', PAUSED: 'พักครึ่ง', FINISHED: 'จบ',
@@ -683,12 +683,23 @@
         ? latestMatches
         : latestMatches.filter(m => m.competitionCode === currentComp);
 
+      const totalPages = Math.max(1, Math.ceil(filtered.length / CARDS_PER_PAGE));
+      if (currentPage >= totalPages) currentPage = totalPages - 1;
+      if (currentPage < 0) currentPage = 0;
+
+      const prevBtn = document.getElementById('scoresPrev');
+      const nextBtn = document.getElementById('scoresNext');
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage >= totalPages - 1;
+
       if (!filtered.length) {
         scoresList.innerHTML = '<div class="scores-empty">ไม่มีแมตช์ในลีกนี้ตอนนี้</div>';
         return;
       }
 
-      scoresList.innerHTML = filtered.map(m => {
+      const pageItems = filtered.slice(currentPage * CARDS_PER_PAGE, currentPage * CARDS_PER_PAGE + CARDS_PER_PAGE);
+
+      scoresList.innerHTML = pageItems.map(m => {
         const isFinished = m.status === 'FINISHED';
         const isLive = m.status === 'IN_PLAY' || m.status === 'PAUSED';
         const isUpcoming = m.status === 'SCHEDULED' || m.status === 'TIMED';
@@ -744,14 +755,17 @@
       scoresTabs.querySelectorAll('button').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       currentComp = e.target.dataset.comp;
+      currentPage = 0;
       renderMatches();
     });
 
     document.getElementById('scoresPrev').addEventListener('click', () => {
-      scoresList.scrollBy({ left: -360, behavior: 'smooth' });
+      currentPage--;
+      renderMatches();
     });
     document.getElementById('scoresNext').addEventListener('click', () => {
-      scoresList.scrollBy({ left: 360, behavior: 'smooth' });
+      currentPage++;
+      renderMatches();
     });
 
     fetchScores();
