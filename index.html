@@ -357,15 +357,7 @@
     padding: 0 20px;
   }
 
-  .scores-outer-row {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
   .scores-frame {
-    flex: 1;
-    min-width: 0;
     background: #3F3E3E;
     border-radius: 10px;
     padding: 14px;
@@ -376,22 +368,6 @@
     display: flex;
     align-items: stretch;
     gap: 6px;
-  }
-
-  .scores-live-tag {
-    flex-shrink: 0;
-    width: 22px;
-    background: #e63946;
-    color: #fff;
-    font-weight: 700;
-    font-size: 10px;
-    letter-spacing: 2px;
-    border-radius: 4px;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .scores-cta {
@@ -421,7 +397,6 @@
   .scores-nav-btn {
     flex-shrink: 0;
     width: 22px;
-    height: 40px;
     border: none;
     background: transparent;
     color: #9a9a9a;
@@ -650,30 +625,27 @@
         </div>
 
         <div class="scores-widget">
-          <div class="scores-outer-row">
-            <button class="scores-nav-btn" id="scoresPrev" aria-label="เลื่อนซ้าย">&#10094;</button>
-            <div class="scores-frame">
-              <div class="scores-tabs" id="scoresTabs">
-                <button class="active" data-comp="ALL">ทั้งหมด</button>
-                <button data-comp="PL">Premier League</button>
-                <button data-comp="PD">La Liga</button>
-                <button data-comp="BL1">Bundesliga</button>
-                <button data-comp="SA">Serie A</button>
-                <button data-comp="FL1">Ligue 1</button>
-                <button data-comp="CL">Champions League</button>
-              </div>
-              <div class="scores-list-wrap">
-                <div class="scores-live-tag">LIVE</div>
-                <div class="scores-list" id="scoresList">
-                  <div class="scores-empty">กำลังโหลดผลบอล...</div>
-                </div>
-                <a class="scores-cta" href="fixtures.html">
-                  <span>ตารางคะแนน<br>ดาวซัลโว</span>
-                  <span class="cta-arrow">&#10142;</span>
-                </a>
-              </div>
+          <div class="scores-frame">
+            <div class="scores-tabs" id="scoresTabs">
+              <button class="active" data-comp="ALL">ทั้งหมด</button>
+              <button data-comp="PL">Premier League</button>
+              <button data-comp="PD">La Liga</button>
+              <button data-comp="BL1">Bundesliga</button>
+              <button data-comp="SA">Serie A</button>
+              <button data-comp="FL1">Ligue 1</button>
+              <button data-comp="CL">Champions League</button>
             </div>
-            <button class="scores-nav-btn" id="scoresNext" aria-label="เลื่อนขวา">&#10095;</button>
+            <div class="scores-list-wrap">
+              <button class="scores-nav-btn" id="scoresPrev" aria-label="เลื่อนซ้าย">&#10094;</button>
+              <div class="scores-list" id="scoresList">
+                <div class="scores-empty">กำลังโหลดผลบอล...</div>
+              </div>
+              <button class="scores-nav-btn" id="scoresNext" aria-label="เลื่อนขวา">&#10095;</button>
+              <a class="scores-cta" href="fixtures.html">
+                <span>ตารางคะแนน<br>ดาวซัลโว</span>
+                <span class="cta-arrow">&#10142;</span>
+              </a>
+            </div>
           </div>
         </div>
         <!-- เนื้อหาส่วนกลาง/ขวา ยังไม่มีในดีไซน์นี้ (เฉพาะ sidebar + header เท่านั้น) -->
