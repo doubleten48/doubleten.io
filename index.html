@@ -628,15 +628,26 @@
       scoresList.innerHTML = filtered.map(m => {
         const isFinished = m.status === 'FINISHED';
         const isLive = m.status === 'IN_PLAY' || m.status === 'PAUSED';
+        const isUpcoming = m.status === 'SCHEDULED' || m.status === 'TIMED';
         const statusClass = isFinished ? 'finished' : (isLive ? '' : 'scheduled');
         const statusText = STATUS_LABEL[m.status] || m.status;
-        const score = (m.homeScore ?? '-') + ' - ' + (m.awayScore ?? '-');
+
+        let resultDisplay;
+        if (isUpcoming) {
+          const d = new Date(m.utcDate);
+          const dateStr = d.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit' });
+          const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+          resultDisplay = `<span style="font-size:11px;line-height:1.3;display:block;">${dateStr}<br>${timeStr}</span>`;
+        } else {
+          resultDisplay = (m.homeScore ?? '-') + ' - ' + (m.awayScore ?? '-');
+        }
+
         return `<div class="score-row">
           <span class="score-status ${statusClass}">${statusText}</span>
           <div class="score-teams">
             <span>${m.homeTeam}</span>
           </div>
-          <span class="score-result">${score}</span>
+          <span class="score-result">${resultDisplay}</span>
           <div class="score-teams">
             <span>${m.awayTeam}</span>
           </div>
