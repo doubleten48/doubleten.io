@@ -348,6 +348,108 @@
     cursor: pointer;
     white-space: nowrap;
   }
+
+  /* ===== Football scores widget ===== */
+  .scores-widget {
+    width: 100%;
+    max-width: 1010px;
+    margin: 16px auto 0 auto;
+    padding: 0 20px;
+  }
+
+  .scores-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+  }
+
+  .scores-tabs button {
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    color: var(--main-text);
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-family: 'Kanit', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+
+  html.light-mode .scores-tabs button {
+    background: #d9d9de;
+  }
+
+  .scores-tabs button.active {
+    background: #872929;
+    color: #fff;
+  }
+
+  .scores-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  .score-row {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    gap: 10px;
+  }
+
+  html.light-mode .score-row {
+    background: #d9d9de;
+  }
+
+  .score-row .score-status {
+    width: 46px;
+    flex-shrink: 0;
+    font-size: 11px;
+    color: #ff6b6b;
+    font-weight: 600;
+  }
+
+  .score-row .score-status.finished { color: #9a9a9a; }
+  .score-row .score-status.scheduled { color: #6ea8fe; }
+
+  .score-row .score-teams {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--main-text);
+    min-width: 0;
+  }
+
+  .score-row .score-teams span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .score-row .score-result {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--main-text);
+    min-width: 44px;
+    text-align: center;
+  }
+
+  .scores-empty {
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: #9a9a9a;
+  }
 </style>
 </head>
 <body>
@@ -430,6 +532,21 @@
             <a class="announce-link" href="#">LINK 🔗</a>
           </div>
         </div>
+
+        <div class="scores-widget">
+          <div class="scores-tabs" id="scoresTabs">
+            <button class="active" data-comp="ALL">ทั้งหมด</button>
+            <button data-comp="PL">Premier League</button>
+            <button data-comp="PD">La Liga</button>
+            <button data-comp="BL1">Bundesliga</button>
+            <button data-comp="SA">Serie A</button>
+            <button data-comp="FL1">Ligue 1</button>
+            <button data-comp="CL">Champions League</button>
+          </div>
+          <div class="scores-list" id="scoresList">
+            <div class="scores-empty">กำลังโหลดผลบอล...</div>
+          </div>
+        </div>
         <!-- เนื้อหาส่วนกลาง/ขวา ยังไม่มีในดีไซน์นี้ (เฉพาะ sidebar + header เท่านั้น) -->
       </main>
     </div>
@@ -463,8 +580,7 @@
     });
 
     // Sliding menu highlight — appears only while hovering an item
-    const menuList = document.getElementById('menuList');
-    const highlight = document.getElementById('menuHighlight');
+    const menuList = document.getElementById('menuList');    const highlight = document.getElementById('menuHighlight');
     const menuItems = menuList.querySelectorAll('li');
 
     function moveHighlightTo(li) {
@@ -481,6 +597,78 @@
     menuList.addEventListener('mouseleave', () => {
       highlight.style.opacity = '0';
     });
+  </script>
+
+  <script>
+    // Football scores widget
+    const EDGE_FUNCTION_URL = 'https://dnrcardbuuwnvuridubb.supabase.co/functions/v1/football-scores';
+    const SUPABASE_ANON_KEY = 'sb_publishable_uz4Tj8HDZef7T2OLEzyvUw_wcGsn0ZW';
+    const POLL_INTERVAL_MS = 10000;
+
+    const scoresTabs = document.getElementById('scoresTabs');
+    const scoresList = document.getElementById('scoresList');
+    let currentComp = 'ALL';
+    let latestMatches = [];
+
+    const STATUS_LABEL = {
+      IN_PLAY: 'สด', PAUSED: 'พักครึ่ง', FINISHED: 'จบ',
+      SCHEDULED: 'ยังไม่เริ่ม', TIMED: 'ยังไม่เริ่ม', POSTPONED: 'เลื่อน'
+    };
+
+    function renderMatches() {
+      const filtered = currentComp === 'ALL'
+        ? latestMatches
+        : latestMatches.filter(m => m.competitionCode === currentComp);
+
+      if (!filtered.length) {
+        scoresList.innerHTML = '<div class="scores-empty">ไม่มีแมตช์ในลีกนี้ตอนนี้</div>';
+        return;
+      }
+
+      scoresList.innerHTML = filtered.map(m => {
+        const isFinished = m.status === 'FINISHED';
+        const isLive = m.status === 'IN_PLAY' || m.status === 'PAUSED';
+        const statusClass = isFinished ? 'finished' : (isLive ? '' : 'scheduled');
+        const statusText = STATUS_LABEL[m.status] || m.status;
+        const score = (m.homeScore ?? '-') + ' - ' + (m.awayScore ?? '-');
+        return `<div class="score-row">
+          <span class="score-status ${statusClass}">${statusText}</span>
+          <div class="score-teams">
+            <span>${m.homeTeam}</span>
+          </div>
+          <span class="score-result">${score}</span>
+          <div class="score-teams">
+            <span>${m.awayTeam}</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    async function fetchScores() {
+      try {
+        const res = await fetch(EDGE_FUNCTION_URL, {
+          headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+        });
+        const data = await res.json();
+        if (data.matches) {
+          latestMatches = data.matches;
+          renderMatches();
+        }
+      } catch (e) {
+        // เงียบไว้ ไม่รบกวน UI ถ้าเน็ตมีปัญหาชั่วคราว
+      }
+    }
+
+    scoresTabs.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      scoresTabs.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentComp = e.target.dataset.comp;
+      renderMatches();
+    });
+
+    fetchScores();
+    setInterval(fetchScores, POLL_INTERVAL_MS);
   </script>
 
 </body>
