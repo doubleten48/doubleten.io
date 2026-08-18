@@ -156,6 +156,23 @@
   .standings-team { display: flex; align-items: center; gap: 8px; }
   .standings-team img { width: 20px; height: 20px; object-fit: contain; }
 
+  .zone-bar { width: 4px; padding: 0 !important; }
+
+  .standings-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 5px;
+    font-size: 12px;
+  }
+  html.light-mode .standings-legend { background: rgba(0,0,0,0.03); }
+
+  .standings-legend-item { display: flex; align-items: center; gap: 8px; }
+  .standings-legend-dot { width: 4px; height: 16px; border-radius: 2px; flex-shrink: 0; }
+
   .empty-state { text-align: center; padding: 40px; color: #9a9a9a; font-size: 13px; }
 </style>
 </head>
@@ -237,10 +254,11 @@
           <div id="standingsView" style="display:none;">
             <table class="standings-table" id="standingsTable">
               <thead>
-                <tr><th>#</th><th>ทีม</th><th class="center">แข่ง</th><th class="center">ชนะ</th><th class="center">เสมอ</th><th class="center">แพ้</th><th class="center">+/-</th><th class="center">คะแนน</th></tr>
+                <tr><th class="zone-bar"></th><th>#</th><th>ทีม</th><th class="center">แข่ง</th><th class="center">ชนะ</th><th class="center">เสมอ</th><th class="center">แพ้</th><th class="center">ยิง</th><th class="center">เสีย</th><th class="center">+/-</th><th class="center">คะแนน</th></tr>
               </thead>
               <tbody id="standingsBody"></tbody>
             </table>
+            <div class="standings-legend" id="standingsLegend"></div>
           </div>
         </div>
       </main>
@@ -304,6 +322,20 @@
       return res.json();
     }
 
+    const ZONES = {
+      PL:  [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:18,to:20,color:'#e11d48',label:'ตกชั้น'}],
+      PD:  [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:18,to:20,color:'#e11d48',label:'ตกชั้น'}],
+      SA:  [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:18,to:20,color:'#e11d48',label:'ตกชั้น'}],
+      BL1: [{from:1,to:4,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:5,to:5,color:'#f97316',label:'ยูโรป้าลีก'},{from:6,to:6,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:16,to:16,color:'#a855f7',label:'เพลย์ออฟตกชั้น'},{from:17,to:18,color:'#e11d48',label:'ตกชั้น'}],
+      FL1: [{from:1,to:3,color:'#3b82f6',label:'แชมเปียนส์ลีก'},{from:4,to:4,color:'#f97316',label:'ยูโรป้าลีก'},{from:5,to:5,color:'#22c55e',label:'คอนเฟอเรนซ์ลีก'},{from:16,to:18,color:'#e11d48',label:'ตกชั้น'}],
+      CL:  [{from:1,to:8,color:'#3b82f6',label:'ผ่านตรงรอบ 16 ทีม'},{from:9,to:24,color:'#f97316',label:'เพลย์ออฟ'},{from:25,to:36,color:'#e11d48',label:'ตกรอบ'}],
+    };
+
+    function getZone(comp, position) {
+      const zones = ZONES[comp] || [];
+      return zones.find(z => position >= z.from && position <= z.to);
+    }
+
     function fmtDateTime(iso) {
       const d = new Date(iso);
       return d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short' }) + ' ' +
@@ -365,21 +397,39 @@
     function renderStandings() {
       const comp = currentComp === 'ALL' ? 'PL' : currentComp;
       const rows = allStandings[comp] || [];
+      const legendEl = document.getElementById('standingsLegend');
+
       if (!rows.length) {
-        standingsBody.innerHTML = '<tr><td colspan="8" class="empty-state">ไม่มีข้อมูลตารางคะแนนลีกนี้</td></tr>';
+        standingsBody.innerHTML = '<tr><td colspan="11" class="empty-state">ไม่มีข้อมูลตารางคะแนนลีกนี้</td></tr>';
+        legendEl.innerHTML = '';
         return;
       }
-      standingsBody.innerHTML = rows.map(r => `
+
+      standingsBody.innerHTML = rows.map(r => {
+        const zone = getZone(comp, r.position);
+        const barColor = zone ? zone.color : 'transparent';
+        return `
         <tr>
+          <td class="zone-bar" style="background:${barColor}"></td>
           <td>${r.position}</td>
           <td><div class="standings-team"><img src="${r.team_crest || ''}" onerror="this.style.visibility='hidden'"><span>${r.team_name}</span></div></td>
           <td class="center">${r.played}</td>
           <td class="center">${r.won}</td>
           <td class="center">${r.draw}</td>
           <td class="center">${r.lost}</td>
+          <td class="center">${r.goals_for}</td>
+          <td class="center">${r.goals_against}</td>
           <td class="center">${r.goal_diff > 0 ? '+' : ''}${r.goal_diff}</td>
           <td class="center"><strong>${r.points}</strong></td>
-        </tr>`).join('');
+        </tr>`;
+      }).join('');
+
+      const zones = ZONES[comp] || [];
+      legendEl.innerHTML = zones.map(z => `
+        <div class="standings-legend-item">
+          <span class="standings-legend-dot" style="background:${z.color}"></span>
+          <span>${z.label}</span>
+        </div>`).join('');
     }
 
     async function loadData() {
