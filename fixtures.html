@@ -169,6 +169,47 @@
   .fixture-score { flex-shrink: 0; font-weight: 600; min-width: 50px; text-align: center; }
   .fixture-comp { width: 130px; flex-shrink: 0; font-size: 11px; color: #9a9a9a; text-align: right; }
 
+  .fixture-toggle-btn {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--main-text);
+    font-family: 'Kanit', sans-serif;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+  html.light-mode .fixture-toggle-btn { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.12); }
+  .fixture-toggle-btn:hover { background: rgba(255,255,255,0.16); }
+  .fixture-toggle-btn.is-open { background: #872929; border-color: #872929; color: #fff; }
+
+  .fixture-details {
+    display: none;
+    background: rgba(0,0,0,0.18);
+    border-left: 3px solid #872929;
+    border-radius: 0 0 4px 4px;
+    margin-top: -4px;
+    padding: 10px 16px 12px 16px;
+    font-size: 12px;
+  }
+  html.light-mode .fixture-details { background: rgba(0,0,0,0.04); }
+  .fixture-details.is-open { display: block; }
+
+  .fixture-event-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    color: var(--main-text);
+  }
+  .fixture-event-row .evt-minute { color: #9a9a9a; width: 42px; flex-shrink: 0; }
+  .fixture-event-row .evt-team { width: 60px; flex-shrink: 0; color: #9a9a9a; font-size: 11px; }
+  .fixture-event-row .evt-assist { color: #9a9a9a; font-size: 11px; }
+  .fixture-details-empty { color: #9a9a9a; font-size: 12px; padding: 4px 0; }
+
   .standings-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .standings-table th, .standings-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
   html.light-mode .standings-table th, html.light-mode .standings-table td { border-bottom: 1px solid rgba(0,0,0,0.08); }
@@ -474,6 +515,7 @@
         const rowClass = isLive ? 'is-live' : (isFinished ? 'is-finished' : '');
         const timeLabel = isLive ? ('🔴 ' + (m.minute ? m.minute + "'" : 'สด')) : (isFinished ? 'จบแล้ว' : fmtTimeOnly(m.utc_date));
         const score = (isLive || isFinished) ? `${m.home_score ?? '-'} - ${m.away_score ?? '-'}` : 'VS';
+        const toggleBtn = isFinished ? `<button class="fixture-toggle-btn" data-match-id="${m.id}">คนยิง+จ่าย</button>` : '';
 
         html += `<div class="fixture-row ${rowClass}">
           <div class="fixture-time">${timeLabel}</div>
@@ -483,11 +525,73 @@
             <div class="fixture-team away"><img src="${m.away_crest || ''}" onerror="this.style.visibility='hidden'"><span>${m.away_team}</span></div>
           </div>
           <div class="fixture-comp">${m.competition_name || ''}</div>
+          ${toggleBtn}
         </div>`;
+
+        if (isFinished) {
+          html += `<div class="fixture-details" id="details-${m.id}"></div>`;
+        }
       });
 
       fixturesList.innerHTML = html;
     }
+
+    const eventsCache = {};
+
+    async function loadMatchEvents(matchId) {
+      if (eventsCache[matchId]) return eventsCache[matchId];
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/football-match-events?match_id=${matchId}`, {
+        headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+      });
+      const data = await res.json();
+      eventsCache[matchId] = data.events || [];
+      return eventsCache[matchId];
+    }
+
+    function renderEventsList(events) {
+      if (!events.length) {
+        return '<div class="fixture-details-empty">ไม่มีข้อมูลผู้ยิงประตูสำหรับแมตช์นี้</div>';
+      }
+      return events.map(ev => {
+        const typeLabel = ev.type === 'OWN' ? ' (ยิงเข้าประตูตัวเอง)' : (ev.type === 'PENALTY' ? ' (จุดโทษ)' : '');
+        const minuteLabel = ev.minute + (ev.injuryTime ? '+' + ev.injuryTime : '') + "'";
+        const assistText = ev.assist ? `<span class="evt-assist">จ่ายโดย ${ev.assist}</span>` : '';
+        return `<div class="fixture-event-row">
+          <span class="evt-minute">${minuteLabel}</span>
+          <span class="evt-team">${ev.team || ''}</span>
+          <span>⚽ ${ev.scorer || 'ไม่ทราบชื่อ'}${typeLabel}</span>
+          ${assistText}
+        </div>`;
+      }).join('');
+    }
+
+    fixturesList.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.fixture-toggle-btn');
+      if (!btn) return;
+      const matchId = btn.dataset.matchId;
+      const detailsEl = document.getElementById('details-' + matchId);
+      const isOpen = detailsEl.classList.contains('is-open');
+
+      if (isOpen) {
+        detailsEl.classList.remove('is-open');
+        btn.classList.remove('is-open');
+        return;
+      }
+
+      detailsEl.classList.add('is-open');
+      btn.classList.add('is-open');
+
+      if (!detailsEl.dataset.loaded) {
+        detailsEl.innerHTML = '<div class="fixture-details-empty">กำลังโหลด...</div>';
+        try {
+          const events = await loadMatchEvents(matchId);
+          detailsEl.innerHTML = renderEventsList(events);
+          detailsEl.dataset.loaded = '1';
+        } catch (err) {
+          detailsEl.innerHTML = '<div class="fixture-details-empty">โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง</div>';
+        }
+      }
+    });
 
     function renderStandings() {
       const comp = currentComp === 'ALL' ? 'PL' : currentComp;
