@@ -488,6 +488,13 @@
     flex-shrink: 0;
   }
 
+  .score-card .score-team-logo {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
   .score-card .score-team-value {
     font-weight: 600;
     color: var(--main-text);
@@ -678,6 +685,13 @@
       return `hsl(${hue}, 65%, 55%)`;
     }
 
+    function teamLogoOrDot(crestUrl, name) {
+      if (crestUrl) {
+        return `<img class="score-team-logo" src="${crestUrl}" alt="" onerror="this.outerHTML='<span class=&quot;score-dot&quot; style=&quot;background:${teamDotColor(name)}&quot;></span>'">`;
+      }
+      return `<span class="score-dot" style="background:${teamDotColor(name)}"></span>`;
+    }
+
     function renderMatches() {
       const filtered = currentComp === 'ALL'
         ? latestMatches
@@ -724,11 +738,11 @@
         return `<div class="score-card ${cardClass}">
           ${timeDisplay}
           <div class="score-team-row">
-            <span class="score-team-name"><span class="score-dot" style="background:${teamDotColor(m.homeTeam)}"></span>${m.homeTeam}</span>
+            <span class="score-team-name">${teamLogoOrDot(m.homeCrest, m.homeTeam)}${m.homeTeam}</span>
             <span class="score-team-value">${homeVal}</span>
           </div>
           <div class="score-team-row">
-            <span class="score-team-name"><span class="score-dot" style="background:${teamDotColor(m.awayTeam)}"></span>${m.awayTeam}</span>
+            <span class="score-team-name">${teamLogoOrDot(m.awayCrest, m.awayTeam)}${m.awayTeam}</span>
             <span class="score-team-value">${awayVal}</span>
           </div>
         </div>`;
