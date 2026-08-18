@@ -152,7 +152,7 @@
   .standings-table th, .standings-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
   html.light-mode .standings-table th, html.light-mode .standings-table td { border-bottom: 1px solid rgba(0,0,0,0.08); }
   .standings-table th { color: #9a9a9a; font-weight: 400; font-size: 12px; }
-  .standings-table td.center { text-align: center; }
+  .standings-table td.center, .standings-table th.center { text-align: center; }
   .standings-team { display: flex; align-items: center; gap: 8px; }
   .standings-team img { width: 20px; height: 20px; object-fit: contain; }
 
@@ -254,7 +254,7 @@
           <div id="standingsView" style="display:none;">
             <table class="standings-table" id="standingsTable">
               <thead>
-                <tr><th class="zone-bar"></th><th>#</th><th>ทีม</th><th class="center">แข่ง</th><th class="center">ชนะ</th><th class="center">เสมอ</th><th class="center">แพ้</th><th class="center">ยิง</th><th class="center">เสีย</th><th class="center">+/-</th><th class="center">คะแนน</th></tr>
+                <tr><th class="zone-bar"></th><th>#</th><th>ทีม</th><th class="center">P</th><th class="center">W</th><th class="center">D</th><th class="center">L</th><th class="center">F</th><th class="center">A</th><th class="center">GD</th><th class="center">PTS</th></tr>
               </thead>
               <tbody id="standingsBody"></tbody>
             </table>
