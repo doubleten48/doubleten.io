@@ -438,6 +438,7 @@
   }
 
   .score-card {
+    position: relative;
     flex: 1 1 0;
     min-width: 0;
     background: rgba(255, 255, 255, 0.06);
@@ -445,6 +446,19 @@
     border-radius: 4px;
     padding: 10px 12px;
     font-size: 12px;
+  }
+
+  .score-live-badge {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: #ff4d4d;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    line-height: 1.4;
   }
 
   html.light-mode .score-card {
@@ -724,8 +738,10 @@
         const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
 
         let timeDisplay;
+        let liveBadge = '';
         if (isLive) {
-          timeDisplay = `<span class="score-card-time live-text">🔴 สด ${m.minute ? m.minute + "'" : ''}</span>`;
+          timeDisplay = '';
+          liveBadge = `<span class="score-live-badge">🔴 ${m.minute ? m.minute + "'" : 'สด'}</span>`;
         } else if (isFinished) {
           timeDisplay = `<span class="score-card-time">จบแล้ว</span>`;
         } else {
@@ -736,6 +752,7 @@
         const awayVal = isUpcoming ? '' : (m.awayScore ?? '-');
 
         return `<div class="score-card ${cardClass}">
+          ${liveBadge}
           ${timeDisplay}
           <div class="score-team-row">
             <span class="score-team-name">${teamLogoOrDot(m.homeCrest, m.homeTeam)}${m.homeTeam}</span>
