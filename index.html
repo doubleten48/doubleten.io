@@ -800,11 +800,11 @@
           ${liveBadge}
           ${timeDisplay}
           <div class="score-team-row">
-            <span class="score-team-name">${teamLogoOrDot(m.homeCrest, m.homeTeam)}${m.homeTeam}</span>
+            <span class="score-team-name" title="${m.homeTeam}">${teamLogoOrDot(m.homeCrest, m.homeTeam)}${m.homeTla || m.homeTeam}</span>
             <span class="score-team-value">${homeVal}</span>
           </div>
           <div class="score-team-row">
-            <span class="score-team-name">${teamLogoOrDot(m.awayCrest, m.awayTeam)}${m.awayTeam}</span>
+            <span class="score-team-name" title="${m.awayTeam}">${teamLogoOrDot(m.awayCrest, m.awayTeam)}${m.awayTla || m.awayTeam}</span>
             <span class="score-team-value">${awayVal}</span>
           </div>
         </div>`;
