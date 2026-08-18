@@ -196,19 +196,30 @@
     font-size: 12px;
   }
   html.light-mode .fixture-details { background: rgba(0,0,0,0.04); }
-  .fixture-details.is-open { display: block; }
+  .fixture-details.is-open { display: flex; gap: 16px; }
 
-  .fixture-event-row {
+  .fixture-details-col {
+    flex: 1;
+    min-width: 0;
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 0;
-    color: var(--main-text);
+    flex-direction: column;
+    gap: 10px;
   }
-  .fixture-event-row .evt-minute { color: #9a9a9a; width: 42px; flex-shrink: 0; }
-  .fixture-event-row .evt-team { width: 60px; flex-shrink: 0; color: #9a9a9a; font-size: 11px; }
-  .fixture-event-row .evt-assist { color: #9a9a9a; font-size: 11px; }
-  .fixture-details-empty { color: #9a9a9a; font-size: 12px; padding: 4px 0; }
+  .fixture-details-col.away { align-items: flex-end; text-align: right; }
+
+  .fixture-event-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .fixture-details-col.away .fixture-event-entry { flex-direction: row-reverse; }
+
+  .fixture-event-entry .evt-minute { color: #9a9a9a; flex-shrink: 0; font-size: 11px; padding-top: 1px; }
+  .fixture-event-entry .evt-names { display: flex; flex-direction: column; min-width: 0; }
+  .fixture-event-entry .evt-scorer { color: var(--main-text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fixture-event-entry .evt-assist-name { color: #9a9a9a; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .fixture-details-empty { color: #9a9a9a; font-size: 12px; padding: 4px 0; flex: 1; }
 
   .standings-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .standings-table th, .standings-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
@@ -515,7 +526,7 @@
         const rowClass = isLive ? 'is-live' : (isFinished ? 'is-finished' : '');
         const timeLabel = isLive ? ('🔴 ' + (m.minute ? m.minute + "'" : 'สด')) : (isFinished ? 'จบแล้ว' : fmtTimeOnly(m.utc_date));
         const score = (isLive || isFinished) ? `${m.home_score ?? '-'} - ${m.away_score ?? '-'}` : 'VS';
-        const toggleBtn = isFinished ? `<button class="fixture-toggle-btn" data-match-id="${m.id}" data-comp="${m.competition_code}" data-home="${m.home_team}" data-away="${m.away_team}" data-date="${m.utc_date}">คนยิง+จ่าย</button>` : '';
+        const toggleBtn = `<button class="fixture-toggle-btn" data-match-id="${m.id}" data-comp="${m.competition_code}" data-home="${m.home_team}" data-away="${m.away_team}" data-date="${m.utc_date}">ดูข้อมูล</button>`;
 
         html += `<div class="fixture-row ${rowClass}">
           <div class="fixture-time">${timeLabel}</div>
@@ -528,12 +539,11 @@
           ${toggleBtn}
         </div>`;
 
-        if (isFinished) {
-          html += `<div class="fixture-details" id="details-${m.id}"></div>`;
-        }
+        html += `<div class="fixture-details" id="details-${m.id}" data-home="${m.home_team}" data-away="${m.away_team}"></div>`;
       });
 
       fixturesList.innerHTML = html;
+      restoreOpenDetails();
     }
 
     const eventsCache = {};
@@ -549,21 +559,74 @@
       return eventsCache[matchId];
     }
 
-    function renderEventsList(events) {
-      if (!events.length) {
-        return '<div class="fixture-details-empty">ไม่มีข้อมูลผู้ยิงประตูสำหรับแมตช์นี้</div>';
+    function renderEventEntry(ev) {
+      const typeLabel = ev.type === 'OWN' ? ' (เข้าประตูตัวเอง)' : (ev.type === 'PENALTY' ? ' (จุดโทษ)' : '');
+      const minuteLabel = ev.minute ? (typeof ev.minute === 'number' ? ev.minute + "'" : ev.minute) : '';
+      const assistLine = ev.assist ? `<div class="evt-assist-name">${ev.assist}</div>` : '';
+      return `<div class="fixture-event-entry">
+        <span class="evt-minute">${minuteLabel}</span>
+        <span class="evt-names">
+          <span class="evt-scorer">⚽ ${ev.scorer || 'ไม่ทราบชื่อ'}${typeLabel}</span>
+          ${assistLine}
+        </span>
+      </div>`;
+    }
+
+    function renderEventsColumns(events, homeTeam, awayTeam) {
+      const homeEvents = events.filter(ev => teamNameMatches(ev.team, homeTeam));
+      const awayEvents = events.filter(ev => teamNameMatches(ev.team, awayTeam));
+
+      const homeHtml = homeEvents.length
+        ? homeEvents.map(renderEventEntry).join('')
+        : '<div class="fixture-details-empty">ไม่มีข้อมูลผู้ยิงประตู</div>';
+      const awayHtml = awayEvents.length
+        ? awayEvents.map(renderEventEntry).join('')
+        : '<div class="fixture-details-empty">ไม่มีข้อมูลผู้ยิงประตู</div>';
+
+      return `<div class="fixture-details-col home">${homeHtml}</div><div class="fixture-details-col away">${awayHtml}</div>`;
+    }
+
+    function teamNameMatches(a, b) {
+      if (!a || !b) return false;
+      const na = a.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const nb = b.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return na.includes(nb) || nb.includes(na);
+    }
+
+    // เก็บรายการแมตช์ที่เปิดกล่องรายละเอียดค้างไว้ ไม่ให้ auto-close ตอน re-render ทุก 30 วิ
+    const openMatchIds = new Set();
+
+    async function openMatchDetails(matchId, comp, home, away, date, detailsEl, btn) {
+      detailsEl.classList.add('is-open');
+      btn.classList.add('is-open');
+      openMatchIds.add(matchId);
+
+      if (!detailsEl.dataset.loaded) {
+        detailsEl.innerHTML = '<div class="fixture-details-empty">กำลังโหลด...</div>';
+        try {
+          const events = await loadMatchEvents(matchId, comp, home, away, date);
+          detailsEl.innerHTML = renderEventsColumns(events, home, away);
+          detailsEl.dataset.loaded = '1';
+        } catch (err) {
+          detailsEl.innerHTML = '<div class="fixture-details-empty">โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง</div>';
+        }
       }
-      return events.map(ev => {
-        const typeLabel = ev.type === 'OWN' ? ' (ยิงเข้าประตูตัวเอง)' : (ev.type === 'PENALTY' ? ' (จุดโทษ)' : '');
-        const minuteLabel = ev.minute ? (typeof ev.minute === 'number' ? ev.minute + "'" : ev.minute) : '';
-        const assistText = ev.assist ? `<span class="evt-assist">จ่ายโดย ${ev.assist}</span>` : '';
-        return `<div class="fixture-event-row">
-          <span class="evt-minute">${minuteLabel}</span>
-          <span class="evt-team">${ev.team || ''}</span>
-          <span>⚽ ${ev.scorer || 'ไม่ทราบชื่อ'}${typeLabel}</span>
-          ${assistText}
-        </div>`;
-      }).join('');
+    }
+
+    function restoreOpenDetails() {
+      openMatchIds.forEach(matchId => {
+        const detailsEl = document.getElementById('details-' + matchId);
+        const btn = fixturesList.querySelector(`.fixture-toggle-btn[data-match-id="${matchId}"]`);
+        if (!detailsEl || !btn) return;
+        detailsEl.classList.add('is-open');
+        btn.classList.add('is-open');
+        if (eventsCache[matchId]) {
+          detailsEl.innerHTML = renderEventsColumns(eventsCache[matchId], detailsEl.dataset.home, detailsEl.dataset.away);
+          detailsEl.dataset.loaded = '1';
+        } else {
+          openMatchDetails(matchId, btn.dataset.comp, btn.dataset.home, btn.dataset.away, btn.dataset.date, detailsEl, btn);
+        }
+      });
     }
 
     fixturesList.addEventListener('click', async (e) => {
@@ -576,22 +639,11 @@
       if (isOpen) {
         detailsEl.classList.remove('is-open');
         btn.classList.remove('is-open');
+        openMatchIds.delete(matchId);
         return;
       }
 
-      detailsEl.classList.add('is-open');
-      btn.classList.add('is-open');
-
-      if (!detailsEl.dataset.loaded) {
-        detailsEl.innerHTML = '<div class="fixture-details-empty">กำลังโหลด...</div>';
-        try {
-          const events = await loadMatchEvents(matchId, btn.dataset.comp, btn.dataset.home, btn.dataset.away, btn.dataset.date);
-          detailsEl.innerHTML = renderEventsList(events);
-          detailsEl.dataset.loaded = '1';
-        } catch (err) {
-          detailsEl.innerHTML = '<div class="fixture-details-empty">โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง</div>';
-        }
-      }
+      await openMatchDetails(matchId, btn.dataset.comp, btn.dataset.home, btn.dataset.away, btn.dataset.date, detailsEl, btn);
     });
 
     function renderStandings() {
