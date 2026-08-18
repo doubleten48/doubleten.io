@@ -118,6 +118,27 @@
   html.light-mode .league-tabs button { background: #d9d9de; }
   .league-tabs button.active { background: #872929; color: #fff; }
 
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .week-nav button {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--main-text);
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  html.light-mode .week-nav button { background: #d9d9de; border-color: rgba(0,0,0,0.1); }
+  .week-nav button:hover { background: rgba(255,255,255,0.14); }
+  .week-nav .week-label { font-size: 14px; font-weight: 600; min-width: 160px; text-align: center; }
+
   .fixtures-list { display: flex; flex-direction: column; gap: 8px; }
 
   .fixture-date-header {
@@ -246,6 +267,11 @@
           </div>
 
           <div id="fixturesView">
+            <div class="week-nav">
+              <button id="weekPrev" aria-label="สัปดาห์ก่อน">&#10094;</button>
+              <span class="week-label" id="weekLabel">สัปดาห์นี้</span>
+              <button id="weekNext" aria-label="สัปดาห์ถัดไป">&#10095;</button>
+            </div>
             <div class="fixtures-list" id="fixturesList">
               <div class="empty-state">กำลังโหลด...</div>
             </div>
@@ -336,6 +362,32 @@
       return zones.find(z => position >= z.from && position <= z.to);
     }
 
+    let weekOffset = 0;
+
+    function getWeekRange(offset) {
+      const now = new Date();
+      const day = now.getDay(); // 0=Sun..6=Sat
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+      const monday = new Date(now);
+      monday.setHours(0,0,0,0);
+      monday.setDate(monday.getDate() + diffToMonday + offset * 7);
+      const sunday = new Date(monday);
+      sunday.setDate(sunday.getDate() + 6);
+      sunday.setHours(23,59,59,999);
+      return { start: monday, end: sunday };
+    }
+
+    function updateWeekLabel() {
+      const { start, end } = getWeekRange(weekOffset);
+      const label = document.getElementById('weekLabel');
+      if (weekOffset === 0) {
+        label.textContent = 'สัปดาห์นี้';
+      } else {
+        const fmt = (d) => d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short' });
+        label.textContent = `${fmt(start)} - ${fmt(end)}`;
+      }
+    }
+
     function fmtDateTime(iso) {
       const d = new Date(iso);
       return d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short' }) + ' ' +
@@ -358,9 +410,17 @@
     }
 
     function renderFixtures() {
-      const filtered = currentComp === 'ALL' ? allMatches : allMatches.filter(m => m.competition_code === currentComp);
+      updateWeekLabel();
+      const { start, end } = getWeekRange(weekOffset);
+
+      let filtered = currentComp === 'ALL' ? allMatches : allMatches.filter(m => m.competition_code === currentComp);
+      filtered = filtered.filter(m => {
+        const d = new Date(m.utc_date);
+        return d >= start && d <= end;
+      });
+
       if (!filtered.length) {
-        fixturesList.innerHTML = '<div class="empty-state">ไม่มีข้อมูลแมตช์</div>';
+        fixturesList.innerHTML = '<div class="empty-state">ไม่มีข้อมูลแมตช์ในสัปดาห์นี้</div>';
         return;
       }
 
@@ -436,7 +496,12 @@
       // สั่ง sync ก่อน (ฟังก์ชันจะเช็ค cache เองว่าควร sync จริงไหม)
       fetch(ARCHIVE_SYNC_URL, { headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }).catch(() => {});
 
-      const matches = await sb('matches_archive?select=*&order=utc_date.asc&limit=200');
+      const now = new Date();
+      const rangeStart = new Date(now); rangeStart.setDate(rangeStart.getDate() - 200);
+      const rangeEnd = new Date(now); rangeEnd.setDate(rangeEnd.getDate() + 30);
+      const matches = await sb(
+        `matches_archive?select=*&utc_date=gte.${rangeStart.toISOString()}&utc_date=lte.${rangeEnd.toISOString()}&order=utc_date.asc&limit=3000`
+      );
       if (Array.isArray(matches)) allMatches = matches;
 
       const standings = await sb('standings_archive?select=*&order=competition_code.asc,position.asc');
@@ -480,6 +545,15 @@
       e.target.classList.add('active');
       currentComp = e.target.dataset.comp;
       if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
+    });
+
+    document.getElementById('weekPrev').addEventListener('click', () => {
+      weekOffset--;
+      renderFixtures();
+    });
+    document.getElementById('weekNext').addEventListener('click', () => {
+      weekOffset++;
+      renderFixtures();
     });
 
     loadData();
