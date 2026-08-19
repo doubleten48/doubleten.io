@@ -259,7 +259,28 @@
   }
   .scorer-rank { width: 26px; color: #9a9a9a; }
   .scorer-player { display: flex; align-items: center; gap: 8px; }
-  .scorer-team-crest { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+  .scorer-photo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.08);
+  }
+  .scorer-photo-fallback {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--main-text);
+  }
+  .scorer-team-crest { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; }
   .scorer-name { font-weight: 600; }
   .scorer-team-name { font-size: 11px; color: #9a9a9a; }
   .scorers-note { font-size: 11px; color: #9a9a9a; margin-top: 12px; line-height: 1.6; }
@@ -729,16 +750,27 @@
         </div>`).join('');
     }
 
+    function initials(name) {
+      if (!name) return '?';
+      const parts = name.trim().split(/\s+/);
+      const first = parts[0]?.[0] || '';
+      const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+      return (first + last).toUpperCase();
+    }
+
     function scorerRow(r, statVal) {
+      const photoHtml = r.photo_url
+        ? `<img class="scorer-photo" src="${r.photo_url}" onerror="this.outerHTML='<div class=&quot;scorer-photo-fallback&quot;>${initials(r.player_name)}</div>'">`
+        : `<div class="scorer-photo-fallback">${initials(r.player_name)}</div>`;
       return `
         <tr>
           <td class="scorer-rank">${r.rank}</td>
           <td>
             <div class="scorer-player">
-              <img class="scorer-team-crest" src="${r.team_crest || ''}" onerror="this.style.visibility='hidden'">
+              ${photoHtml}
               <span>
                 <div class="scorer-name">${r.player_name || 'ไม่ทราบชื่อ'}</div>
-                <div class="scorer-team-name">${r.team_name || ''}</div>
+                <div class="scorer-team-name"><img class="scorer-team-crest" src="${r.team_crest || ''}" onerror="this.style.visibility='hidden'"> ${r.team_name || ''}</div>
               </span>
             </div>
           </td>
