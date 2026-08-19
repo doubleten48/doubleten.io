@@ -376,7 +376,6 @@
     // ===== Fixtures & Standings from Supabase =====
     const SUPABASE_URL = 'https://dnrcardbuuwnvuridubb.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_uz4Tj8HDZef7T2OLEzyvUw_wcGsn0ZW';
-    const ARCHIVE_SYNC_URL = SUPABASE_URL + '/functions/v1/football-archive-sync';
 
     let currentPage = 'fixtures';
     let currentComp = 'ALL';
@@ -685,8 +684,8 @@
     }
 
     async function loadData() {
-      // สั่ง sync ก่อน (ฟังก์ชันจะเช็ค cache เองว่าควร sync จริงไหม)
-      fetch(ARCHIVE_SYNC_URL, { headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }).catch(() => {});
+      // ไม่ต้องสั่ง sync จากหน้าเว็บอีกต่อไป — cron job อัปเดต matches_archive/standings_archive ให้อัตโนมัติทุก 15 นาทีแล้ว
+      // หน้านี้แค่อ่านข้อมูลจากตารางตรง ๆ (ไม่นับโควต้า Edge Function)
 
       const now = new Date();
       const rangeStart = new Date(now); rangeStart.setDate(rangeStart.getDate() - 200);

@@ -702,7 +702,7 @@
 
   <script>
     // Football scores widget
-    const EDGE_FUNCTION_URL = 'https://dnrcardbuuwnvuridubb.supabase.co/functions/v1/football-scores';
+    const SUPABASE_URL_SCORES = 'https://dnrcardbuuwnvuridubb.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_uz4Tj8HDZef7T2OLEzyvUw_wcGsn0ZW';
     const POLL_INTERVAL_MS = 10000;
 
@@ -794,12 +794,15 @@
 
     async function fetchScores() {
       try {
-        const res = await fetch(EDGE_FUNCTION_URL, {
-          headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+        const res = await fetch(`${SUPABASE_URL_SCORES}/rest/v1/live_scores?select=data&id=eq.1`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+          }
         });
-        const data = await res.json();
-        if (data.matches) {
-          latestMatches = data.matches;
+        const rows = await res.json();
+        if (Array.isArray(rows) && rows[0]?.data) {
+          latestMatches = rows[0].data;
           renderMatches();
         }
       } catch (e) {
