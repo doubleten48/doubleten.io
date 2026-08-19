@@ -247,6 +247,22 @@
   .standings-legend-dot { width: 4px; height: 16px; border-radius: 2px; flex-shrink: 0; }
 
   .empty-state { text-align: center; padding: 40px; color: #9a9a9a; font-size: 13px; }
+
+  /* ===== Scorers/Assists tables ===== */
+  .scorers-tables { display: flex; gap: 20px; flex-wrap: wrap; }
+  .scorer-col { flex: 1; min-width: 280px; }
+  .scorer-col h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--main-text);
+  }
+  .scorer-rank { width: 26px; color: #9a9a9a; }
+  .scorer-player { display: flex; align-items: center; gap: 8px; }
+  .scorer-team-crest { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+  .scorer-name { font-weight: 600; }
+  .scorer-team-name { font-size: 11px; color: #9a9a9a; }
+  .scorers-note { font-size: 11px; color: #9a9a9a; margin-top: 12px; line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -306,6 +322,7 @@
           <div class="page-tabs">
             <button class="active" data-page="fixtures">ตารางแข่ง</button>
             <button data-page="standings">ตารางคะแนน</button>
+            <button data-page="scorers">ดาวซัลโว</button>
           </div>
 
           <div class="league-tabs" id="leagueTabs">
@@ -337,6 +354,30 @@
               <tbody id="standingsBody"></tbody>
             </table>
             <div class="standings-legend" id="standingsLegend"></div>
+          </div>
+
+          <div id="scorersView" style="display:none;">
+            <div class="scorers-tables">
+              <div class="scorer-col">
+                <h3>ดาวซัลโว (ยิงประตูสูงสุด)</h3>
+                <table class="standings-table" id="scorersTable">
+                  <thead>
+                    <tr><th class="scorer-rank">#</th><th>นักเตะ</th><th class="center">G</th><th class="center">นัด</th></tr>
+                  </thead>
+                  <tbody id="scorersBody"></tbody>
+                </table>
+              </div>
+              <div class="scorer-col">
+                <h3>จ่ายบอลสูงสุด (แอสซิสต์)</h3>
+                <table class="standings-table" id="assistsTable">
+                  <thead>
+                    <tr><th class="scorer-rank">#</th><th>นักเตะ</th><th class="center">A</th></tr>
+                  </thead>
+                  <tbody id="assistsBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="scorers-note">ดาวซัลโวนับจากประตูล้วน ๆ (แหล่งข้อมูล football-data.org, อัปเดตทุก 1 ชม.) ส่วนแอสซิสต์คำนวณจากข้อมูลผู้จ่ายบอลจริงของทุกแมตช์ที่จบแล้วในฤดูกาล (แหล่งข้อมูล ESPN, อัปเดตทุก 6 ชม.) ทั้งสองตารางเป็นอิสระต่อกัน ไม่ได้มาจากชุดข้อมูลเดียวกัน</div>
           </div>
         </div>
       </main>
@@ -381,13 +422,18 @@
     let currentComp = 'ALL';
     let allMatches = [];
     let allStandings = {};
+    let allScorers = {};
+    let allAssists = {};
 
     const pageTabs = document.getElementById('page-tabs') || document.querySelector('.page-tabs');
     const leagueTabs = document.getElementById('leagueTabs');
     const fixturesView = document.getElementById('fixturesView');
     const standingsView = document.getElementById('standingsView');
+    const scorersView = document.getElementById('scorersView');
     const fixturesList = document.getElementById('fixturesList');
     const standingsBody = document.getElementById('standingsBody');
+    const scorersBody = document.getElementById('scorersBody');
+    const assistsBody = document.getElementById('assistsBody');
 
     async function sb(path) {
       const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
@@ -683,8 +729,40 @@
         </div>`).join('');
     }
 
+    function scorerRow(r, statVal) {
+      return `
+        <tr>
+          <td class="scorer-rank">${r.rank}</td>
+          <td>
+            <div class="scorer-player">
+              <img class="scorer-team-crest" src="${r.team_crest || ''}" onerror="this.style.visibility='hidden'">
+              <span>
+                <div class="scorer-name">${r.player_name || 'ไม่ทราบชื่อ'}</div>
+                <div class="scorer-team-name">${r.team_name || ''}</div>
+              </span>
+            </div>
+          </td>
+          <td class="center"><strong>${statVal}</strong></td>
+          ${r.played_matches !== undefined ? `<td class="center">${r.played_matches ?? '-'}</td>` : ''}
+        </tr>`;
+    }
+
+    function renderScorers() {
+      const comp = currentComp === 'ALL' ? 'PL' : currentComp;
+      const scorerRows = allScorers[comp] || [];
+      const assistRows = allAssists[comp] || [];
+
+      scorersBody.innerHTML = scorerRows.length
+        ? scorerRows.map(r => scorerRow(r, r.goals ?? 0)).join('')
+        : '<tr><td colspan="4" class="empty-state">ยังไม่มีข้อมูลดาวซัลโวลีกนี้ (อาจยังไม่เริ่มฤดูกาล)</td></tr>';
+
+      assistsBody.innerHTML = assistRows.length
+        ? assistRows.map(r => scorerRow(r, r.assists ?? 0)).join('')
+        : '<tr><td colspan="3" class="empty-state">ยังไม่มีข้อมูลแอสซิสต์ลีกนี้ (อาจยังไม่มีแมตช์จบ)</td></tr>';
+    }
+
     async function loadData() {
-      // ไม่ต้องสั่ง sync จากหน้าเว็บอีกต่อไป — cron job อัปเดต matches_archive/standings_archive ให้อัตโนมัติทุก 15 นาทีแล้ว
+      // ไม่ต้องสั่ง sync จากหน้าเว็บอีกต่อไป — cron job อัปเดต matches_archive/standings_archive/top_scorers_archive ให้อัตโนมัติทุก 15 นาทีแล้ว
       // หน้านี้แค่อ่านข้อมูลจากตารางตรง ๆ (ไม่นับโควต้า Edge Function)
 
       const now = new Date();
@@ -704,7 +782,27 @@
         });
       }
 
-      if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
+      const scorers = await sb('top_scorers_archive?select=*&order=competition_code.asc,rank.asc');
+      if (Array.isArray(scorers)) {
+        allScorers = {};
+        scorers.forEach(r => {
+          if (!allScorers[r.competition_code]) allScorers[r.competition_code] = [];
+          allScorers[r.competition_code].push(r);
+        });
+      }
+
+      const assists = await sb('top_assists_archive?select=*&order=competition_code.asc,rank.asc');
+      if (Array.isArray(assists)) {
+        allAssists = {};
+        assists.forEach(r => {
+          if (!allAssists[r.competition_code]) allAssists[r.competition_code] = [];
+          allAssists[r.competition_code].push(r);
+        });
+      }
+
+      if (currentPage === 'fixtures') renderFixtures();
+      else if (currentPage === 'standings') renderStandings();
+      else renderScorers();
     }
 
     document.querySelector('.page-tabs').addEventListener('click', (e) => {
@@ -714,9 +812,10 @@
       currentPage = e.target.dataset.page;
       fixturesView.style.display = currentPage === 'fixtures' ? 'block' : 'none';
       standingsView.style.display = currentPage === 'standings' ? 'block' : 'none';
+      scorersView.style.display = currentPage === 'scorers' ? 'block' : 'none';
 
       const allBtn = document.getElementById('allLeagueBtn');
-      if (currentPage === 'standings') {
+      if (currentPage === 'standings' || currentPage === 'scorers') {
         allBtn.style.display = 'none';
         if (currentComp === 'ALL') {
           currentComp = 'PL';
@@ -727,7 +826,9 @@
         allBtn.style.display = '';
       }
 
-      if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
+      if (currentPage === 'fixtures') renderFixtures();
+      else if (currentPage === 'standings') renderStandings();
+      else renderScorers();
     });
 
     leagueTabs.addEventListener('click', (e) => {
@@ -736,7 +837,9 @@
       e.target.classList.add('active');
       currentComp = e.target.dataset.comp;
       weekOffset = 0;
-      if (currentPage === 'fixtures') renderFixtures(); else renderStandings();
+      if (currentPage === 'fixtures') renderFixtures();
+      else if (currentPage === 'standings') renderStandings();
+      else renderScorers();
     });
 
     document.getElementById('weekPrev').addEventListener('click', () => {
