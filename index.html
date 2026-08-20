@@ -541,6 +541,133 @@
     font-size: 13px;
     color: #9a9a9a;
   }
+
+  /* ===== News section (mockup) ===== */
+  .news-section {
+    width: 100%;
+    max-width: 1010px;
+    margin: 20px auto 0 auto;
+    padding: 0 20px;
+  }
+
+  .news-section .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .news-section .section-title .bar { width: 4px; height: 20px; background: #872929; border-radius: 2px; }
+  .news-section .section-title h2 { font-size: 16px; font-weight: 600; color: var(--main-text); }
+
+  .news-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 720px) {
+    .news-grid { grid-template-columns: 1fr; }
+  }
+
+  .news-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.06);
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  html.light-mode .news-card { background: #d9d9de; border-color: rgba(0,0,0,0.06); }
+  .news-card:hover { transform: translateY(-2px); border-color: rgba(135,41,41,0.5); }
+
+  .news-card.featured .thumb {
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #872929 0%, #3d1414 55%, #0d0a0a 100%);
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+  .news-card.featured .thumb::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 45%, transparent 70%);
+  }
+  .news-card.featured .thumb-icon {
+    position: absolute;
+    top: 16px; left: 16px;
+    font-size: 34px;
+    opacity: 0.35;
+  }
+  .news-card.featured .thumb-content { position: relative; z-index: 1; }
+
+  .news-tag {
+    display: inline-block;
+    background: #872929;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+
+  .news-card.featured .headline {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .news-card.featured .dek {
+    font-size: 13px;
+    color: #d8d8d8;
+    line-height: 1.5;
+    max-width: 90%;
+  }
+
+  .news-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 11px;
+    color: #9a9a9a;
+    padding: 12px 20px 16px 20px;
+  }
+
+  .news-side { display: flex; flex-direction: column; gap: 16px; }
+
+  .news-card.small .thumb {
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #444 0%, #1a1a1a 100%);
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+  }
+  .news-card.small .thumb::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 65%);
+  }
+  .news-card.small .thumb-icon {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-size: 22px;
+    opacity: 0.35;
+  }
+  .news-card.small .thumb-content { position: relative; z-index: 1; }
+  .news-card.small .headline {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #fff;
+  }
+  .news-card.small .news-tag { font-size: 10px; padding: 2px 8px; margin-bottom: 6px; }
+  .news-card.small .news-meta { padding: 10px 14px 14px 14px; }
 </style>
 </head>
 <body>
@@ -648,7 +775,61 @@
             </div>
           </div>
         </div>
-        <!-- เนื้อหาส่วนกลาง/ขวา ยังไม่มีในดีไซน์นี้ (เฉพาะ sidebar + header เท่านั้น) -->
+        <div class="news-section">
+          <div class="section-title">
+            <div class="bar"></div>
+            <h2>อัพเดทข่าว</h2>
+          </div>
+
+          <div class="news-grid">
+            <!-- ช่องใหญ่ = ข่าวใหญ่ -->
+            <a class="news-card featured" href="#">
+              <div class="thumb">
+                <span class="thumb-icon">⚽</span>
+                <div class="thumb-content">
+                  <span class="news-tag">ข่าวใหญ่</span>
+                  <div class="headline">หัวข้อข่าวใหญ่ที่สุดของวันนี้ วางตรงนี้ได้ยาวสองบรรทัด</div>
+                  <div class="dek">คำโปรยสั้น ๆ อธิบายเนื้อหาข่าวเพิ่มอีกนิดหน่อย ให้คนอยากคลิกเข้าไปอ่านต่อ</div>
+                </div>
+              </div>
+              <div class="news-meta">
+                <span>ฟุตบอลต่างประเทศ</span>
+                <span>•</span>
+                <span>5 นาทีที่แล้ว</span>
+              </div>
+            </a>
+
+            <!-- ช่องข้าง 2 ช่อง = ข่าวล่าสุด -->
+            <div class="news-side">
+              <a class="news-card small" href="#">
+                <div class="thumb">
+                  <span class="thumb-icon">📰</span>
+                  <div class="thumb-content">
+                    <span class="news-tag">ทรานส์เฟอร์</span>
+                    <div class="headline">หัวข้อข่าวล่าสุดอันแรก วางได้บรรทัดเดียวสองบรรทัด</div>
+                  </div>
+                </div>
+                <div class="news-meta">
+                  <span>12 นาทีที่แล้ว</span>
+                </div>
+              </a>
+
+              <a class="news-card small" href="#">
+                <div class="thumb">
+                  <span class="thumb-icon">🏆</span>
+                  <div class="thumb-content">
+                    <span class="news-tag">ฟุตบอลไทย</span>
+                    <div class="headline">หัวข้อข่าวล่าสุดอันที่สอง วางได้บรรทัดเดียวสองบรรทัด</div>
+                  </div>
+                </div>
+                <div class="news-meta">
+                  <span>28 นาทีที่แล้ว</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- ถัดจากนี้ลงไป = สิ่งที่ต้องทำในโปรเซสถัดไป -->
       </main>
     </div>
 
