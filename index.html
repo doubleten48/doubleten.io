@@ -587,14 +587,6 @@
     aspect-ratio: 16 / 10;
     background: linear-gradient(135deg, #872929 0%, #3d1414 55%, #0d0a0a 100%);
     position: relative;
-    display: flex;
-    align-items: flex-end;
-    padding: 20px;
-  }
-  .news-card.featured .thumb::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 45%, transparent 70%);
   }
   .news-card.featured .thumb-icon {
     position: absolute;
@@ -602,7 +594,6 @@
     font-size: 34px;
     opacity: 0.35;
   }
-  .news-card.featured .thumb-content { position: relative; z-index: 1; }
 
   .news-tag {
     display: inline-block;
@@ -612,30 +603,26 @@
     font-weight: 600;
     padding: 3px 10px;
     border-radius: 3px;
-    margin-bottom: 10px;
   }
+
+  .featured-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 16px 0 16px;
+    font-size: 12px;
+    color: #9a9a9a;
+  }
+  .featured-meta .stats { display: flex; align-items: center; gap: 12px; }
+  .featured-meta .stats span { display: flex; align-items: center; gap: 4px; }
 
   .news-card.featured .headline {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 700;
-    line-height: 1.35;
-    margin-bottom: 8px;
-    color: #fff;
-  }
-  .news-card.featured .dek {
-    font-size: 13px;
-    color: #d8d8d8;
-    line-height: 1.5;
-    max-width: 90%;
-  }
-
-  .news-meta {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    font-size: 11px;
-    color: #9a9a9a;
-    padding: 12px 20px 16px 20px;
+    line-height: 1.4;
+    color: var(--main-text);
+    padding: 8px 16px 14px 16px;
   }
 
   .news-side { display: flex; flex-direction: column; gap: 16px; }
@@ -667,7 +654,13 @@
     color: #fff;
   }
   .news-card.small .news-tag { font-size: 10px; padding: 2px 8px; margin-bottom: 6px; }
-  .news-card.small .news-meta { padding: 10px 14px 14px 14px; }
+  .news-card.small .news-meta {
+    padding: 8px 14px 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .news-card.small .news-meta .poster { display: flex; align-items: center; gap: 4px; }
 </style>
 </head>
 <body>
@@ -786,17 +779,16 @@
             <a class="news-card featured" href="#">
               <div class="thumb">
                 <span class="thumb-icon">⚽</span>
-                <div class="thumb-content">
-                  <span class="news-tag">ข่าวใหญ่</span>
-                  <div class="headline">หัวข้อข่าวใหญ่ที่สุดของวันนี้ วางตรงนี้ได้ยาวสองบรรทัด</div>
-                  <div class="dek">คำโปรยสั้น ๆ อธิบายเนื้อหาข่าวเพิ่มอีกนิดหน่อย ให้คนอยากคลิกเข้าไปอ่านต่อ</div>
-                </div>
               </div>
-              <div class="news-meta">
-                <span>ฟุตบอลต่างประเทศ</span>
-                <span>•</span>
-                <span>5 นาทีที่แล้ว</span>
+              <div class="featured-meta">
+                <span class="news-tag">ข่าวประจำวัน</span>
+                <span class="stats">
+                  <span>💬 2</span>
+                  <span>👁 100</span>
+                  <span>🧑 น้อนบู้</span>
+                </span>
               </div>
+              <div class="headline">หงส์สู่ขอ ยานคูบ้า มินเตห์ 50 ลป. ไบรท์ตัน ปฏิเสธทันที</div>
             </a>
 
             <!-- ช่องข้าง 2 ช่อง = ข่าวล่าสุด -->
@@ -810,6 +802,8 @@
                   </div>
                 </div>
                 <div class="news-meta">
+                  <span class="poster">🧑 น้อนบู้</span>
+                  <span>•</span>
                   <span>12 นาทีที่แล้ว</span>
                 </div>
               </a>
@@ -823,6 +817,8 @@
                   </div>
                 </div>
                 <div class="news-meta">
+                  <span class="poster">🧑 น้อนบู้</span>
+                  <span>•</span>
                   <span>28 นาทีที่แล้ว</span>
                 </div>
               </a>
